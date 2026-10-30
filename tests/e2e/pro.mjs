@@ -33,7 +33,8 @@ async function signIn(page, email) {
   await page.getByRole("button", { name: /email me a sign-in link/i }).click();
   await page.getByText(/check your email/i).waitFor();
   await page.goto(await magicLink(email));
-  await page.waitForURL(/\/app/);
+  await page.getByRole("button", { name: "Continue" }).click();
+    await page.waitForURL(/\/app/);
 }
 async function signOut(page) {
   await page.goto(`${BASE}/app/settings`);

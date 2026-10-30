@@ -60,9 +60,16 @@ Copy `.env.example` to `.env.local`. Every variable is documented there. Summary
 
 1. Create a Supabase project. In the SQL editor, paste and run `supabase/migrations/0001_init.sql`.
 2. Authentication → Providers: enable **Email** (magic link) and **Google** (needs a Google OAuth client; put its ID/secret in Supabase, not in this app).
-3. Authentication → URL configuration: Site URL = your origin; add `http://localhost:3000/auth/callback` (and later your Vercel URL) to Redirect URLs.
-4. Project settings → API: copy the URL, anon key, and service role key into `.env.local`.
-5. `npm install && npm run dev`, open http://localhost:3000.
+3. Authentication → URL configuration: Site URL = your origin (no trailing slash); add `http://localhost:3000/**` and later `https://<your-app>.vercel.app/**` to Redirect URLs.
+4. **Authentication → Email Templates: change the link in "Magic Link" and "Confirm signup"** (both) to:
+
+   ```
+   {{ .SiteURL }}/auth/confirm?token_hash={{ .TokenHash }}&type=email&next=/app
+   ```
+
+   Why: the default `{{ .ConfirmationURL }}` uses a one-time code that only works in the browser that requested it and is often used up by email scanners that pre-open links. The result is "the login screen sends me back to the login screen". The template above links straight to our confirm page, which does nothing on load and verifies on a button press, so it works in any browser and survives scanners.
+5. Project settings → API: copy the URL, anon key, and service role key into `.env.local`.
+6. `npm install && npm run dev`, open http://localhost:3000.
 
 ### Option B: without Docker or a Supabase account (how this was tested)
 
@@ -85,6 +92,7 @@ npm run test:rls      # 39 RLS tests against local Postgres (needs db:local:rese
 npm run test:e2e      # Playwright parent journey (needs stand-in on :54321 and app on :3100)
 node tests/e2e/offline.mjs   # offline queue journey
 node tests/e2e/pro.mjs       # Pro journey: gating, patterns, invites, share links
+node tests/e2e/auth.mjs      # magic links: scanners, other browsers, used links
 ```
 
 RLS tests cover: unauthorized reads/writes, role escalation (caregiver → owner), direct link insertion, child reassignment of entries/behaviors, author changes, owner-link deletion, account deletion cascade, invite acceptance by the wrong email, replay, expiry, revocation, and cross-user export queries.
@@ -97,7 +105,7 @@ RLS tests cover: unauthorized reads/writes, role escalation (caregiver → owner
 
 1. Push this repo to GitHub and import it in Vercel. Framework: Next.js. No build command changes.
 2. Add the environment variables from the table above (Production and Preview). Use Stripe **test** keys.
-3. Deploy. Then add `https://<your-app>.vercel.app/auth/callback` to Supabase Redirect URLs, and set `NEXT_PUBLIC_SITE_URL` to that origin.
+3. Deploy. Then set Supabase **Site URL** to `https://<your-app>.vercel.app`, add `https://<your-app>.vercel.app/**` to Redirect URLs, and set `NEXT_PUBLIC_SITE_URL` to that origin. Links in sign-in emails use the request's host when it is the configured site, a `*.vercel.app` deployment, or localhost; otherwise `NEXT_PUBLIC_SITE_URL`.
 4. PDF export reads `src/lib/export/fonts/*.ttf` at runtime; `next.config.ts` lists them in `outputFileTracingIncludes` so Vercel bundles them. Download one PDF after the first deploy to confirm.
 
 Custom domain, plan upgrades, and public launch are your TODOs. Nothing in this repo buys or enables anything.

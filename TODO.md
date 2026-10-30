@@ -22,6 +22,7 @@ Items marked **(founder)** need you. Items marked **(review)** need a profession
 - Hero photography slots: quiet domestic imagery, no faces. Currently none; placeholders arrive with Phase 2 layout.
 
 ## Sign-in `/sign-in`
+- (founder) **Update the "Magic Link" and "Confirm signup" email templates** to `{{ .SiteURL }}/auth/confirm?token_hash={{ .TokenHash }}&type=email&next=/app` (README step 4). Without it, links fail when opened in another browser or after an email scanner pre-opens them.
 - (founder) Confirm Supabase magic-link email template wording; default template says "Supabase".
 - Consider rate limiting magic-link requests per email/IP.
 

@@ -15,15 +15,25 @@ export const metadata: Metadata = {
 const ERRORS: Record<string, string> = {
   attest: "Please confirm you're an adult parent or caregiver.",
   google: "Google sign-in didn't complete. You can try again or use an email link.",
-  callback: "That link has expired or was already used. Request a new one below.",
+  callback: "That link didn't work. Request a new one below.",
+};
+
+/** More specific text when the callback tells us why. */
+const REASONS: Record<string, string> = {
+  browser:
+    "That link was opened in a different browser than the one that asked for it. Request a new link here, then open it on this same device and browser (or copy it into this browser).",
+  expired: "That link has expired. Links work for an hour. Request a new one below.",
+  used: "That link was already used, possibly by your email app opening it early. Request a new one below.",
+  missing: "That link was incomplete. Request a new one below.",
+  unknown: "That link didn't work. Request a new one below.",
 };
 
 export default async function SignInPage({
   searchParams,
 }: {
-  searchParams: Promise<{ next?: string; error?: string }>;
+  searchParams: Promise<{ next?: string; error?: string; reason?: string }>;
 }) {
-  const { next: rawNext, error } = await searchParams;
+  const { next: rawNext, error, reason } = await searchParams;
   if (!supabaseConfigured) redirect("/setup");
   const user = await getUser();
   const next = rawNext && rawNext.startsWith("/") && !rawNext.startsWith("//") ? rawNext : "/app";
@@ -44,7 +54,7 @@ export default async function SignInPage({
         One link, no password. Your tracker is free, and it stays free.
       </p>
       <div className="mt-8">
-        <SignInForm next={next} initialError={error ? ERRORS[error] : undefined} />
+        <SignInForm next={next} initialError={error ? (error === "callback" && reason && REASONS[reason]) || ERRORS[error] : undefined} />
       </div>
     </main>
   );

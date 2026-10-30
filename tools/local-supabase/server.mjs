@@ -52,6 +52,7 @@ export const SERVICE_KEY = signJwt({ role: "service_role", iss: "local", iat: 17
 
 // ── State for auth flows ─────────────────────────────────────────────────────
 const pkce = new Map(); // code -> { email, challenge, method }
+const tokenHashes = new Map(); // token_hash -> { email, meta, used }
 const refreshTokens = new Map(); // refresh -> userId
 const outbox = []; // "emails" (magic links) for tests to read
 
@@ -427,9 +428,14 @@ async function handleAuth(req, res, url, claims) {
     if (!email) return send(res, 400, { code: 400, msg: "email required" });
     const code = crypto.randomBytes(16).toString("hex");
     pkce.set(code, { email, challenge: body.code_challenge ?? null, method: body.code_challenge_method ?? "s256", meta: body.data ?? {} });
-    const redirect = body.redirect_to ?? `${SITE}/auth/callback`;
+    // supabase-js sends emailRedirectTo as ?redirect_to= on the request URL.
+    const redirect = query.get("redirect_to") ?? body.redirect_to ?? `${SITE}/auth/callback`;
     const link = `${redirect}${redirect.includes("?") ? "&" : "?"}code=${code}`;
-    outbox.push({ to: email, link, at: new Date().toISOString() });
+    // Equivalent of the {{ .TokenHash }} template: no PKCE, verified server-side.
+    const tokenHash = crypto.randomBytes(24).toString("hex");
+    tokenHashes.set(tokenHash, { email, meta: body.data ?? {}, used: false });
+    const confirmLink = `${SITE}/auth/confirm?token_hash=${tokenHash}&type=email&next=/app`;
+    outbox.push({ to: email, link, confirm_link: confirmLink, at: new Date().toISOString() });
     console.log(`[local-supabase] magic link for ${email}: ${link}`);
     return send(res, 200, {});
   }
@@ -468,6 +474,16 @@ async function handleAuth(req, res, url, claims) {
       return send(res, 200, session(user));
     }
     return send(res, 400, { error: "unsupported_grant_type", code: 400, msg: "unsupported grant" });
+  }
+
+  if (path === "verify" && req.method === "POST") {
+    const body = (await readJson(req)) ?? {};
+    const rec = tokenHashes.get(body.token_hash);
+    if (!rec) return send(res, 403, { code: 403, error_code: "otp_expired", msg: "Token has expired or is invalid" });
+    if (rec.used) return send(res, 403, { code: 403, error_code: "otp_expired", msg: "Token has expired or is invalid" });
+    rec.used = true;
+    const user = await findOrCreateUser(rec.email, rec.meta);
+    return send(res, 200, session(user));
   }
 
   if (path === "user" && req.method === "GET") {

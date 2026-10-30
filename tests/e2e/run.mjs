@@ -83,6 +83,7 @@ try {
     await shot(page, "check-email");
     const link = await latestMagicLink(email);
     await page.goto(link);
+    await page.getByRole("button", { name: "Continue" }).click();
     await page.waitForURL(/\/app/);
   });
 
@@ -224,6 +225,7 @@ try {
     await page.getByRole("button", { name: /email me a sign-in link/i }).click();
     await page.getByText(/check your email/i).waitFor();
     await page.goto(await latestMagicLink(other));
+    await page.getByRole("button", { name: "Continue" }).click();
     await page.waitForURL(/\/app/);
     await page.getByRole("heading", { name: /noticing/i }).waitFor(); // onboarding, not Beanie
     expect((await page.getByText("Beanie").count()) === 0, "other parent must not see Beanie");

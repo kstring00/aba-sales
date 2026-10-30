@@ -13,6 +13,15 @@ const PROTECTED_PREFIXES = ["/app"];
 export async function updateSession(request: NextRequest) {
   let response = NextResponse.next({ request });
   const path = request.nextUrl.pathname;
+
+  // When a redirect URL isn't on Supabase's allowlist, Supabase falls back to
+  // the Site URL root with ?code= or ?token_hash=. Don't drop it on the floor.
+  const sp = request.nextUrl.searchParams;
+  if (path === "/" && (sp.has("code") || sp.has("token_hash"))) {
+    const url = request.nextUrl.clone();
+    url.pathname = "/auth/confirm";
+    return NextResponse.redirect(url);
+  }
   const isProtected = PROTECTED_PREFIXES.some((p) => path === p || path.startsWith(p + "/"));
 
   if (!supabaseConfigured) {
