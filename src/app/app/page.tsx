@@ -1,5 +1,5 @@
 import { requireUser } from "@/lib/auth";
-import { getBehaviors, getChildren, getEntries, getProfile, getSelectedChild } from "@/lib/data";
+import { getBehaviors, getChildren, getProfile, getRecentEntries, getSelectedChild } from "@/lib/data";
 import { Onboarding } from "@/components/app/Onboarding";
 import { ChildSwitcher } from "@/components/app/ChildSwitcher";
 import { LogHome } from "@/components/app/LogHome";
@@ -14,13 +14,12 @@ export default async function AppHome() {
   const child = (await getSelectedChild(children))!;
   const [behaviors, recent] = await Promise.all([
     getBehaviors(child.id),
-    // 48 hours covers "today" in every time zone; the client trims to the local day.
-    getEntries(child.id, { from: new Date(Date.now() - 48 * 3600 * 1000), limit: 200 }),
+    getRecentEntries(child.id),
   ]);
 
   return (
     <main id="main" className="mx-auto w-full max-w-lg px-5 pt-4 sm:pt-10">
-      <ChildSwitcher children={children} selectedId={child.id} />
+      <ChildSwitcher items={children} selectedId={child.id} />
       <h1 className="mt-6 text-[clamp(1.9rem,1.5rem+1.5vw,2.6rem)]">
         {children.length > 1 ? child.nickname : `How's ${child.nickname}?`}
       </h1>

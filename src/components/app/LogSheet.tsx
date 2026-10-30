@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useMemo, useState } from "react";
 import { Sheet } from "@/components/ui/Sheet";
 import { Chip } from "@/components/ui/Chip";
 import { Button } from "@/components/ui/Button";
@@ -81,7 +81,13 @@ function draftFromEntry(e: EntryRow): EntryDraft {
   };
 }
 
-export function LogSheet({ open, onClose, childId, userId, behaviors, mode, onSaved, onDeleted, onBehaviorAdded }: Props) {
+/** Mounts a fresh sheet each time it opens, so every state starts clean. */
+export function LogSheet(props: Props) {
+  if (!props.open) return null;
+  return <LogSheetInner {...props} />;
+}
+
+function LogSheetInner({ open, onClose, childId, userId, behaviors, mode, onSaved, onDeleted, onBehaviorAdded }: Props) {
   const { toast } = useToast();
   const isEdit = mode.kind === "edit";
   const [step, setStep] = useState<Step>(isEdit ? "review" : "behavior");
@@ -91,24 +97,10 @@ export function LogSheet({ open, onClose, childId, userId, behaviors, mode, onSa
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [confirmDelete, setConfirmDelete] = useState(false);
-  const [showDetails, setShowDetails] = useState(false);
+  const [showDetails, setShowDetails] = useState(isEdit);
   const [addingBehavior, setAddingBehavior] = useState(false);
   const [newLabel, setNewLabel] = useState("");
   const [elseNote, setElseNote] = useState("");
-
-  // Reset whenever the sheet opens.
-  useEffect(() => {
-    if (!open) return;
-    setStep(mode.kind === "edit" ? "review" : "behavior");
-    setDraft(mode.kind === "edit" ? draftFromEntry(mode.entry) : emptyDraft(childId));
-    setSaving(false);
-    setError(null);
-    setConfirmDelete(false);
-    setShowDetails(mode.kind === "edit");
-    setAddingBehavior(false);
-    setNewLabel("");
-    setElseNote("");
-  }, [open, mode, childId]);
 
   const activeBehaviors = useMemo(() => behaviors.filter((b) => b.is_active || b.id === draft.behavior_id), [behaviors, draft.behavior_id]);
   const behaviorLabel = behaviors.find((b) => b.id === draft.behavior_id)?.label ?? "";

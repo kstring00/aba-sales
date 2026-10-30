@@ -35,7 +35,7 @@ export default async function EntriesPage({ searchParams }: { searchParams: Prom
 
   return (
     <main id="main" className="mx-auto w-full max-w-lg px-5 pt-4 sm:pt-10">
-      <ChildSwitcher children={children} selectedId={child.id} />
+      <ChildSwitcher items={children} selectedId={child.id} />
       <h1 className="mt-6 text-[clamp(1.9rem,1.5rem+1.5vw,2.6rem)]">Entries</h1>
       <div className="mt-5">
         <EntryFilters from={from} to={to} behaviorId={behaviorId} behaviors={behaviors} />

@@ -3,6 +3,7 @@ import { requireUser } from "@/lib/auth";
 import { getBehaviors, getChildren, getSelectedChild } from "@/lib/data";
 import { ChildrenSettings } from "@/components/app/settings/ChildrenSettings";
 import { BehaviorSettings } from "@/components/app/settings/BehaviorSettings";
+import { YourData } from "@/components/app/settings/DangerZone";
 import { signOut } from "@/app/app/actions";
 import { Button } from "@/components/ui/Button";
 
@@ -30,7 +31,7 @@ export default async function SettingsPage({ searchParams }: { searchParams: Pro
       ) : null}
 
       <Section title="Children">
-        <ChildrenSettings children={children} userId={user.id} />
+        <ChildrenSettings items={children} />
       </Section>
 
       {selected ? (
@@ -40,9 +41,7 @@ export default async function SettingsPage({ searchParams }: { searchParams: Pro
       ) : null}
 
       <Section title="Your data">
-        <p className="text-[15px] text-ink-soft">
-          Export everything or delete your account from here. Both arrive in the next milestone.
-        </p>
+        <YourData />
       </Section>
 
       <Section title="Account">

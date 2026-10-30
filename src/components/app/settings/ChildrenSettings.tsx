@@ -6,13 +6,12 @@ import { Input } from "@/components/ui/Field";
 import type { ChildWithRole } from "@/lib/data";
 import { createChild, deleteChild, leaveChild, renameChild, type ActionState } from "@/app/app/actions";
 
-export function ChildrenSettings({ children, userId }: { children: ChildWithRole[]; userId: string }) {
-  void userId;
+export function ChildrenSettings({ items }: { items: ChildWithRole[] }) {
   const [adding, setAdding] = useState(false);
   return (
     <div className="space-y-3">
       <ul className="divide-y divide-line rounded-lg bg-paper shadow-soft">
-        {children.map((c) => (
+        {items.map((c) => (
           <ChildRowItem key={c.id} child={c} />
         ))}
       </ul>

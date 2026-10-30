@@ -5,13 +5,13 @@ import { useRouter } from "next/navigation";
 import { selectChild } from "@/app/app/actions";
 import type { ChildWithRole } from "@/lib/data";
 
-export function ChildSwitcher({ children, selectedId }: { children: ChildWithRole[]; selectedId: string }) {
+export function ChildSwitcher({ items, selectedId }: { items: ChildWithRole[]; selectedId: string }) {
   const router = useRouter();
   const [pending, start] = useTransition();
-  if (children.length < 2) return null;
+  if (items.length < 2) return null;
   return (
     <div className="scroll-quiet -mx-5 flex gap-2 overflow-x-auto px-5" role="tablist" aria-label="Child">
-      {children.map((c) => {
+      {items.map((c) => {
         const active = c.id === selectedId;
         return (
           <button

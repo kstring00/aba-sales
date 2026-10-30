@@ -75,6 +75,11 @@ export async function getEntries(childId: string, f: EntryFilters = {}): Promise
   return rows.map(({ behaviors, ...e }) => ({ ...e, behavior_label: behaviors?.label ?? "" }));
 }
 
+/** Last 48 hours: covers "today" in every time zone; the client trims to the local day. */
+export async function getRecentEntries(childId: string) {
+  return getEntries(childId, { from: new Date(Date.now() - 48 * 3600 * 1000), limit: 200 });
+}
+
 export async function getProfile() {
   const supabase = await createClient();
   const {

@@ -8,7 +8,6 @@ import { createClient } from "@/lib/supabase/server";
 import { requireUser } from "@/lib/auth";
 import { assertChildAccess, assertChildOwner, AccessError } from "@/lib/access";
 import { CHILD_COOKIE } from "@/lib/data";
-import { SEED_BEHAVIORS } from "@/lib/observation";
 import { TZ_COOKIE, isValidTimeZone } from "@/lib/time/zoned";
 
 export type ActionState = { ok?: true; error?: string } | null;
@@ -198,4 +197,39 @@ export async function signOut(): Promise<void> {
   const store = await cookies();
   store.delete(CHILD_COOKIE);
   redirect("/");
+}
+
+// ── Account deletion (hard delete, confirmed twice in the UI) ─────────────────
+export async function deleteAccount(_prev: ActionState, formData: FormData): Promise<ActionState> {
+  const user = await requireUser("/app/settings");
+  if (formData.get("understand") !== "on") return { error: "Please tick the box to confirm you understand." };
+  if (String(formData.get("confirm") ?? "").trim().toUpperCase() !== "DELETE") {
+    return { error: 'Type DELETE in capital letters to confirm.' };
+  }
+
+  const { adminConfigured, createAdminClient } = await import("@/lib/supabase/admin");
+  if (!adminConfigured()) {
+    return { error: "Deletion isn't available on this deployment yet. Contact us and we'll remove your account by hand." };
+  }
+
+  const supabase = await createClient();
+
+  // 1. Stop billing first so nothing renews after the account is gone.
+  const { data: sub } = await supabase.from("subscriptions").select("stripe_subscription_id").eq("user_id", user.id).maybeSingle();
+  const { cancelStripeForUser } = await import("@/lib/billing/cancel");
+  await cancelStripeForUser(sub?.stripe_subscription_id);
+
+  // 2. Delete everything the user owns, as the user (RLS + SECURITY DEFINER).
+  const { error: rpcError } = await supabase.rpc("delete_my_owned_data", {});
+  if (rpcError) return { error: "We couldn't delete your data just now. Nothing was removed. Please try again." };
+
+  // 3. Delete the auth user with the service key; cascades remove the rest.
+  const admin = createAdminClient();
+  const { error: adminError } = await admin.auth.admin.deleteUser(user.id);
+  if (adminError) return { error: "Your records were removed but the sign-in itself could not be deleted. Please contact us." };
+
+  await supabase.auth.signOut();
+  const store = await cookies();
+  store.delete(CHILD_COOKIE);
+  redirect("/goodbye");
 }

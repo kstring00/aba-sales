@@ -180,7 +180,36 @@ try {
     await shot(page, "settings");
   });
 
+  let childId = "";
+  await step("export page offers PDF and CSV; downloads are real files", async () => {
+    await page.goto(`${BASE}/app/export`);
+    const href = await page.getByRole("link", { name: "Download PDF" }).getAttribute("href");
+    expect(href && href.startsWith("/app/export/pdf?child="), "pdf link present");
+    childId = new URL(href, BASE).searchParams.get("child");
+    await shot(page, "export");
+
+    const pdf = await page.request.get(`${BASE}${href}`);
+    expect(pdf.status() === 200, `pdf status ${pdf.status()}`);
+    expect((pdf.headers()["content-type"] || "").includes("application/pdf"), "pdf content type");
+    const pdfBytes = await pdf.body();
+    expect(pdfBytes.subarray(0, 5).toString() === "%PDF-", "pdf magic bytes");
+    fs.writeFileSync(path.join(SHOTS, "export.pdf"), pdfBytes);
+
+    const csv = await page.request.get(`${BASE}${href.replace("/pdf?", "/csv?")}`);
+    expect(csv.status() === 200, `csv status ${csv.status()}`);
+    const text = await csv.text();
+    expect(text.includes("date,time,noticed,right_before"), "csv header");
+    expect(text.includes("Covering ears"), "csv contains the surviving entry");
+    expect(!text.includes("Hitting"), "csv excludes the deleted entry");
+
+    const all = await page.request.get(`${BASE}/app/export/all`);
+    expect(all.status() === 200, `json status ${all.status()}`);
+    const json = await all.json();
+    expect(json.children.length === 1 && json.entries.length === 1, "json export has the account's data");
+  });
+
   await step("sign out clears access to /app", async () => {
+    await page.goto(`${BASE}/app/settings`);
     await page.getByRole("button", { name: "Sign out" }).click();
     await page.waitForURL((u) => !u.pathname.startsWith("/app"));
     await page.goto(`${BASE}/app`);
@@ -198,6 +227,33 @@ try {
     await page.waitForURL(/\/app/);
     await page.getByRole("heading", { name: /noticing/i }).waitFor(); // onboarding, not Beanie
     expect((await page.getByText("Beanie").count()) === 0, "other parent must not see Beanie");
+
+    // Cross-user export attempts are refused.
+    const denied = await page.request.get(`${BASE}/app/export/pdf?child=${childId}`);
+    expect(denied.status() === 403, `cross-user pdf export should be 403, got ${denied.status()}`);
+    const deniedCsv = await page.request.get(`${BASE}/app/export/csv?child=${childId}`);
+    expect(deniedCsv.status() === 403, `cross-user csv export should be 403, got ${deniedCsv.status()}`);
+  });
+
+  await step("account deletion requires both confirmations and then signs out", async () => {
+    await page.getByLabel("Nickname").fill("Temp");
+    await page.getByRole("button", { name: /start tracking/i }).click();
+    await page.getByRole("button", { name: /log what happened/i }).waitFor();
+    await page.goto(`${BASE}/app/settings`);
+    await page.getByRole("button", { name: /i want to delete my account/i }).click();
+    // Wrong confirmation word is refused.
+    await page.getByRole("checkbox", { name: /i understand/i }).check();
+    await page.getByLabel(/type delete/i).fill("delete me");
+    await page.getByRole("button", { name: /delete everything/i }).click();
+    await page.getByRole("alert").waitFor();
+    await shot(page, "delete-confirm");
+    expect(await page.getByRole("checkbox", { name: /i understand/i }).isChecked(), "checkbox must survive a validation error");
+    await page.getByLabel(/type delete/i).fill("DELETE");
+    await page.getByRole("button", { name: /delete everything/i }).click();
+    await page.waitForURL(/\/goodbye/);
+    await shot(page, "goodbye");
+    await page.goto(`${BASE}/app`);
+    await page.waitForURL(/sign-in/);
   });
 
   expect(consoleErrors.length === 0, `page errors: ${consoleErrors.join(" | ")}`);

@@ -1,0 +1,3 @@
+Inter (c) The Inter Project Authors — SIL Open Font License 1.1
+Fraunces (c) Undercase Type — SIL Open Font License 1.1
+Both fonts are embedded in exported PDFs under the OFL. https://openfontlicense.org

@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useMemo, useState, useSyncExternalStore } from "react";
 import { useRouter } from "next/navigation";
 import type { BehaviorRow, EntryRow } from "@/lib/database.types";
 import type { EntryWithBehavior } from "@/lib/data";
@@ -24,11 +24,14 @@ export function EntryList({ entries, behaviors: initialBehaviors, childId, userI
   const [items, setItems] = useState(entries);
   const [behaviors, setBehaviors] = useState(initialBehaviors);
   const [editing, setEditing] = useState<EntryWithBehavior | null>(null);
-  const [mounted, setMounted] = useState(false);
-
-  useEffect(() => setItems(entries), [entries]);
-  useEffect(() => setBehaviors(initialBehaviors), [initialBehaviors]);
-  useEffect(() => setMounted(true), []);
+  // Parents re-key this component when server data changes, so state resets
+  // without prop-to-state effects. `mounted` avoids a hydration mismatch when
+  // formatting times in the viewer's zone.
+  const mounted = useSyncExternalStore(
+    () => () => {},
+    () => true,
+    () => false,
+  );
 
   const today = mounted ? localDateStr(new Date()) : null;
 

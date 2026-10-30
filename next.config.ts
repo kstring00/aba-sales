@@ -5,6 +5,11 @@ import type { NextConfig } from "next";
 // predictable for a solo maintainer. Public pages opt into ISR explicitly.
 const nextConfig: NextConfig = {
   cacheComponents: false,
+  // PDF export reads brand fonts from disk at runtime; make sure Vercel ships them.
+  outputFileTracingIncludes: {
+    "/app/export/pdf": ["./src/lib/export/fonts/*.ttf"],
+    "/api/sample-export": ["./src/lib/export/fonts/*.ttf"],
+  },
   turbopack: {
     rules: {
       "*.css": {
