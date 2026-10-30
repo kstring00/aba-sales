@@ -68,8 +68,9 @@ Copy `.env.example` to `.env.local`. Every variable is documented there. Summary
    ```
 
    Why: the default `{{ .ConfirmationURL }}` uses a one-time code that only works in the browser that requested it and is often used up by email scanners that pre-open links. The result is "the login screen sends me back to the login screen". The template above links straight to our confirm page, which does nothing on load and verifies on a button press, so it works in any browser and survives scanners.
-5. Project settings → API: copy the URL, anon key, and service role key into `.env.local`.
-6. `npm install && npm run dev`, open http://localhost:3000.
+5. **Email sending (Resend, free tier).** Supabase's built-in sender allows only a few emails per hour and only to your project team, so sign-in links stop arriving quickly. Create a free Resend account and an API key, then in Supabase → Authentication → Emails → SMTP Settings enable custom SMTP with host `smtp.resend.com`, port `465`, username `resend`, password = the API key, sender `onboarding@resend.dev`, sender name "The Support Shelf". Without a verified domain, Resend only delivers to your own Resend account email; real users need a verified domain (part of your custom-domain TODO). Then raise the email limit under Authentication → Rate Limits.
+6. Project settings → API: copy the URL, anon key, and service role key into `.env.local`.
+7. `npm install && npm run dev`, open http://localhost:3000.
 
 ### Option B: without Docker or a Supabase account (how this was tested)
 
