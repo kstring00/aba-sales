@@ -36,6 +36,7 @@ describe("product normalization", () => {
   it("formats money without cents for whole amounts", () => {
     expect(formatMoney({ amount: "12.0", currencyCode: "USD" })).toBe("$12");
     expect(formatMoney({ amount: "7.5", currencyCode: "USD" })).toBe("$7.50");
+    expect(formatMoney({ amount: "0.0", currencyCode: "USD" })).toBe("Free");
   });
 });
 

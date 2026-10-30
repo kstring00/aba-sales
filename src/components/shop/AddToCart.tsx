@@ -13,7 +13,7 @@ export function AddToCart({ variantId, available, price, compact = false }: { va
     <form action={action} className="space-y-2">
       <input type="hidden" name="variantId" value={variantId} />
       <Button type="submit" variant="primary" size="lg" className="w-full" disabled={pending}>
-        {pending ? "Adding…" : compact ? "Add to cart" : `Add to cart · ${price}`}
+        {pending ? "Adding…" : compact ? (price === "Free" ? "Get it free" : "Add to cart") : price === "Free" ? "Get it free" : `Add to cart · ${price}`}
       </Button>
       {state?.error ? <p role="alert" className="text-[14px]">{state.error}</p> : null}
     </form>

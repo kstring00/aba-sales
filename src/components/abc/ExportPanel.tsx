@@ -7,8 +7,6 @@ import { useToast } from "@/components/ui/Toast";
 import type { EntryWithBehavior } from "@/lib/abc/types";
 import { buildReport } from "@/lib/export/report";
 import { reportToCsv } from "@/lib/export/csv";
-import { renderReportPdf } from "@/lib/export/pdf";
-import { loadFontBytesFromPublic } from "@/lib/export/fonts.client";
 import { downloadBlob, slugify } from "@/lib/export/download";
 import { addDays, toDateStr } from "@/lib/time/zoned";
 
@@ -42,6 +40,8 @@ export function ExportPanel({ nickname, entries }: Props) {
     setBusy("pdf");
     try {
       const r = report();
+      // pdf-lib and the fonts are loaded only when a parent actually exports.
+      const [{ renderReportPdf }, { loadFontBytesFromPublic }] = await Promise.all([import("@/lib/export/pdf"), import("@/lib/export/fonts.client")]);
       const bytes = await renderReportPdf(r, await loadFontBytesFromPublic());
       downloadBlob(bytes, `support-shelf-${slugify(nickname)}-${r.from}-to-${r.to}.pdf`, "application/pdf");
       toast("PDF ready.");
@@ -116,7 +116,7 @@ export function ExportPanel({ nickname, entries }: Props) {
           <Button type="submit" variant="secondary" disabled={busy !== null || none}>{busy === "email" ? "Sending…" : "Send"}</Button>
         </div>
         <label className="flex items-start gap-3 text-[14px] text-ink-soft">
-          <input type="checkbox" checked={keep} onChange={(e) => setKeep(e.target.checked)} className="mt-0.5 h-5 w-5 shrink-0 accent-[var(--sage-deep)]" />
+          <input type="checkbox" checked={keep} onChange={(e) => setKeep(e.target.checked)} className="mt-0.5 h-6 w-6 shrink-0 accent-[var(--sage-deep)]" />
           <span>Also tell me when new downloads reach the shelf. A few emails a year, unsubscribe any time.</span>
         </label>
         {status?.ok ? <p role="status" className="text-[15px] text-ink">Sent. Check your inbox (and spam, once).</p> : null}

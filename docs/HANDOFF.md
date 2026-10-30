@@ -1,0 +1,75 @@
+# Handoff — The Support Shelf
+
+Everything a new maintainer (or you in six months) needs, in one file. Last updated for Phase 2.
+
+## 1. Accounts
+
+| Service | Used for | Login / where |
+| --- | --- | --- |
+| **GitHub** `kstring00/aba-sales` | source code; `main` is production | github.com |
+| **Vercel** | hosting (free tier, `*.vercel.app`) | vercel.com, project imported from the GitHub repo; production deploys from `main` |
+| **Shopify** `vgb9f2-eg.myshopify.com` (Basic plan) | products, cart, checkout, delivery via Digital Products app | admin.shopify.com |
+| **Resend** | sends "Email me my export", holds the email list (Audience) | resend.com |
+| **Google Fonts** (no account) | Fraunces + Inter via `next/font`; TTF copies in `public/fonts` for PDFs (OFL) | — |
+
+No database, no auth provider, no analytics, no payment processor of our own.
+
+## 2. Environment variables (Vercel → Settings → Environment Variables)
+
+| Variable | Value / where to get it | Required |
+| --- | --- | --- |
+| `NEXT_PUBLIC_SITE_URL` | `https://<your-app>.vercel.app` (no trailing slash) | yes |
+| `SHOPIFY_STORE_DOMAIN` | `vgb9f2-eg.myshopify.com` | yes |
+| `SHOPIFY_STOREFRONT_TOKEN` | Shopify admin → Sales channels → Headless → your storefront → Storefront API → Public access token | yes |
+| `SHOPIFY_API_VERSION` | `2025-10` (update yearly; see Shopify release notes) | default in code |
+| `RESEND_API_KEY` | Resend → API keys (sending access) | for email export + list |
+| `RESEND_FROM` | `"The Support Shelf <hello@yourdomain>"` on a verified domain; until then `onboarding@resend.dev` (delivers only to your own Resend email) | for email export |
+| `RESEND_AUDIENCE_ID` | Resend → Audiences → the list's ID | optional; without it, sign-ups are accepted but not stored |
+| `NEXT_PUBLIC_CONTACT_EMAIL` | the address shown in the footer | yes |
+| `NEXT_PUBLIC_CONTACT_PHONE` | the phone shown in the footer | optional |
+
+Local development: copy `.env.example` to `.env.local` and fill the same names.
+
+## 3. Shopify admin settings that matter
+
+- **Sales channels → Headless**: installed; one storefront whose public token the site uses. The app reads only through the Storefront API and never calls the Admin API.
+- **Online Store**: password-protected and unused. Products should **not** be published to it.
+- **Products**: appear on the site only when **Active** and published to **Headless**. Shelf membership is by tag: `family-shelf`, `clinic-shelf` (smart collections `the-family-shelf`, `the-clinic-shelf`; `the-interactive-shelf` exists but is hidden on the site). Current products: `home-abc-printable` ($0), `waitlist-playbook` ($0), `care-binder` ($14.99), `read-your-childs-treatment-plan` ($9.99), all Family.
+- **Collections**: both shelf collections must also be published to Headless.
+- **Digital Products app**: attaches files and emails download links after purchase. The site never handles delivery.
+- **Settings → Checkout**: order-status page "continue shopping" link → `https://<your-app>.vercel.app/thanks`.
+- **Settings → Payments**: test mode on until launch. Turn it off to take real payments.
+- **Product page content**: the site reads the description, and if present the metafields `custom.benefit`, `custom.format`, `custom.included` (expose them to the Storefront API in Settings → Custom data → Products → the definition → Storefront access).
+
+Settings changed during the build: the three `TEST —` products created by the connector were deleted by the founder; nothing else was changed through the connector.
+
+## 4. Resend settings
+
+- API key with sending access.
+- Audience for the email list (sign-ups from the shelf, home, and the "keep me posted" box on `/abc`).
+- **Verified domain** required to email anyone other than the account owner. Add the DNS records Resend shows, then set `RESEND_FROM`.
+
+## 5. Deploy and operate
+
+- Push to `main` → Vercel deploys production. Preview deploys for branches.
+- Shopify edits (prices, descriptions, new products) appear within 5 minutes (ISR), no redeploy needed. Product pages are also pre-rendered at build.
+- To force a refresh immediately: Vercel → Deployments → Redeploy.
+- Logs: Vercel → Functions. The only server logs are `[abc-export] failed: <error text>`; no entry content is ever logged.
+
+## 6. Where things live in the code
+
+```
+src/app/                 pages: /, /shelf, /products/[handle], /cart, /thanks, /abc, /about, /privacy, /crisis, not-found
+src/app/api/abc/email-export/route.ts   the one server route
+src/app/cart/actions.ts  add / update / remove / checkout (redirects to Shopify)
+src/lib/shopify/         Storefront client, GraphQL, normalizers, catalog, cart cookie
+src/lib/abc/             localStorage store, hook, view aggregations, types
+src/lib/export/          report → PDF (pdf-lib + brand fonts) and CSV
+src/lib/observation.ts   the exact antecedent / consequence wording
+src/app/globals.css      every design token
+tests/unit               vitest; tests/e2e  Playwright scripts (see README)
+```
+
+## 7. Checks to run before any public launch
+
+See the Phase 2 report in `docs/LAUNCH-CHECK.md`. Reviews that still need a human: legal (privacy page), BCBA (chip wording, product copy, "reviewed by" name), safeguarding (crisis page).

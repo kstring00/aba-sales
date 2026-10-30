@@ -17,24 +17,24 @@ export function SiteFooter() {
         </div>
         <nav aria-label="Footer" className="space-y-2 text-[15px]">
           <p className="text-[13px] uppercase tracking-wider text-ink-mute">Site</p>
-          <ul className="space-y-2">
-            <li><Link href="/shelf" className="text-ink-soft hover:text-ink">The shelf</Link></li>
-            <li><Link href="/abc" className="text-ink-soft hover:text-ink">Free ABC logger</Link></li>
-            <li><Link href="/about" className="text-ink-soft hover:text-ink">About</Link></li>
-            <li><Link href="/privacy" className="text-ink-soft hover:text-ink">Privacy</Link></li>
-            <li><Link href="/crisis" className="text-ink-soft hover:text-ink">Crisis resources</Link></li>
+          <ul className="space-y-0">
+            <li><Link href="/shelf" className="inline-flex min-h-11 items-center text-ink-soft hover:text-ink">The shelf</Link></li>
+            <li><Link href="/abc" className="inline-flex min-h-11 items-center text-ink-soft hover:text-ink">Free ABC logger</Link></li>
+            <li><Link href="/about" className="inline-flex min-h-11 items-center text-ink-soft hover:text-ink">About</Link></li>
+            <li><Link href="/privacy" className="inline-flex min-h-11 items-center text-ink-soft hover:text-ink">Privacy</Link></li>
+            <li><Link href="/crisis" className="inline-flex min-h-11 items-center text-ink-soft hover:text-ink">Crisis resources</Link></li>
           </ul>
         </nav>
         <div className="space-y-2 text-[15px]">
           <p className="text-[13px] uppercase tracking-wider text-ink-mute">Reach a person</p>
-          <ul className="space-y-2">
+          <ul className="space-y-0">
             {email ? (
-              <li><a href={`mailto:${email}`} className="text-ink-soft hover:text-ink">{email}</a></li>
+              <li><a href={`mailto:${email}`} className="inline-flex min-h-11 items-center text-ink-soft hover:text-ink">{email}</a></li>
             ) : (
               <li className="text-ink-mute">Email coming soon</li>
             )}
             {phone ? (
-              <li><a href={`tel:${phone.replace(/[^\d+]/g, "")}`} className="text-ink-soft hover:text-ink">{phone}</a></li>
+              <li><a href={`tel:${phone.replace(/[^\d+]/g, "")}`} className="inline-flex min-h-11 items-center text-ink-soft hover:text-ink">{phone}</a></li>
             ) : null}
           </ul>
         </div>
