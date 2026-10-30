@@ -1,18 +1,34 @@
 import Link from "next/link";
 import { Wordmark } from "@/components/ui/Logo";
-import { LinkButton } from "@/components/ui/Button";
+import { CartBadge } from "@/components/shop/CartBadge";
 
-export function SiteHeader({ signedIn = false }: { signedIn?: boolean }) {
+const NAV = [
+  { href: "/shelf", label: "The shelf" },
+  { href: "/abc", label: "Free ABC logger" },
+  { href: "/about", label: "About" },
+];
+
+export function SiteHeader() {
   return (
-    <header className="mx-auto flex w-full max-w-6xl items-center justify-between px-5 py-5 sm:px-8">
+    <header className="mx-auto flex w-full max-w-6xl items-center justify-between gap-4 px-5 py-5 sm:px-8">
       <Wordmark />
-      <nav aria-label="Primary" className="flex items-center gap-2 sm:gap-4">
-        <Link href="/crisis" className="hidden px-2 py-2 text-[15px] text-ink-soft hover:text-ink sm:inline">
-          Crisis resources
+      <nav aria-label="Primary" className="flex items-center gap-1 sm:gap-2">
+        {NAV.map((n) => (
+          <Link
+            key={n.href}
+            href={n.href}
+            className="hidden min-h-11 items-center rounded-pill px-3 text-[15px] text-ink-soft hover:bg-cream-deep hover:text-ink sm:inline-flex"
+          >
+            {n.label}
+          </Link>
+        ))}
+        <Link
+          href="/abc"
+          className="inline-flex min-h-11 items-center rounded-pill px-3 text-[15px] text-ink-soft hover:bg-cream-deep hover:text-ink sm:hidden"
+        >
+          ABC logger
         </Link>
-        <LinkButton href={signedIn ? "/app" : "/sign-in"} variant="secondary" size="sm">
-          {signedIn ? "Open tracker" : "Sign in"}
-        </LinkButton>
+        <CartBadge />
       </nav>
     </header>
   );

@@ -1,6 +1,3 @@
-import "server-only";
-import { readFile } from "node:fs/promises";
-import path from "node:path";
 import { PDFDocument, PDFFont, PDFPage, rgb } from "pdf-lib";
 import fontkit from "@pdf-lib/fontkit";
 import { fmtRangeLabel, type Count, type Report, type ReportRow } from "./report";
@@ -24,17 +21,20 @@ const LINE = rgb(0.886, 0.855, 0.796);
 const SAGE = rgb(0.541, 0.604, 0.482);
 const CREAM = rgb(0.965, 0.945, 0.906);
 
-const FONT_DIR = path.join(process.cwd(), "src", "lib", "export", "fonts");
-
 type Fonts = { body: PDFFont; bold: PDFFont; display: PDFFont };
 
-async function loadFonts(doc: PDFDocument): Promise<Fonts> {
+/** Raw TTF bytes. The browser fetches them from /fonts; the server reads them from public/fonts. */
+export type FontBytes = { regular: Uint8Array; semibold: Uint8Array; display: Uint8Array };
+
+export const FONT_FILES = {
+  regular: "Inter-Regular.ttf",
+  semibold: "Inter-SemiBold.ttf",
+  display: "Fraunces-Medium.ttf",
+} as const;
+
+async function loadFonts(doc: PDFDocument, bytes: FontBytes): Promise<Fonts> {
   doc.registerFontkit(fontkit);
-  const [r, b, d] = await Promise.all([
-    readFile(path.join(FONT_DIR, "Inter-Regular.ttf")),
-    readFile(path.join(FONT_DIR, "Inter-SemiBold.ttf")),
-    readFile(path.join(FONT_DIR, "Fraunces-Medium.ttf")),
-  ]);
+  const { regular: r, semibold: b, display: d } = bytes;
   // Inter from Google Fonts is a variable font; fontkit's subsetter drops
   // glyphs from it, so Inter is embedded whole (~325 KB each). Fraunces
   // subsets cleanly.
@@ -250,13 +250,13 @@ class Painter {
   }
 }
 
-export async function renderReportPdf(report: Report, options: PdfOptions = DEFAULT_PDF_OPTIONS): Promise<Uint8Array> {
+export async function renderReportPdf(report: Report, fontBytes: FontBytes, options: PdfOptions = DEFAULT_PDF_OPTIONS): Promise<Uint8Array> {
   const doc = await PDFDocument.create();
   doc.setTitle(`Observations for ${report.nickname} · ${fmtRangeLabel(report.from, report.to)}`);
   doc.setAuthor("The Support Shelf (recorded by a parent or caregiver)");
   doc.setProducer("The Support Shelf");
   doc.setCreationDate(report.generatedAt);
-  const fonts = await loadFonts(doc);
+  const fonts = await loadFonts(doc, fontBytes);
   const p = new Painter(doc, fonts, report, options);
   report.weeks.forEach((w, i) => p.drawWeek(w, i));
   if (options.counts) p.drawCounts();

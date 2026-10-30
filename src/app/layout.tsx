@@ -26,14 +26,8 @@ export const metadata: Metadata = {
     template: "%s · The Support Shelf",
   },
   description:
-    "Thoughtfully made tools for the people who care. A free, private way for parents to note what happened and hand clear information to the people who help.",
+    "Thoughtfully made tools for the people who care. Printable and editable downloads for ABA families and clinics, plus a free ABC observation logger.",
   applicationName: "The Support Shelf",
-  manifest: "/manifest.webmanifest",
-  appleWebApp: {
-    capable: true,
-    title: "Support Shelf",
-    statusBarStyle: "default",
-  },
   openGraph: {
     type: "website",
     siteName: "The Support Shelf",

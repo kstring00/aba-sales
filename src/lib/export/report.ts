@@ -4,7 +4,7 @@
  */
 import { addDays, toDateStr } from "@/lib/time/zoned";
 import { antecedentLabel, consequenceLabel, intensityLabel, formatDuration } from "@/lib/observation";
-import type { EntryWithBehavior } from "@/lib/data";
+import type { EntryWithBehavior } from "@/lib/abc/types";
 
 export type ReportRow = {
   id: string;
@@ -41,22 +41,22 @@ export type Report = {
 };
 
 export function toRow(e: EntryWithBehavior, tz: string): ReportRow {
-  const d = new Date(e.occurred_at);
+  const d = new Date(e.occurredAt);
   const time = new Intl.DateTimeFormat("en-US", { timeZone: tz, hour: "numeric", minute: "2-digit" }).format(d);
-  const beforeBase = e.antecedent_code === "something_else" ? "Something else" : antecedentLabel(e.antecedent_code);
-  const afterBase = e.consequence_code === "something_else" ? "Something else" : consequenceLabel(e.consequence_code);
+  const beforeBase = e.antecedentCode === "something_else" ? "Something else" : antecedentLabel(e.antecedentCode);
+  const afterBase = e.consequenceCode === "something_else" ? "Something else" : consequenceLabel(e.consequenceCode);
   return {
     id: e.id,
     occurredAt: d,
     date: toDateStr(d, tz),
     time,
-    noticed: e.behavior_label,
+    noticed: e.behaviorLabel,
     before: beforeBase,
-    beforeNote: e.antecedent_note ?? "",
+    beforeNote: e.antecedentNote ?? "",
     after: afterBase,
-    afterNote: e.consequence_note ?? "",
-    duration: formatDuration(e.duration_seconds),
-    durationSeconds: e.duration_seconds,
+    afterNote: e.consequenceNote ?? "",
+    duration: formatDuration(e.durationSeconds),
+    durationSeconds: e.durationSeconds,
     intensity: intensityLabel(e.intensity),
     intensityValue: e.intensity,
     note: e.note ?? "",

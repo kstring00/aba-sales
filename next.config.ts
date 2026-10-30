@@ -5,10 +5,12 @@ import type { NextConfig } from "next";
 // predictable for a solo maintainer. Public pages opt into ISR explicitly.
 const nextConfig: NextConfig = {
   cacheComponents: false,
+  images: {
+    remotePatterns: [{ protocol: "https", hostname: "cdn.shopify.com" }],
+  },
   // PDF export reads brand fonts from disk at runtime; make sure Vercel ships them.
   outputFileTracingIncludes: {
-    "/app/export/pdf": ["./src/lib/export/fonts/*.ttf"],
-    "/api/sample-export": ["./src/lib/export/fonts/*.ttf"],
+    "/api/abc/email-export": ["./public/fonts/*.ttf"],
   },
   turbopack: {
     rules: {
@@ -31,11 +33,6 @@ const nextConfig: NextConfig = {
             value: "camera=(), microphone=(), geolocation=()",
           },
         ],
-      },
-      {
-        // Private product surfaces are never indexed.
-        source: "/(app|guide)(.*)",
-        headers: [{ key: "X-Robots-Tag", value: "noindex, nofollow" }],
       },
     ];
   },
