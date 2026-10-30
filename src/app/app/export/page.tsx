@@ -5,9 +5,12 @@ import { addDays, toDateStr } from "@/lib/time/zoned";
 import { ChildSwitcher } from "@/components/app/ChildSwitcher";
 import { ExportForm } from "@/components/app/ExportForm";
 import { LinkButton } from "@/components/ui/Button";
+import { ShareLinks } from "@/components/app/ShareLinks";
+import { isPro } from "@/lib/pro";
+import { createClient } from "@/lib/supabase/server";
 
 export default async function ExportPage() {
-  await requireUser("/app/export");
+  const user = await requireUser("/app/export");
   const children = await getChildren();
   if (children.length === 0) {
     return (
@@ -23,6 +26,17 @@ export default async function ExportPage() {
   const today = toDateStr(new Date(), tz);
   const first = await getEntries(child.id, { limit: 1 });
   const hasEntries = first.length > 0;
+  const pro = await isPro(user.id);
+  const supabase = await createClient();
+  const { data: links } = child.role === "owner"
+    ? await supabase
+        .from("share_links")
+        .select("id, range_start, range_end, expires_at")
+        .eq("child_id", child.id)
+        .is("revoked_at", null)
+        .gt("expires_at", new Date().toISOString())
+        .order("created_at", { ascending: false })
+    : { data: [] };
 
   return (
     <main id="main" className="mx-auto w-full max-w-lg px-5 pt-4 sm:pt-10">
@@ -34,8 +48,12 @@ export default async function ExportPage() {
       </p>
 
       <div className="mt-8">
-        <ExportForm childId={child.id} today={today} defaultFrom={addDays(today, -27)} hasEntries={hasEntries} />
+        <ExportForm childId={child.id} today={today} defaultFrom={addDays(today, -27)} hasEntries={hasEntries} isPro={pro} />
       </div>
+
+      {child.role === "owner" ? (
+        <ShareLinks childId={child.id} from={addDays(today, -27)} to={today} links={links ?? []} isPro={pro} />
+      ) : null}
 
       <section className="mt-12 space-y-3 text-[15px] text-ink-soft">
         <h2 className="text-[1.2rem] text-ink">What&apos;s inside</h2>

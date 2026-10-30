@@ -7,6 +7,8 @@ import type { EntryWithBehavior } from "@/lib/data";
 import { antecedentLabel, consequenceLabel, formatDuration, intensityLabel } from "@/lib/observation";
 import { fmtDayLabel, fmtTime, localDateStr } from "@/lib/time/format";
 import { LogSheet, type LogSheetMode } from "@/components/app/LogSheet";
+import { useSync } from "@/components/app/SyncProvider";
+import { refreshIfSynced } from "@/lib/entries/refresh";
 
 type Props = {
   entries: EntryWithBehavior[];
@@ -35,11 +37,22 @@ export function EntryList({ entries, behaviors: initialBehaviors, childId, userI
 
   const today = mounted ? localDateStr(new Date()) : null;
 
+  const { pending } = useSync();
+  const pendingIds = useMemo(() => new Set(pending.map((op) => op.entryId)), [pending]);
+
   const visible = useMemo(() => {
     if (!mounted) return [];
-    const list = todayOnly ? items.filter((e) => localDateStr(new Date(e.occurred_at)) === today) : items;
+    // Entries saved on this device but not yet on the server still belong in the list.
+    const queued: EntryWithBehavior[] = pending
+      .filter((op) => op.kind === "insert" && op.optimistic && op.childId === childId && !items.some((e) => e.id === op.entryId))
+      .map((op) => ({
+        ...(op.optimistic as EntryRow),
+        behavior_label: behaviors.find((b) => b.id === op.optimistic!.behavior_id)?.label ?? "",
+      }));
+    const merged = [...items, ...queued];
+    const list = todayOnly ? merged.filter((e) => localDateStr(new Date(e.occurred_at)) === today) : merged;
     return [...list].sort((a, b) => b.occurred_at.localeCompare(a.occurred_at));
-  }, [items, todayOnly, today, mounted]);
+  }, [items, todayOnly, today, mounted, pending, childId, behaviors]);
 
   const groups = useMemo(() => {
     if (!groupByDay) return [{ day: null as string | null, rows: visible }];
@@ -85,7 +98,14 @@ export function EntryList({ entries, behaviors: initialBehaviors, childId, userI
                       {fmtTime(e.occurred_at)}
                     </time>
                     <div className="min-w-0 flex-1">
-                      <p className="text-[16px] text-ink">{e.behavior_label}</p>
+                      <p className="text-[16px] text-ink">
+                        {e.behavior_label}
+                        {pendingIds.has(e.id) ? (
+                          <span className="ml-2 align-middle text-[12px] uppercase tracking-wider text-ink-mute" title="Saved on this phone, will sync">
+                            will sync
+                          </span>
+                        ) : null}
+                      </p>
                       {e.antecedent_code || e.consequence_code ? (
                         <p className="mt-0.5 text-[14px] leading-snug text-ink-soft">
                           {[
@@ -121,14 +141,18 @@ export function EntryList({ entries, behaviors: initialBehaviors, childId, userI
           behaviors={behaviors}
           mode={mode}
           onBehaviorAdded={(b) => setBehaviors((bs) => [...bs, b])}
-          onSaved={(entry: EntryRow) => {
+          onSaved={(entry: EntryRow, _label, pendingSync) => {
             const label = behaviors.find((b) => b.id === entry.behavior_id)?.label ?? "";
-            setItems((list) => list.map((x) => (x.id === entry.id ? { ...entry, behavior_label: label } : x)));
-            router.refresh();
+            setItems((list) => {
+              const exists = list.some((x) => x.id === entry.id);
+              const row = { ...entry, behavior_label: label };
+              return exists ? list.map((x) => (x.id === entry.id ? row : x)) : [row, ...list];
+            });
+            refreshIfSynced(router, pendingSync);
           }}
           onDeleted={(id) => {
             setItems((list) => list.filter((x) => x.id !== id));
-            router.refresh();
+            refreshIfSynced(router, typeof navigator !== "undefined" && !navigator.onLine);
           }}
         />
       ) : null}

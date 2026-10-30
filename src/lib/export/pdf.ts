@@ -5,6 +5,10 @@ import { PDFDocument, PDFFont, PDFPage, rgb } from "pdf-lib";
 import fontkit from "@pdf-lib/fontkit";
 import { fmtRangeLabel, type Count, type Report, type ReportRow } from "./report";
 
+/** Pro "custom report layouts". Free exports always use the defaults. */
+export type PdfOptions = { notes: boolean; details: boolean; counts: boolean };
+export const DEFAULT_PDF_OPTIONS: PdfOptions = { notes: true, details: true, counts: true };
+
 /**
  * PDF export. One page per week (continuing onto extra pages when a week is
  * long), then a counts page. Letter size, generous margins, brand fonts.
@@ -89,19 +93,25 @@ function wrap(font: PDFFont, text: string, size: number, maxWidth: number): stri
   return lines;
 }
 
-const COLS: Array<{ key: keyof ReportRow | "when"; label: string; w: number }> = [
-  { key: "when", label: "When", w: 64 },
-  { key: "noticed", label: "Noticed", w: 84 },
-  { key: "before", label: "Right before", w: 94 },
-  { key: "after", label: "Right after", w: 94 },
-  { key: "duration", label: "How long", w: 46 },
-  { key: "intensity", label: "Intensity", w: 50 },
-  { key: "note", label: "Note", w: 0 }, // remainder
-];
+type Col = { key: keyof ReportRow | "when"; label: string; w: number };
 const CONTENT_W = PAGE.w - M.l - M.r;
-COLS[COLS.length - 1].w = CONTENT_W - COLS.slice(0, -1).reduce((a, c) => a + c.w, 0);
 
-function cellText(r: ReportRow, key: (typeof COLS)[number]["key"]): string {
+function columnsFor(o: PdfOptions): Col[] {
+  const cols: Col[] = [
+    { key: "when", label: "When", w: 64 },
+    { key: "noticed", label: "Noticed", w: 84 },
+    { key: "before", label: "Right before", w: o.notes ? 94 : 140 },
+    { key: "after", label: "Right after", w: o.notes ? 94 : 140 },
+  ];
+  if (o.details) cols.push({ key: "duration", label: "How long", w: 46 }, { key: "intensity", label: "Intensity", w: 50 });
+  if (o.notes) cols.push({ key: "note", label: "Note", w: 0 });
+  // Last column takes the remainder.
+  const used = cols.slice(0, -1).reduce((a, c) => a + c.w, 0);
+  cols[cols.length - 1].w = CONTENT_W - used;
+  return cols;
+}
+
+function cellText(r: ReportRow, key: Col["key"]): string {
   if (key === "when") {
     const [, m, d] = r.date.split("-");
     return `${Number(m)}/${Number(d)}  ${r.time}`;
@@ -112,11 +122,15 @@ function cellText(r: ReportRow, key: (typeof COLS)[number]["key"]): string {
 }
 
 class Painter {
+  readonly COLS: Col[];
   constructor(
     readonly doc: PDFDocument,
     readonly fonts: Fonts,
     readonly report: Report,
-  ) {}
+    readonly options: PdfOptions,
+  ) {
+    this.COLS = columnsFor(options);
+  }
   pages: PDFPage[] = [];
 
   newPage(title: string, subtitle: string): { page: PDFPage; y: number } {
@@ -145,7 +159,7 @@ class Painter {
 
   tableHeader(page: PDFPage, y: number): number {
     let x = M.l;
-    for (const c of COLS) {
+    for (const c of this.COLS) {
       page.drawText(c.label.toUpperCase(), { x, y: y - 8, size: 7, font: this.fonts.bold, color: INK_MUTE });
       x += c.w;
     }
@@ -168,7 +182,7 @@ class Painter {
     const lh = 11;
     const padY = 5;
     for (const r of week.rows) {
-      const cells = COLS.map((c) => wrap(this.fonts.body, cellText(r, c.key), size, c.w - 8));
+      const cells = this.COLS.map((c) => wrap(this.fonts.body, cellText(r, c.key), size, c.w - 8));
       const lines = Math.max(...cells.map((c) => c.length));
       const rowH = lines * lh + padY * 2;
       if (y - rowH < M.b) {
@@ -177,7 +191,7 @@ class Painter {
       }
       let x = M.l;
       cells.forEach((cellLines, i) => {
-        const col = COLS[i];
+        const col = this.COLS[i];
         const font = col.key === "noticed" ? this.fonts.bold : this.fonts.body;
         const color = col.key === "when" ? INK_MUTE : INK;
         cellLines.forEach((ln, li) => {
@@ -236,16 +250,16 @@ class Painter {
   }
 }
 
-export async function renderReportPdf(report: Report): Promise<Uint8Array> {
+export async function renderReportPdf(report: Report, options: PdfOptions = DEFAULT_PDF_OPTIONS): Promise<Uint8Array> {
   const doc = await PDFDocument.create();
   doc.setTitle(`Observations for ${report.nickname} · ${fmtRangeLabel(report.from, report.to)}`);
   doc.setAuthor("The Support Shelf (recorded by a parent or caregiver)");
   doc.setProducer("The Support Shelf");
   doc.setCreationDate(report.generatedAt);
   const fonts = await loadFonts(doc);
-  const p = new Painter(doc, fonts, report);
+  const p = new Painter(doc, fonts, report, options);
   report.weeks.forEach((w, i) => p.drawWeek(w, i));
-  p.drawCounts();
+  if (options.counts) p.drawCounts();
   p.footerAll();
   return doc.save();
 }

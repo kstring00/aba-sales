@@ -7,6 +7,7 @@ import { LogSheet } from "@/components/app/LogSheet";
 import { EntryList } from "@/components/app/EntryList";
 import type { BehaviorRow, EntryRow } from "@/lib/database.types";
 import type { EntryWithBehavior } from "@/lib/data";
+import { refreshIfSynced } from "@/lib/entries/refresh";
 
 type Props = {
   childId: string;
@@ -53,9 +54,9 @@ export function LogHome({ childId, childNickname, userId, behaviors: initial, re
         behaviors={behaviors}
         mode={{ kind: "create" }}
         onBehaviorAdded={(b) => setBehaviors((bs) => [...bs, b])}
-        onSaved={(entry: EntryRow, label) => {
+        onSaved={(entry: EntryRow, label, pendingSync) => {
           setEntries((list) => [{ ...entry, behavior_label: label }, ...list.filter((x) => x.id !== entry.id)]);
-          router.refresh();
+          refreshIfSynced(router, pendingSync);
         }}
       />
     </>

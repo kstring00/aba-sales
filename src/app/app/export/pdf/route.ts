@@ -9,8 +9,8 @@ export const dynamic = "force-dynamic";
 export async function GET(request: NextRequest) {
   await requireUser("/app/export");
   try {
-    const { report, filename } = await reportForRequest(request.nextUrl.searchParams);
-    const bytes = await renderReportPdf(report);
+    const { report, filename, options } = await reportForRequest(request.nextUrl.searchParams);
+    const bytes = await renderReportPdf(report, options);
     return new NextResponse(Buffer.from(bytes), {
       headers: {
         "Content-Type": "application/pdf",

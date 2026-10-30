@@ -185,7 +185,7 @@ function LogSheetInner({ open, onClose, childId, userId, behaviors, mode, onSave
       if (isEdit) {
         const { id, child_id: _c, ...rest } = draft;
         void _c;
-        const result = await submitEntryUpdate(id, rest, userId);
+        const result = await submitEntryUpdate(id, rest, userId, mode.kind === "edit" ? mode.entry : undefined);
         toast("Saved.");
         onSaved(result.entry, behaviorLabel, result.pending);
       } else {

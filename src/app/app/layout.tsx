@@ -10,10 +10,10 @@ export const metadata: Metadata = {
 };
 
 export default async function AppLayout({ children }: { children: React.ReactNode }) {
-  await requireUser("/app");
+  const user = await requireUser("/app");
   const profile = await getProfile();
   if (!profile?.adult_attested_at) {
     return <AdultGate />;
   }
-  return <AppShell>{children}</AppShell>;
+  return <AppShell userId={user.id}>{children}</AppShell>;
 }

@@ -6,7 +6,7 @@ import { Input, Label } from "@/components/ui/Field";
 import { buttonClass } from "@/components/ui/Button";
 import { addDays } from "@/lib/time/zoned";
 
-type Props = { childId: string; today: string; defaultFrom: string; hasEntries: boolean };
+type Props = { childId: string; today: string; defaultFrom: string; hasEntries: boolean; isPro: boolean; onRangeChange?: (from: string, to: string) => void };
 
 const PRESETS = [
   { label: "Last 7 days", days: 6 },
@@ -15,11 +15,15 @@ const PRESETS = [
 ];
 
 /** Plain links to the download routes. Works without JavaScript too. */
-export function ExportForm({ childId, today, defaultFrom, hasEntries }: Props) {
+export function ExportForm({ childId, today, defaultFrom, hasEntries, isPro }: Props) {
   const [from, setFrom] = useState(defaultFrom);
   const [to, setTo] = useState(today);
+  const [notes, setNotes] = useState(true);
+  const [details, setDetails] = useState(true);
+  const [counts, setCounts] = useState(true);
   const valid = from <= to;
-  const qs = `?child=${childId}&from=${from}&to=${to}`;
+  const layout = isPro ? `${notes ? "" : "&notes=0"}${details ? "" : "&details=0"}${counts ? "" : "&counts=0"}` : "";
+  const qs = `?child=${childId}&from=${from}&to=${to}${layout}`;
 
   return (
     <div className="space-y-6 rounded-lg bg-paper p-5 shadow-soft">
@@ -48,6 +52,22 @@ export function ExportForm({ childId, today, defaultFrom, hasEntries }: Props) {
         </div>
         {!valid ? <p className="text-[14px]">The start date is after the end date.</p> : null}
       </div>
+
+      {isPro ? (
+        <fieldset className="space-y-2">
+          <legend className="text-[15px] font-medium">PDF layout <span className="ml-1 text-[13px] font-normal text-ink-mute">Pro</span></legend>
+          {[
+            ["Include notes", notes, setNotes],
+            ["Include how long and intensity", details, setDetails],
+            ["Include the counts page", counts, setCounts],
+          ].map(([label, value, set]) => (
+            <label key={label as string} className="flex items-center gap-3 text-[15px] text-ink-soft">
+              <input type="checkbox" checked={value as boolean} onChange={(e) => (set as (v: boolean) => void)(e.target.checked)} className="h-5 w-5 accent-[var(--sage-deep)]" />
+              {label as string}
+            </label>
+          ))}
+        </fieldset>
+      ) : null}
 
       <div className="space-y-3">
         <a

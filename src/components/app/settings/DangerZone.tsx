@@ -4,8 +4,9 @@ import { startTransition, useActionState, useState } from "react";
 import { Button, buttonClass } from "@/components/ui/Button";
 import { Input } from "@/components/ui/Field";
 import { deleteAccount, type ActionState } from "@/app/app/actions";
+import { clearQueueForUser } from "@/lib/entries/queue";
 
-export function YourData() {
+export function YourData({ userId }: { userId: string }) {
   const [open, setOpen] = useState(false);
   // Controlled so a validation error from the server doesn't wipe the form.
   const [understand, setUnderstand] = useState(false);
@@ -41,7 +42,10 @@ export function YourData() {
             onSubmit={(e) => {
               e.preventDefault();
               const fd = new FormData(e.currentTarget);
-              startTransition(() => action(fd));
+              startTransition(async () => {
+                await clearQueueForUser(userId).catch(() => {});
+                await action(fd);
+              });
             }}
             className="mt-5 space-y-4 rounded-md bg-cream p-4"
           >

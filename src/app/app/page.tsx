@@ -4,7 +4,8 @@ import { Onboarding } from "@/components/app/Onboarding";
 import { ChildSwitcher } from "@/components/app/ChildSwitcher";
 import { LogHome } from "@/components/app/LogHome";
 
-export default async function AppHome() {
+export default async function AppHome({ searchParams }: { searchParams: Promise<{ joined?: string }> }) {
+  const sp = await searchParams;
   const user = await requireUser("/app");
   const children = await getChildren();
   if (children.length === 0) {
@@ -20,6 +21,11 @@ export default async function AppHome() {
   return (
     <main id="main" className="mx-auto w-full max-w-lg px-5 pt-4 sm:pt-10">
       <ChildSwitcher items={children} selectedId={child.id} />
+      {sp.joined ? (
+        <p role="status" className="mt-4 rounded-md bg-sage-tint px-4 py-3 text-[15px]">
+          You now share {child.nickname}&apos;s record. Anything you log here is visible to the owner too.
+        </p>
+      ) : null}
       <h1 className="mt-6 text-[clamp(1.9rem,1.5rem+1.5vw,2.6rem)]">
         {children.length > 1 ? child.nickname : `How's ${child.nickname}?`}
       </h1>

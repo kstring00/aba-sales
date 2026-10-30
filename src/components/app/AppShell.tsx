@@ -5,6 +5,8 @@ import { usePathname } from "next/navigation";
 import { useEffect, type ReactNode } from "react";
 import { Wordmark } from "@/components/ui/Logo";
 import { setTimeZone } from "@/app/app/actions";
+import { SyncProvider } from "@/components/app/SyncProvider";
+import { SyncStatus } from "@/components/app/SyncStatus";
 
 const TABS = [
   { href: "/app", label: "Log", icon: PlusIcon },
@@ -14,7 +16,7 @@ const TABS = [
   { href: "/app/settings", label: "Settings", icon: GearIcon },
 ];
 
-export function AppShell({ children }: { children: ReactNode }) {
+export function AppShell({ userId, children }: { userId: string; children: ReactNode }) {
   const pathname = usePathname();
 
   // Tell the server which local day "today" is. Once per session is enough.
@@ -32,6 +34,7 @@ export function AppShell({ children }: { children: ReactNode }) {
   }, []);
 
   return (
+    <SyncProvider userId={userId}>
     <div className="flex min-h-dvh flex-col md:flex-row">
       <header className="flex items-center justify-between px-5 pb-2 pt-5 md:hidden">
         <Wordmark href="/app" className="text-[1.1rem]" />
@@ -65,7 +68,10 @@ export function AppShell({ children }: { children: ReactNode }) {
         </Link>
       </aside>
 
-      <div className="flex-1 pb-[calc(env(safe-area-inset-bottom)+84px)] md:pb-12">{children}</div>
+      <div className="flex-1 pb-[calc(env(safe-area-inset-bottom)+84px)] md:pb-12">
+        <SyncStatus userId={userId} />
+        {children}
+      </div>
 
       <nav
         aria-label="Tracker"
@@ -92,6 +98,7 @@ export function AppShell({ children }: { children: ReactNode }) {
         </ul>
       </nav>
     </div>
+    </SyncProvider>
   );
 }
 

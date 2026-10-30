@@ -25,6 +25,8 @@ const DB = process.env.LOCAL_SUPABASE_DB ?? "postgres://postgres:postgres@localh
 const SECRET = process.env.LOCAL_SUPABASE_JWT_SECRET ?? "local-dev-secret-local-dev-secret-local-dev-secret";
 const SITE = process.env.LOCAL_SUPABASE_SITE_URL ?? "http://localhost:3000";
 
+// Match PostgREST's JSON: DATE columns are plain "yyyy-mm-dd" strings, not JS Dates.
+pg.types.setTypeParser(1082, (v) => v);
 const pool = new pg.Pool({ connectionString: DB, max: 8 });
 
 // ── JWT (HS256) ──────────────────────────────────────────────────────────────
@@ -307,7 +309,8 @@ async function handleRest(req, res, url, claims) {
     try {
       const r = await withRole(claims, (c) => c.query(`select public.${q(fn)}(${args}) as result`, keys.map((k) => body[k])));
       const v = r.rows[0]?.result;
-      return send(res, 200, v === undefined ? null : v);
+      // Always JSON-encode: a scalar result (uuid, boolean) must arrive as JSON, not raw text.
+      return send(res, 200, JSON.stringify(v === undefined ? null : v));
     } catch (e) {
       return pgErrorResponse(res, e);
     }
