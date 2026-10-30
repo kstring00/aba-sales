@@ -207,20 +207,19 @@ h3 {
     repeating-linear-gradient(90deg, rgb(40 62 53 / 0.025) 0 1px, transparent 1px 3px);
 }
 
-/* Reveal on scroll: opacity + 8px rise, once. Off under reduced motion. */
+/* Reveal on scroll: visible by default (no JS, print, screenshots). The
+   script adds .reveal-armed once mounted, hides, then .is-in on intersection. */
 .reveal {
-  opacity: 0;
-  transform: translateY(8px);
   transition:
     opacity 600ms var(--ease-out),
     transform 600ms var(--ease-out);
 }
-.reveal.is-in {
-  opacity: 1;
-  transform: none;
+.reveal.reveal-armed:not(.is-in) {
+  opacity: 0;
+  transform: translateY(8px);
 }
 @media (prefers-reduced-motion: reduce) {
-  .reveal {
+  .reveal.reveal-armed:not(.is-in) {
     opacity: 1;
     transform: none;
   }

@@ -11,10 +11,11 @@ export function Reveal({ as: Tag = "div", children, className = "", delay = 0 }:
   useEffect(() => {
     const el = ref.current;
     if (!el) return;
-    if (typeof IntersectionObserver === "undefined") {
-      el.classList.add("is-in");
-      return;
-    }
+    if (typeof IntersectionObserver === "undefined") return; // stays visible
+    // Already on screen? Leave it visible; only arm elements below the fold.
+    const rect = el.getBoundingClientRect();
+    if (rect.top < window.innerHeight) return;
+    el.classList.add("reveal-armed");
     const io = new IntersectionObserver(
       (entries) => {
         for (const e of entries) {
