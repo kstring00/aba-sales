@@ -132,12 +132,12 @@ export default async function ProductPage({ params }: { params: Promise<{ handle
         ) : null}
       </main>
 
-      <div className="fixed inset-x-0 bottom-0 z-40 border-t border-line bg-cream/95 p-4 pb-[calc(env(safe-area-inset-bottom)+16px)] backdrop-blur md:hidden">
+      <aside aria-label="Add to cart" className="fixed inset-x-0 bottom-0 z-40 border-t border-line bg-cream/95 p-4 pb-[calc(env(safe-area-inset-bottom)+16px)] backdrop-blur md:hidden">
         <div className="mx-auto flex max-w-lg items-center gap-4">
           <span className="tnum text-[1.1rem]">{price}</span>
           <div className="flex-1"><AddToCart variantId={product.variantId} available={product.availableForSale} price={price} compact /></div>
         </div>
-      </div>
+      </aside>
       <SiteFooter />
     </>
   );
