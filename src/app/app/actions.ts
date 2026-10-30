@@ -26,13 +26,23 @@ const cookieOpts = {
 };
 
 // ── Adult attestation ────────────────────────────────────────────────────────
-export async function attestAdult(formData: FormData): Promise<void> {
+export async function attestAdult(_prev: ActionState, formData: FormData): Promise<ActionState> {
   const user = await requireUser();
-  if (formData.get("attest") !== "on") redirect("/app?attest=required");
+  if (formData.get("attest") !== "on") return { error: "Please tick the box to continue." };
   const supabase = await createClient();
-  await supabase
+  const { error } = await supabase
     .from("profiles")
     .upsert({ id: user.id, adult_attested_at: new Date().toISOString() }, { onConflict: "id" });
+  if (error) {
+    // Most often: the database migration hasn't been run, so public.profiles is missing.
+    console.warn(`[auth] attest failed: ${error.code ?? ""} ${error.message}`);
+    const missingTable = error.code === "42P01" || error.code === "PGRST205" || /does not exist|could not find the table/i.test(error.message);
+    return {
+      error: missingTable
+        ? "We couldn't save that because the app's database isn't set up yet. If you run this site, run supabase/migrations/0001_init.sql in the Supabase SQL editor."
+        : "We couldn't save that just now. Please try again in a moment.",
+    };
+  }
   revalidatePath("/app", "layout");
   redirect("/app");
 }
