@@ -14,7 +14,7 @@
   /* Ink */
   --ink: #221f1a;
   --ink-soft: #4a463f;
-  --ink-mute: #7a756c;
+  --ink-mute: #625d54; /* 5.8:1 on cream */
   --ink-faint: #a9a399;
 
   /* Lines */
@@ -23,12 +23,12 @@
 
   /* Sage — primary */
   --sage: #8a9a7b;
-  --sage-deep: #6f7f61;
+  --sage-deep: #5a6a4d; /* 5.2:1 on cream; used for text and selected borders */
   --sage-tint: #e4e8dd;
 
   /* Clay — the single primary action per page, nowhere else */
-  --clay: #b8745a;
-  --clay-deep: #9d5f47;
+  --clay: #9a5a3f; /* 4.8:1 for paper text on it */
+  --clay-deep: #82492f;
   --clay-tint: #f1e1d8;
 
   /* Shadows are warm ink, never gray */

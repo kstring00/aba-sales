@@ -4,6 +4,7 @@ import { SiteHeader } from "@/components/site/SiteHeader";
 import { SiteFooter } from "@/components/site/SiteFooter";
 import { ProductCard } from "@/components/shop/ProductCard";
 import { EmptyShelf } from "@/components/shop/EmptyShelf";
+import { EmailCapture } from "@/components/shop/EmailCapture";
 import { getShelves, SHELVES } from "@/lib/shopify/catalog";
 
 export const metadata: Metadata = {
@@ -54,7 +55,18 @@ export default async function ShelfPage() {
                       </div>
                     </div>
                   ) : (
-                    <p className="rounded-lg bg-paper p-6 text-[15px] text-ink-mute shadow-soft">Nothing on this shelf yet. Soon.</p>
+                    <div className="shelf-edge pb-12">
+                      <div className="rounded-lg bg-paper p-6 shadow-shelf sm:p-8">
+                        <p className="text-[13px] uppercase tracking-wider text-ink-mute">Coming soon</p>
+                        <h3 className="mt-2">The {meta.short} Shelf is being stocked.</h3>
+                        <p className="mt-3 max-w-[48ch] text-[15px] text-ink-soft">
+                          {meta.handle === "the-clinic-shelf"
+                            ? "Onboarding packets, family-communication templates, and the paperwork that sets a tone. Leave your email and we'll write once when they're up."
+                            : "Leave your email and we'll write once when the first ones are up."}
+                        </p>
+                        <div className="mt-5 max-w-md"><EmailCapture source={`shelf-${meta.short.toLowerCase()}`} /></div>
+                      </div>
+                    </div>
                   )}
                 </section>
               );

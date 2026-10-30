@@ -22,7 +22,8 @@ export function Logger() {
   const [settings, setSettings] = useState(false);
   const entries = useMemo(() => withLabels(store), [store]);
 
-  if (!hydrated) return <div className="h-40" aria-hidden />;
+  // Reserve roughly the setup form's height so hydration doesn't shift the page.
+  if (!hydrated) return <div className="min-h-[34rem]" aria-hidden />;
   if (!store.child) return <Setup />;
 
   return (

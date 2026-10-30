@@ -136,6 +136,7 @@ export function toCart(raw: RawCart): Cart {
 
 export function formatMoney(m: Money): string {
   const n = Number(m.amount);
+  if (n === 0) return "Free";
   return new Intl.NumberFormat("en-US", {
     style: "currency",
     currency: m.currencyCode,

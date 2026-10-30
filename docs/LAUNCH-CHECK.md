@@ -1,0 +1,63 @@
+# Launch-readiness check — Phase 2
+
+Pass/fail against the checklist in the build prompt. "Local" means verified against a production build on this machine; "Live" means verified on the Vercel deployment. Nothing is public.
+
+## Message
+| Check | Result | How verified |
+| --- | --- | --- |
+| Home says what, for whom, and shows one CTA within 5 seconds | Pass | Eyebrow "For parents and caregivers of kids in ABA therapy", H1 "Thoughtfully made tools for the people who care", one clay button "Browse the shelf" above the fold at 375px |
+| One dominant CTA per page | Pass | Clay used once per page: Browse the shelf (home), Add to cart (product), Checkout (cart), Log what happened (/abc), Try the logger (/thanks), Browse the shelf (/about) |
+| Product page answers "what do I get?" | Pass (content pending) | Format + what's included block, "delivered by email in under a minute"; reads metafields or falls back to the description |
+| Product page credential line | Pass (name pending) | "Written by an RBT with three years in-clinic. Reviewed by a BCBA (name to come)" |
+| /abc first line: nothing leaves your phone | Pass | Asserted by `tests/e2e/abc.mjs` |
+| /abc sample export above the fold | Pass (desktop) / Pass-scrolls (mobile) | Sample PDF image in the right column; on phones it follows the logger |
+| /abc "records what happened, never tells you what to do" | Pass | On the page and in the PDF counts caption |
+| /thanks says check your email, links to /abc | Pass | `tests/e2e/pages.mjs` |
+| Phone and email in footer on every page | Pass (values pending) | Reads `NEXT_PUBLIC_CONTACT_EMAIL` / `_PHONE` |
+
+## Mobile
+| Check | Result | How verified |
+| --- | --- | --- |
+| No horizontal overflow at 375px, every page | Pass | `pages.mjs` measures scrollWidth |
+| Readable without zoom | Pass | 17px base, 16px form controls (prevents iOS zoom) |
+| 44px tap targets | Pass | axe pass + custom check; only the 24px checkbox is smaller (its label is the tap area) |
+| Sticky add-to-cart on product pages | Pass | Mobile-only bar |
+
+## Speed
+| Check | Result | How verified |
+| --- | --- | --- |
+| next/image everywhere | Pass | Product cards, gallery, cart thumbnails, sample export |
+| Lighthouse mobile ≥ 80 on /, /abc, /shelf | Pass: 100 / 100 / 98 | Lighthouse 12, simulated mobile, local production build; /shelf measured in its empty state |
+| PDF engine loaded only on export | Pass | Dynamic import in ExportPanel |
+
+## Accessibility
+| Check | Result | How verified |
+| --- | --- | --- |
+| axe-core WCAG 2.1 AA, every page incl. open logging sheet | Pass, 0 serious/critical, 0 minor | `tests/e2e/a11y.mjs` |
+| Contrast | Pass | Tokens darkened: ink-mute 5.8:1, sage-deep 5.2:1, paper on clay 4.8:1 |
+| Keyboard: sheet traps focus, Escape closes, focus returns | Pass | Sheet component; manual |
+| Lighthouse accessibility | 100 / 100 / 100 | |
+
+## Credibility and search
+| Check | Result |
+| --- | --- |
+| `grep -ri lorem` | 0 results |
+| Current copyright year | Pass (dynamic) |
+| Privacy link in footer; privacy says logger stores nothing on our servers | Pass |
+| One H1 per page, unique title + description | Pass (`pages.mjs`) |
+| Alt text on every image | Pass (axe `image-alt`) |
+| Favicon + OG image | Pass |
+| sitemap.xml (includes product handles), robots.txt | Pass; /cart, /thanks, /api disallowed |
+| Styled 404 | Pass |
+
+## Commerce and /abc
+| Check | Result |
+| --- | --- |
+| Cart → Shopify checkout → /thanks, live, test mode | **Pending live run** (`tests/e2e/live-checkout.mjs`); requires Shopify Payments test mode and the /thanks continue link |
+| Email export delivered through Resend | **Pending live run** (`tests/e2e/live-email.mjs`) |
+| /abc: log 10 entries, export both formats, email flow, clear and confirm | Pass locally (`abc.mjs`), email flow verified for its no-Resend path |
+| Empty Clinic shelf shows "coming soon" with email capture | Pass |
+| Tests: export formatting, chip data model, cart handoff | Pass, 19 unit tests |
+
+## Still needs a human
+Legal review of /privacy · BCBA review of wording and the "reviewed by" name · safeguarding review of /crisis · Resend verified domain · founder photo.
