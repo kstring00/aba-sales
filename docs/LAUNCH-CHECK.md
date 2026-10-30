@@ -75,3 +75,15 @@ Legal review of /privacy · BCBA review of wording and the "reviewed by" name ·
 | Keyboard: finder tabs, binder tabs and arrow keys, demo chips, sheet focus trap | pass (manual) |
 | Honest availability: planned categories render "Not yet"; empty Clinic shelf "Coming soon"; no concept product is purchasable | pass |
 | No fabricated proof: no testimonials, counts, endorsements; clinical review shown as pending | pass |
+
+## Bright shelf QA (`/shelf` reimagining)
+
+| Check | Result |
+| --- | --- |
+| Pages at 375px/1280px, all routes incl. `/shelf` and a product page | pass, no overflow |
+| axe-core WCAG 2.1 AA on `/shelf` (coral button text, small labels, upcoming list fixed) | 0 violations after fixes |
+| Lighthouse mobile `/shelf` | 99 / 100 / 100 / 100 |
+| `/abc` journey unchanged | 7 of 7 |
+| Hover/focus lifts, hero float, reveals disabled under `prefers-reduced-motion` | pass (CSS) |
+| Products shown only from the Storefront API; upcoming items listed without dates or purchase paths | pass |
+| Real tool screenshot (synthetic nickname) in the logger section; no stock or generated people | pass |

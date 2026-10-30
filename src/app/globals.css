@@ -331,3 +331,98 @@ h3 {
 @utility grid-cols-24 {
   grid-template-columns: repeat(24, minmax(0, 1fr));
 }
+
+/* ─────────────────────────────────────────────────────────────────────────────
+   Bright theme — "A Brighter Kind of Support". Scoped to pages that opt in
+   with data-theme="bright" (the shelf). Overrides the base tokens so every
+   existing component picks up the new world without rewrites, and adds the
+   palette's own names. Text pairs below pass WCAG AA:
+     white on ocean 5.4, white on teal 5.9, ink on turquoise 5.0,
+     ink on coral 5.2, ink on sea glass 9.6, leaf-deep on white 4.8.
+   ───────────────────────────────────────────────────────────────────────── */
+[data-theme="bright"] {
+  --ocean: #2869ac;
+  --teal: #086c73;
+  --teal-deep: #06565c;
+  --turq: #19b8b0;
+  --turq-deep: #0f8f89;
+  --leaf: #57ac76;
+  --leaf-deep: #2f7d4e;
+  --leaf-text: #256a40;    /* small labels on pale green: 6.2:1 */
+  --glass: #bcede5;
+  --sky: #d9f0fa;
+  --sun: #ffe5a1;
+  --coral: #f58d75;
+  --coral-deep: #e27a60;
+  --coral-text: #b14a30;   /* small labels on white: 5.0:1 */
+  --white: #fcfaf5;
+
+  /* Remap the base system */
+  --cream: var(--white);
+  --cream-deep: var(--sky);
+  --paper: #ffffff;
+  --ink: #153a42;
+  --ink-body: #1b3b43;
+  --ink-soft: #2f525b;
+  --ink-mute: #4b6b72;      /* 5.4:1 on white */
+  --ink-faint: #8aa3a8;
+  --line: #d6e6ea;
+  --line-strong: #b9d3d9;
+  --sage: var(--turq);
+  --sage-deep: var(--teal);
+  --sage-tint: var(--glass);
+  --clay: var(--coral);     /* primary action: coral with ink text */
+  --clay-deep: var(--coral-deep);
+  --clay-warm: var(--sun);
+  --clay-tint: #ffeedd;
+  --shadow-soft: 0 10px 30px -10px rgb(21 58 66 / 0.14), 0 2px 6px -2px rgb(21 58 66 / 0.08);
+  --shadow-lift: 0 24px 50px -16px rgb(21 58 66 / 0.26), 0 6px 14px -6px rgb(21 58 66 / 0.12);
+  --shadow-shelf: 0 18px 30px -16px rgb(8 108 115 / 0.35);
+  background: var(--white);
+  color: var(--ink-body);
+}
+
+@theme inline {
+  --color-ocean: var(--ocean);
+  --color-teal: var(--teal);
+  --color-teal-deep: var(--teal-deep);
+  --color-turq: var(--turq);
+  --color-turq-deep: var(--turq-deep);
+  --color-leaf: var(--leaf);
+  --color-leaf-deep: var(--leaf-deep);
+  --color-leaf-text: var(--leaf-text);
+  --color-coral-text: var(--coral-text);
+  --color-glass: var(--glass);
+  --color-sky: var(--sky);
+  --color-sun: var(--sun);
+  --color-coral: var(--coral);
+  --color-coral-deep: var(--coral-deep);
+  --color-white: var(--white);
+}
+
+/* Primary button in the bright theme: coral with ink text (5.2:1), not white.
+   Unlayered on purpose so it wins over the text-paper utility. */
+[data-theme="bright"] .bg-clay.text-paper,
+[data-theme="bright"] .bg-ink.text-paper {
+  color: var(--ink);
+}
+[data-theme="bright"] .bg-ink.text-paper {
+  background: var(--sun);
+}
+
+@layer components {
+  /* Gentle float for hero objects. Off under reduced motion. */
+  .float-slow {
+    animation: float-slow 7s ease-in-out infinite;
+  }
+  .float-slower {
+    animation: float-slow 9s ease-in-out infinite reverse;
+  }
+  @keyframes float-slow {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-8px); }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .float-slow, .float-slower { animation: none; }
+  }
+}

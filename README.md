@@ -26,6 +26,10 @@ The experience direction, audit, and principles are in `docs/CREATIVE-DIRECTION.
 
 **Local design review without a Storefront token:** set `SHOPIFY_FIXTURES=1` in `.env.local`. The four real products appear by handle and price with no invented contents. Ignored whenever a real token is set and always on Vercel.
 
+## The bright shelf
+
+`/shelf` opts into a second theme ("A Brighter Kind of Support") via `data-theme="bright"`, which remaps the token set to Ocean Blue, Deep Teal, Bright Turquoise, Leaf Green, Sea Glass, Soft Sky, Warm Sunshine, Coral, Warm White, and Dark Ink. The primary action is coral with dark ink text (5.2:1). Illustration lives in `src/components/illustrations/Shapes.tsx` (original SVG); the shelf sections in `src/components/shelf/`. Other pages keep the paper-and-forest system until you decide to extend the bright theme.
+
 ## Pages
 
 `/` · `/shelf` · `/products/[handle]` · `/cart` · `/thanks` · `/abc` · `/about` · `/privacy` · `/crisis` · 404. Phone and email are in the footer on every page (set `NEXT_PUBLIC_CONTACT_EMAIL` and `NEXT_PUBLIC_CONTACT_PHONE`).
