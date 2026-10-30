@@ -61,3 +61,17 @@ Pass/fail against the checklist in the build prompt. "Local" means verified agai
 
 ## Still needs a human
 Legal review of /privacy · BCBA review of wording and the "reviewed by" name · safeguarding review of /crisis · Resend verified domain · founder photo.
+
+## Redesign QA (creative direction build)
+
+| Check | Result |
+| --- | --- |
+| Unit tests (adds resource-finder matching and copy guardrails) | 24 of 24 |
+| Pages at 375px/1280px incl. `/products/care-binder` (fixtures): one H1, titles, no overflow, every link | pass |
+| axe-core WCAG 2.1 AA, every page, with the finder, demo, and logging sheet open | 0 violations |
+| Lighthouse mobile `/`, `/abc`, `/shelf` | 94 / 99 / 98 |
+| `/abc` journey unchanged (setup, 10 entries, views, PDF+CSV, email path, delete) | 7 of 7 |
+| Reduced motion: reveals, lifts, page turn disabled via `prefers-reduced-motion` | pass (CSS) |
+| Keyboard: finder tabs, binder tabs and arrow keys, demo chips, sheet focus trap | pass (manual) |
+| Honest availability: planned categories render "Not yet"; empty Clinic shelf "Coming soon"; no concept product is purchasable | pass |
+| No fabricated proof: no testimonials, counts, endorsements; clinical review shown as pending | pass |

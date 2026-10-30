@@ -14,6 +14,18 @@ One Next.js site on Vercel: a storefront for digital downloads (Shopify as a hea
 - **"Email me my export"** is the one server route (`/api/abc/email-export`): entries arrive in the request, become a PDF, go out through Resend, and are discarded. The email list is a Resend Audience, because tagging a Shopify customer needs the Admin API.
 - **No accounts, no database, no analytics, no service worker.**
 
+## Design system and the redesign
+
+The experience direction, audit, and principles are in `docs/CREATIVE-DIRECTION.md`; the photography plan and asset manifest in `docs/ASSETS.md` (source of truth: `src/lib/assets.ts`, where filling `src` swaps a designed placeholder for the real image).
+
+- Tokens live in `src/app/globals.css`: Warm Paper, Forest Ink, Deep Charcoal body text, Soft Sage, Powder Blue and Lavender tints (backgrounds only), Terracotta for the one primary action per page. All text pairs pass WCAG AA.
+- Type: Fraunces (headlines, one italic phrase per page), DM Sans (everything a parent reads to act), Caveat (one handwritten line per page, never instructions).
+- Materials: `.grain` (paper), `.linen` (quiet bands), warm forest-tinted shadows, an oak shelf edge under products.
+- Motion: `.reveal` (one 600ms rise), 2px lifts, the bottom sheet's spring, the binder's page turn. `prefers-reduced-motion` removes all of it.
+- The homepage is eight sections keyed off the live catalog: Welcome → We see the work → Finder → Living Shelf → ABC demo → Support beyond files → Founder → Closing. `src/lib/resources.ts` maps needs to real products and carries the "who it may help / which task" framing; it never creates inventory.
+
+**Local design review without a Storefront token:** set `SHOPIFY_FIXTURES=1` in `.env.local`. The four real products appear by handle and price with no invented contents. Ignored whenever a real token is set and always on Vercel.
+
 ## Pages
 
 `/` · `/shelf` · `/products/[handle]` · `/cart` · `/thanks` · `/abc` · `/about` · `/privacy` · `/crisis` · 404. Phone and email are in the footer on every page (set `NEXT_PUBLIC_CONTACT_EMAIL` and `NEXT_PUBLIC_CONTACT_PHONE`).

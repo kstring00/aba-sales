@@ -3,6 +3,11 @@
 **(founder)** = needs you. **(review)** = needs a professional before launch.
 
 ## Global
+- (founder) **Photography.** Seven slots are briefed in `docs/ASSETS.md`; each renders a placeholder until a licensed or owned image is dropped in `public/photos/` and referenced in `src/lib/assets.ts`. The founder portrait must be a real photograph.
+- (founder) Confirm the founder biography wording on the homepage and /about (years, role) and the founder reflection quote in "Stories from the shelf".
+- (founder) Re-verify the six "Find your people" organizations and their URLs by hand before launch (`src/lib/resources.ts` → `ORGS`); this build could not reach external sites.
+- (founder) Product metadata in `src/lib/resources.ts` (task, who it may help, category) was written from the product names and the brief; confirm each against the actual files.
+- (founder) Upload the actual page images to each Shopify product, in page order; the binder preview uses them as tabs. Add `custom.format` and `custom.included` metafields for exact contents.
 - (founder) Install the **Headless** sales channel in Shopify, create a storefront, paste the public Storefront token into env (README "Shopify setup").
 - (founder) For the three `TEST —` products: tick **Headless**, leave **Online Store** unticked, set **Active**. Also publish both shelf collections to Headless. (The connector could create the products but not change their channels; it initially published them to Online Store, so I set them to Draft.)
 - (founder) Vercel project + env vars; first deploy.

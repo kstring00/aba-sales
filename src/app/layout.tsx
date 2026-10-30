@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from "next";
-import { Fraunces, Inter } from "next/font/google";
+import { Caveat, DM_Sans, Fraunces } from "next/font/google";
 import "./globals.css";
 import { publicEnv } from "@/lib/env";
 import { ToastProvider } from "@/components/ui/Toast";
@@ -13,9 +13,17 @@ const fraunces = Fraunces({
   display: "swap",
 });
 
-const inter = Inter({
+const dmSans = DM_Sans({
   subsets: ["latin"],
-  variable: "--font-inter",
+  variable: "--font-dm-sans",
+  display: "swap",
+});
+
+// One handwritten line per page, at most. Swap display so it never blocks text.
+const caveat = Caveat({
+  subsets: ["latin"],
+  variable: "--font-caveat",
+  weight: ["400", "500"],
   display: "swap",
 });
 
@@ -42,7 +50,7 @@ export const metadata: Metadata = {
 };
 
 export const viewport: Viewport = {
-  themeColor: "#f6f1e7",
+  themeColor: "#f7f3eb",
   width: "device-width",
   initialScale: 1,
   viewportFit: "cover",
@@ -50,7 +58,7 @@ export const viewport: Viewport = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en" className={`${fraunces.variable} ${inter.variable}`}>
+    <html lang="en" className={`${fraunces.variable} ${dmSans.variable} ${caveat.variable}`}>
       <body className="flex min-h-dvh flex-col">
         <a
           href="#main"

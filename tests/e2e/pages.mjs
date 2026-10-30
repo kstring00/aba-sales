@@ -8,7 +8,7 @@ const { chromium } = require("playwright");
 const BASE = process.env.BASE ?? "http://localhost:3100";
 const SHOTS = path.resolve("tests/e2e/shots/pages");
 fs.mkdirSync(SHOTS, { recursive: true });
-const PAGES = ["/", "/shelf", "/abc", "/cart", "/thanks", "/about", "/privacy", "/crisis", "/does-not-exist"];
+const PAGES = ["/", "/shelf", "/products/care-binder", "/abc", "/cart", "/thanks", "/about", "/privacy", "/crisis", "/does-not-exist"];
 const browser = await chromium.launch();
 let failures = 0;
 const seen = new Set();
@@ -21,6 +21,8 @@ for (const width of [375, 1280]) {
     const h1 = await page.locator("h1").count();
     const title = await page.title();
     const overflow = await page.evaluate(() => document.documentElement.scrollWidth > window.innerWidth);
+    // The product page needs a catalog (token or SHOPIFY_FIXTURES=1); skip it cleanly otherwise.
+    if (p.startsWith("/products/") && status === 404) { console.log(`– ${width}px ${p} skipped (no catalog)`); continue; }
     const expected = p === "/does-not-exist" ? 404 : 200;
     const ok = status === expected && h1 === 1 && title.length > 0 && !overflow;
     if (!ok) failures++;

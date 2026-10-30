@@ -6,13 +6,19 @@ const require = createRequire(import.meta.url);
 const { chromium } = require("playwright");
 const axeSource = fs.readFileSync(require.resolve("axe-core/axe.min.js"), "utf8");
 const BASE = process.env.BASE ?? "http://localhost:3100";
-const PAGES = ["/", "/shelf", "/abc", "/cart", "/thanks", "/about", "/privacy", "/crisis", "/does-not-exist"];
+const PAGES = ["/", "/shelf", "/products/care-binder", "/abc", "/cart", "/thanks", "/about", "/privacy", "/crisis", "/does-not-exist"];
 const browser = await chromium.launch();
 const ctx = await browser.newContext({ viewport: { width: 375, height: 812 }, isMobile: true, hasTouch: true });
 const page = await ctx.newPage();
 let bad = 0;
 for (const p of PAGES) {
-  await page.goto(`${BASE}${p}`, { waitUntil: "networkidle" });
+  const res = await page.goto(`${BASE}${p}`, { waitUntil: "networkidle" });
+  if (p.startsWith("/products/") && res.status() === 404) { console.log(`– ${p} skipped (no catalog)`); continue; }
+  if (p === "/") {
+    // Exercise the finder and the demo too.
+    await page.getByRole("tab", { name: /prepare for an appointment/i }).click();
+    await page.getByRole("button", { name: "Covering ears", exact: true }).click();
+  }
   if (p === "/abc") {
     // Exercise the logger too: set up a child and open the sheet.
     await page.getByLabel("Nickname").fill("Bean");

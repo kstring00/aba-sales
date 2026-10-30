@@ -24,6 +24,7 @@ export function CartBadge() {
   return (
     <Link
       href="/cart"
+      prefetch={false}
       aria-label={count ? `Cart, ${count} ${count === 1 ? "item" : "items"}` : "Cart, empty"}
       className="lift relative inline-flex min-h-11 min-w-11 items-center justify-center rounded-pill border border-line-strong bg-paper px-3 text-[15px] text-ink"
     >

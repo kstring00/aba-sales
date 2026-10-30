@@ -6,38 +6,46 @@
    radius, shadow, or duration. 90% of every screen is cream and ink.
    ───────────────────────────────────────────────────────────────────────── */
 :root {
-  /* Surfaces */
-  --cream: #f6f1e7;
-  --cream-deep: #efe8da;
-  --paper: #fcfaf5;
+  /* Surfaces — warm paper, the room's walls */
+  --cream: #f7f3eb;        /* Warm Paper */
+  --cream-deep: #efe9dd;
+  --paper: #fffdf8;        /* the page itself */
+  --wood: #b98f6a;         /* oak shelf edge */
+  --wood-deep: #8f6a48;
 
-  /* Ink */
-  --ink: #221f1a;
-  --ink-soft: #4a463f;
-  --ink-mute: #625d54; /* 5.8:1 on cream */
-  --ink-faint: #a9a399;
+  /* Ink — forest green reads as grounded; charcoal for long body text */
+  --ink: #283e35;          /* Forest Ink, 10.4:1 on paper */
+  --ink-body: #252a27;     /* Deep Charcoal */
+  --ink-soft: #3f4f47;
+  --ink-mute: #55625a;     /* 5.8:1 on paper */
+  --ink-faint: #9aa59e;
 
   /* Lines */
-  --line: #e2dacb;
-  --line-strong: #cfc5b2;
+  --line: #e4ddd0;
+  --line-strong: #cfc6b6;
 
-  /* Sage — primary */
-  --sage: #8a9a7b;
-  --sage-deep: #5a6a4d; /* 5.2:1 on cream; used for text and selected borders */
-  --sage-tint: #e4e8dd;
+  /* Sage — secondary, selected states */
+  --sage: #a5b7a1;         /* Soft Sage */
+  --sage-deep: #4f6a52;    /* 5.4:1 text on paper */
+  --sage-tint: #e3eadf;
 
-  /* Clay — the single primary action per page, nowhere else */
-  --clay: #9a5a3f; /* 4.8:1 for paper text on it */
-  --clay-deep: #82492f;
-  --clay-tint: #f1e1d8;
+  /* Category tints — backgrounds only, never text */
+  --blue-tint: #dce8ec;    /* Powder Blue, softened */
+  --lavender-tint: #e6e0ec;/* Lavender Mist */
+
+  /* Terracotta — the single primary action per page. Deepened for AA text. */
+  --clay: #9e5234;         /* 5.1:1 for paper text on it */
+  --clay-deep: #86442a;
+  --clay-warm: #c87555;    /* decorative only: rules, underlines, large marks */
+  --clay-tint: #f3e3da;
 
   /* Shadows are warm ink, never gray */
-  --shadow-soft: 0 10px 30px -10px rgb(34 31 26 / 0.08),
-    0 2px 6px -2px rgb(34 31 26 / 0.06);
-  --shadow-lift: 0 18px 40px -14px rgb(34 31 26 / 0.14),
-    0 4px 10px -4px rgb(34 31 26 / 0.08);
-  --shadow-shelf: 0 14px 24px -14px rgb(34 31 26 / 0.22);
-  --shadow-sheet: 0 -16px 48px -12px rgb(34 31 26 / 0.18);
+  --shadow-soft: 0 10px 30px -10px rgb(40 62 53 / 0.10),
+    0 2px 6px -2px rgb(40 62 53 / 0.06);
+  --shadow-lift: 0 18px 40px -14px rgb(40 62 53 / 0.16),
+    0 4px 10px -4px rgb(40 62 53 / 0.08);
+  --shadow-shelf: 0 14px 24px -14px rgb(40 62 53 / 0.24);
+  --shadow-sheet: 0 -16px 48px -12px rgb(40 62 53 / 0.18);
 
   /* Radii */
   --r-sm: 8px;
@@ -78,12 +86,19 @@
   --color-sage: var(--sage);
   --color-sage-deep: var(--sage-deep);
   --color-sage-tint: var(--sage-tint);
+  --color-blue-tint: var(--blue-tint);
+  --color-lavender-tint: var(--lavender-tint);
   --color-clay: var(--clay);
   --color-clay-deep: var(--clay-deep);
+  --color-clay-warm: var(--clay-warm);
   --color-clay-tint: var(--clay-tint);
+  --color-wood: var(--wood);
+  --color-wood-deep: var(--wood-deep);
+  --color-ink-body: var(--ink-body);
 
   --font-display: var(--font-fraunces), Georgia, serif;
-  --font-sans: var(--font-inter), system-ui, sans-serif;
+  --font-sans: var(--font-dm-sans), system-ui, sans-serif;
+  --font-hand: var(--font-caveat), cursive;
 
   --shadow-soft: var(--shadow-soft);
   --shadow-lift: var(--shadow-lift);
@@ -116,7 +131,7 @@ html {
 
 body {
   background: var(--cream);
-  color: var(--ink);
+  color: var(--ink-body);
   min-height: 100dvh;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
@@ -132,11 +147,12 @@ h2,
 h3,
 h4 {
   font-family: var(--font-display);
-  font-variation-settings: "opsz" 144;
+  font-variation-settings: "opsz" 144, "SOFT" 30;
   letter-spacing: -0.015em;
   line-height: 1.08;
   text-wrap: balance;
   font-weight: 500;
+  color: var(--ink);
 }
 
 h1 {
@@ -158,6 +174,56 @@ h3 {
   font-style: italic;
   font-weight: 400;
   letter-spacing: -0.01em;
+}
+
+/* One handwritten line per page, at most. Never for anything a parent must read to act. */
+.hand {
+  font-family: var(--font-hand);
+  font-size: 1.45em;
+  line-height: 1.2;
+  color: var(--ink-soft);
+}
+
+/* Paper grain: SVG noise at very low opacity. Decorative; never laid over body text. */
+.grain {
+  position: relative;
+}
+.grain::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0.35;
+  mix-blend-mode: multiply;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0.55 0 0 0 0 0.50 0 0 0 0 0.42 0 0 0 0.08 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
+  border-radius: inherit;
+}
+
+/* Linen: a faint weave for large quiet surfaces. */
+.linen {
+  background-color: var(--cream-deep);
+  background-image:
+    repeating-linear-gradient(0deg, rgb(40 62 53 / 0.025) 0 1px, transparent 1px 3px),
+    repeating-linear-gradient(90deg, rgb(40 62 53 / 0.025) 0 1px, transparent 1px 3px);
+}
+
+/* Reveal on scroll: opacity + 8px rise, once. Off under reduced motion. */
+.reveal {
+  opacity: 0;
+  transform: translateY(8px);
+  transition:
+    opacity 600ms var(--ease-out),
+    transform 600ms var(--ease-out);
+}
+.reveal.is-in {
+  opacity: 1;
+  transform: none;
+}
+@media (prefers-reduced-motion: reduce) {
+  .reveal {
+    opacity: 1;
+    transform: none;
+  }
 }
 
 /* Accessible focus. Sage, never red. */

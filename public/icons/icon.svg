@@ -1,10 +1,10 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
-  <rect width="512" height="512" rx="112" fill="#f6f1e7"/>
+  <rect width="512" height="512" rx="112" fill="#f7f3eb"/>
   <!-- the shelf -->
-  <rect x="96" y="332" width="320" height="14" rx="7" fill="#221f1a"/>
-  <rect x="112" y="346" width="288" height="26" rx="13" fill="#221f1a" opacity="0.10"/>
+  <rect x="96" y="332" width="320" height="14" rx="7" fill="#283e35"/>
+  <rect x="112" y="346" width="288" height="26" rx="13" fill="#283e35" opacity="0.10"/>
   <!-- objects on the shelf -->
-  <rect x="132" y="212" width="78" height="120" rx="16" fill="#8a9a7b"/>
-  <rect x="226" y="172" width="60" height="160" rx="14" fill="#221f1a"/>
-  <circle cx="340" cy="290" r="42" fill="#b8745a"/>
+  <rect x="132" y="212" width="78" height="120" rx="16" fill="#a5b7a1"/>
+  <rect x="226" y="172" width="60" height="160" rx="14" fill="#283e35"/>
+  <circle cx="340" cy="290" r="42" fill="#c87555"/>
 </svg>
