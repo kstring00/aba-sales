@@ -72,7 +72,9 @@ export async function sendMagicLink(_prev: SignInState, formData: FormData): Pro
     },
   });
   if (error) {
-    return { error: "We couldn't send the link just now. Please try again in a moment." };
+    // Supabase Auth error text carries no entry data; log it for Vercel logs.
+    console.warn(`[auth] magic link send failed: ${error.status ?? ""} ${error.code ?? ""} ${error.message}`);
+    return { error: sendErrorMessage(error) };
   }
   return { ok: true, email: parsed.data.email };
 }
@@ -95,4 +97,20 @@ export async function signInWithGoogle(formData: FormData) {
     redirect(`/sign-in?error=google&next=${encodeURIComponent(next)}`);
   }
   redirect(data.url);
+}
+
+/** Turn Supabase's send errors into something a parent (or the founder) can act on. */
+function sendErrorMessage(error: { status?: number; code?: string; message: string }): string {
+  const code = error.code ?? "";
+  const msg = error.message.toLowerCase();
+  if (error.status === 429 || code.includes("rate_limit") || msg.includes("rate limit")) {
+    return "Too many sign-in emails were sent recently. Please wait a little while and try again, or continue with Google.";
+  }
+  if (msg.includes("not authorized") || msg.includes("email address") && msg.includes("invalid")) {
+    return "We can't send to that address yet. Please try continuing with Google instead.";
+  }
+  if (msg.includes("smtp") || msg.includes("sending") || error.status === 500) {
+    return "Our email service didn't respond. Please try again in a few minutes, or continue with Google.";
+  }
+  return "We couldn't send the link just now. Please try again in a moment.";
 }
