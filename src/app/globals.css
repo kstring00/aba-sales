@@ -1,0 +1,258 @@
+@import "tailwindcss";
+
+/* ─────────────────────────────────────────────────────────────────────────────
+   The Support Shelf — design tokens
+   Single source of truth. Nothing else in the codebase hard-codes a color,
+   radius, shadow, or duration. 90% of every screen is cream and ink.
+   ───────────────────────────────────────────────────────────────────────── */
+:root {
+  /* Surfaces */
+  --cream: #f6f1e7;
+  --cream-deep: #efe8da;
+  --paper: #fcfaf5;
+
+  /* Ink */
+  --ink: #221f1a;
+  --ink-soft: #4a463f;
+  --ink-mute: #7a756c;
+  --ink-faint: #a9a399;
+
+  /* Lines */
+  --line: #e2dacb;
+  --line-strong: #cfc5b2;
+
+  /* Sage — primary */
+  --sage: #8a9a7b;
+  --sage-deep: #6f7f61;
+  --sage-tint: #e4e8dd;
+
+  /* Clay — the single primary action per page, nowhere else */
+  --clay: #b8745a;
+  --clay-deep: #9d5f47;
+  --clay-tint: #f1e1d8;
+
+  /* Shadows are warm ink, never gray */
+  --shadow-soft: 0 10px 30px -10px rgb(34 31 26 / 0.08),
+    0 2px 6px -2px rgb(34 31 26 / 0.06);
+  --shadow-lift: 0 18px 40px -14px rgb(34 31 26 / 0.14),
+    0 4px 10px -4px rgb(34 31 26 / 0.08);
+  --shadow-shelf: 0 14px 24px -14px rgb(34 31 26 / 0.22);
+  --shadow-sheet: 0 -16px 48px -12px rgb(34 31 26 / 0.18);
+
+  /* Radii */
+  --r-sm: 8px;
+  --r-md: 14px;
+  --r-lg: 22px;
+  --r-pill: 999px;
+
+  /* Rhythm (8px grid) */
+  --section-y: 56px;
+  --measure: 68ch;
+
+  /* Motion */
+  --t-fast: 200ms;
+  --ease-out: cubic-bezier(0.2, 0.8, 0.2, 1);
+  --ease-spring: cubic-bezier(0.22, 1.2, 0.36, 1);
+
+  /* Touch */
+  --tap: 48px;
+}
+
+@media (min-width: 768px) {
+  :root {
+    --section-y: 96px;
+  }
+}
+
+/* Expose tokens to Tailwind utilities (bg-cream, text-ink, shadow-soft …) */
+@theme inline {
+  --color-cream: var(--cream);
+  --color-cream-deep: var(--cream-deep);
+  --color-paper: var(--paper);
+  --color-ink: var(--ink);
+  --color-ink-soft: var(--ink-soft);
+  --color-ink-mute: var(--ink-mute);
+  --color-ink-faint: var(--ink-faint);
+  --color-line: var(--line);
+  --color-line-strong: var(--line-strong);
+  --color-sage: var(--sage);
+  --color-sage-deep: var(--sage-deep);
+  --color-sage-tint: var(--sage-tint);
+  --color-clay: var(--clay);
+  --color-clay-deep: var(--clay-deep);
+  --color-clay-tint: var(--clay-tint);
+
+  --font-display: var(--font-fraunces), Georgia, serif;
+  --font-sans: var(--font-inter), system-ui, sans-serif;
+
+  --shadow-soft: var(--shadow-soft);
+  --shadow-lift: var(--shadow-lift);
+  --shadow-shelf: var(--shadow-shelf);
+  --shadow-sheet: var(--shadow-sheet);
+
+  --radius-sm: var(--r-sm);
+  --radius-md: var(--r-md);
+  --radius-lg: var(--r-lg);
+  --radius-pill: var(--r-pill);
+}
+
+/* ── Base ────────────────────────────────────────────────────────────────── */
+html {
+  background: var(--cream);
+  color: var(--ink);
+  font-family: var(--font-sans);
+  font-size: 17px;
+  line-height: 1.6;
+  -webkit-text-size-adjust: 100%;
+  scroll-behavior: smooth;
+}
+
+@media (min-width: 768px) {
+  html {
+    font-size: 18px;
+  }
+}
+
+body {
+  background: var(--cream);
+  color: var(--ink);
+  min-height: 100dvh;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+}
+
+p,
+li {
+  max-width: var(--measure);
+}
+
+h1,
+h2,
+h3,
+h4 {
+  font-family: var(--font-display);
+  font-variation-settings: "opsz" 144;
+  letter-spacing: -0.015em;
+  line-height: 1.08;
+  text-wrap: balance;
+  font-weight: 500;
+}
+
+h1 {
+  font-size: clamp(2.5rem, 2rem + 2.6vw, 5.5rem);
+  letter-spacing: -0.025em;
+}
+
+h2 {
+  font-size: clamp(1.9rem, 1.5rem + 1.6vw, 3.25rem);
+}
+
+h3 {
+  font-size: clamp(1.35rem, 1.2rem + 0.6vw, 1.8rem);
+  line-height: 1.2;
+}
+
+.display-italic {
+  font-family: var(--font-display);
+  font-style: italic;
+  font-weight: 400;
+  letter-spacing: -0.01em;
+}
+
+/* Accessible focus. Sage, never red. */
+:focus-visible {
+  outline: 3px solid var(--sage);
+  outline-offset: 3px;
+  border-radius: var(--r-sm);
+}
+
+::selection {
+  background: var(--sage-tint);
+}
+
+/* The shelf: a thin horizontal rule objects sit on. */
+.shelf-edge {
+  position: relative;
+  border-bottom: 1px solid var(--line-strong);
+}
+
+.shelf-edge::after {
+  content: "";
+  position: absolute;
+  inset-inline: 0;
+  bottom: -9px;
+  height: 8px;
+  background: linear-gradient(
+    to bottom,
+    rgb(34 31 26 / 0.08),
+    rgb(34 31 26 / 0)
+  );
+  pointer-events: none;
+}
+
+/* Motion utilities. The bottom sheet is the single signature movement. */
+.fade-in {
+  animation: fade-in var(--t-fast) var(--ease-out) both;
+}
+
+.sheet-rise {
+  animation: sheet-rise 420ms var(--ease-spring) both;
+}
+
+.lift {
+  transition:
+    transform var(--t-fast) var(--ease-out),
+    box-shadow var(--t-fast) var(--ease-out),
+    background-color var(--t-fast) var(--ease-out),
+    border-color var(--t-fast) var(--ease-out),
+    color var(--t-fast) var(--ease-out),
+    opacity var(--t-fast) var(--ease-out);
+}
+
+@media (hover: hover) {
+  .lift:hover {
+    transform: translateY(-2px);
+  }
+}
+
+@keyframes fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes sheet-rise {
+  from {
+    transform: translateY(100%);
+  }
+  to {
+    transform: translateY(0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 1ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 1ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* Hide scrollbar on horizontal chip rows while keeping them scrollable. */
+.scroll-quiet {
+  scrollbar-width: none;
+}
+.scroll-quiet::-webkit-scrollbar {
+  display: none;
+}
+
+/* Tabular numbers for times and counts. */
+.tnum {
+  font-variant-numeric: tabular-nums;
+}
