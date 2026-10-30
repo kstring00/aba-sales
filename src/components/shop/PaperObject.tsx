@@ -18,7 +18,6 @@ export function PaperObject({ product, index = 0 }: { product: ProductSummary; i
     <Link
       href={`/products/${product.handle}`}
       className={`group block rounded-sm outline-none transition-transform duration-200 ease-out hover:-translate-y-1.5 focus-visible:-translate-y-1.5 ${tilt} motion-reduce:transform-none motion-reduce:hover:transform-none`}
-      aria-label={`${product.title}, ${price}`}
     >
       <div className={`grain relative aspect-[3/4] overflow-hidden rounded-sm ${TONE_BG[tone]} shadow-shelf transition-shadow duration-200 group-hover:shadow-lift`}>
         {/* Folder tab */}

@@ -15,3 +15,15 @@ Briefs for the photography to commission or license. No slots or placeholders sh
 Delivery: export each at 2400px on the long edge (hero 3200px), AVIF quality ~60 plus a JPG fallback; `next/image` handles the rest. Drop files in `public/photos/` and set `src` in the manifest.
 
 Product preview images (page thumbnails) live in Shopify, not here. Upload the actual pages at 1600px on the long edge, one per page, in order; the binder preview uses them as tabs.
+
+## Bright shelf (`/shelf`) — additional briefs
+
+The redesigned shelf ships with an original SVG illustration system (waves, sun, binders with colored tabs, notebooks, sheets, folders, sprigs, ribbons) and a real screenshot of the ABC logger with a synthetic nickname. No photography or AI imagery was generated: the image tool available in the build environment bills credits, which the project rules forbid, and AI-generated people must never stand in for real families.
+
+When photography is commissioned, these slots exist in the bright shelf:
+
+| Slot | Brief | Crop | Alt |
+| --- | --- | --- | --- |
+| Hero human element (optional, right column) | A parent's hands arranging printed sheets and a folder on a turquoise table, daylight, no face | 5:4 | Hands arranging printed sheets and a folder on a turquoise table. |
+| Human element section | A caregiver at a bright kitchen table reviewing notes; natural light; dignified, unposed; face soft or turned | 1:1 / 4:5 | A caregiver at a kitchen table reviewing handwritten notes in daylight. |
+| Product photography | Actual product pages printed and arranged overhead on a turquoise or sea-glass surface with coral and sun accents | 4:5 per product | Printed pages of [product] arranged on a turquoise table. |
