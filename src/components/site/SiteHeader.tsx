@@ -12,7 +12,7 @@ export function SiteHeader() {
   return (
     <header className="mx-auto flex w-full max-w-6xl items-center justify-between gap-4 px-5 py-5 sm:px-8">
       <Wordmark />
-      <nav aria-label="Primary" className="flex items-center gap-1 sm:gap-2">
+      <nav aria-label="Primary" className="flex shrink-0 items-center gap-1 whitespace-nowrap sm:gap-2">
         {NAV.map((n) => (
           <Link
             key={n.href}
