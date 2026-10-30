@@ -96,6 +96,7 @@
   --radius-pill: var(--r-pill);
 }
 
+@layer base {
 /* ── Base ────────────────────────────────────────────────────────────────── */
 html {
   background: var(--cream);
@@ -169,7 +170,9 @@ h3 {
 ::selection {
   background: var(--sage-tint);
 }
+}
 
+@layer components {
 /* The shelf: a thin horizontal rule objects sit on. */
 .shelf-edge {
   position: relative;
@@ -231,6 +234,7 @@ h3 {
   to {
     transform: translateY(0);
   }
+}
 }
 
 @media (prefers-reduced-motion: reduce) {

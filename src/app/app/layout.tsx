@@ -1,5 +1,8 @@
 import type { Metadata } from "next";
 import { requireUser } from "@/lib/auth";
+import { getProfile } from "@/lib/data";
+import { AppShell } from "@/components/app/AppShell";
+import { AdultGate } from "@/components/app/AdultGate";
 
 export const metadata: Metadata = {
   title: "Tracker",
@@ -8,5 +11,9 @@ export const metadata: Metadata = {
 
 export default async function AppLayout({ children }: { children: React.ReactNode }) {
   await requireUser("/app");
-  return <>{children}</>;
+  const profile = await getProfile();
+  if (!profile?.adult_attested_at) {
+    return <AdultGate />;
+  }
+  return <AppShell>{children}</AppShell>;
 }

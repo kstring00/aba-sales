@@ -1,8 +1,36 @@
-export default function AppHome() {
+import { requireUser } from "@/lib/auth";
+import { getBehaviors, getChildren, getEntries, getProfile, getSelectedChild } from "@/lib/data";
+import { Onboarding } from "@/components/app/Onboarding";
+import { ChildSwitcher } from "@/components/app/ChildSwitcher";
+import { LogHome } from "@/components/app/LogHome";
+
+export default async function AppHome() {
+  const user = await requireUser("/app");
+  const children = await getChildren();
+  if (children.length === 0) {
+    const profile = await getProfile();
+    return <Onboarding displayName={profile?.display_name ?? null} />;
+  }
+  const child = (await getSelectedChild(children))!;
+  const [behaviors, recent] = await Promise.all([
+    getBehaviors(child.id),
+    // 48 hours covers "today" in every time zone; the client trims to the local day.
+    getEntries(child.id, { from: new Date(Date.now() - 48 * 3600 * 1000), limit: 200 }),
+  ]);
+
   return (
-    <main id="main" className="mx-auto w-full max-w-lg px-5 pt-10">
-      <h1 className="text-[2rem]">Tracker</h1>
-      <p className="mt-4 text-ink-soft">The logging screen arrives in the next milestone.</p>
+    <main id="main" className="mx-auto w-full max-w-lg px-5 pt-4 sm:pt-10">
+      <ChildSwitcher children={children} selectedId={child.id} />
+      <h1 className="mt-6 text-[clamp(1.9rem,1.5rem+1.5vw,2.6rem)]">
+        {children.length > 1 ? child.nickname : `How's ${child.nickname}?`}
+      </h1>
+      <LogHome
+        childId={child.id}
+        childNickname={child.nickname}
+        userId={user.id}
+        behaviors={behaviors}
+        recentEntries={recent}
+      />
     </main>
   );
 }

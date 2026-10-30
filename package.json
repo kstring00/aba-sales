@@ -11,7 +11,10 @@
     "test": "vitest run tests/unit",
     "test:rls": "vitest run tests/rls",
     "test:all": "vitest run",
-    "db:local:reset": "bash scripts/db-local-reset.sh"
+    "db:local:reset": "bash scripts/db-local-reset.sh support_shelf_test",
+    "db:local:dev": "bash scripts/db-local-reset.sh support_shelf_dev",
+    "local:supabase": "node tools/local-supabase/server.mjs",
+    "test:e2e": "node tests/e2e/run.mjs"
   },
   "dependencies": {
     "@supabase/ssr": "^0.12.7",

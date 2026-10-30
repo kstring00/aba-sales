@@ -216,8 +216,14 @@ language plpgsql security definer
 set search_path = public
 as $$
 begin
-  insert into public.profiles (id, display_name)
-  values (new.id, nullif(new.raw_user_meta_data ->> 'full_name', ''))
+  insert into public.profiles (id, display_name, adult_attested_at)
+  values (
+    new.id,
+    nullif(new.raw_user_meta_data ->> 'full_name', ''),
+    -- The sign-in form passes adult_attested=true in sign-up metadata, so
+    -- magic-link users are not asked twice. OAuth users confirm in-app.
+    case when (new.raw_user_meta_data ->> 'adult_attested') = 'true' then now() else null end
+  )
   on conflict (id) do nothing;
   return new;
 end;

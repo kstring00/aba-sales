@@ -8,17 +8,16 @@ export async function GET(request: NextRequest) {
   const rawNext = searchParams.get("next") ?? "/app";
   const next = rawNext.startsWith("/") && !rawNext.startsWith("//") ? rawNext : "/app";
 
+  // Behind a proxy (Vercel), trust the forwarded host and protocol together.
+  const fHost = request.headers.get("x-forwarded-host");
+  const fProto = request.headers.get("x-forwarded-proto");
+  const base = fHost ? `${fProto ?? new URL(origin).protocol.replace(":", "")}://${fHost}` : origin;
+
   if (code) {
     const supabase = await createClient();
     const { error } = await supabase.auth.exchangeCodeForSession(code);
-    if (!error) {
-      const forwardedHost = request.headers.get("x-forwarded-host");
-      const isLocal = process.env.NODE_ENV === "development";
-      if (isLocal) return NextResponse.redirect(`${origin}${next}`);
-      if (forwardedHost) return NextResponse.redirect(`https://${forwardedHost}${next}`);
-      return NextResponse.redirect(`${origin}${next}`);
-    }
+    if (!error) return NextResponse.redirect(`${base}${next}`);
   }
 
-  return NextResponse.redirect(`${origin}/sign-in?error=callback`);
+  return NextResponse.redirect(`${base}/sign-in?error=callback`);
 }
