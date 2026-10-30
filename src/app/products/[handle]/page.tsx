@@ -91,10 +91,7 @@ export default async function ProductPage({ params }: { params: Promise<{ handle
               <AddToCart variantId={product.variantId} available={product.availableForSale} price={price} />
             </div>
 
-            <dl className="mt-6 grid gap-3 text-[14px] sm:grid-cols-2">
-              <div className="rounded-md bg-sage-tint px-4 py-3"><dt className="text-[12px] uppercase tracking-wider text-ink-mute">Made by</dt><dd className="mt-0.5 text-ink">A Registered Behavior Technician</dd></div>
-              <div className="rounded-md bg-sage-tint px-4 py-3"><dt className="text-[12px] uppercase tracking-wider text-ink-mute">Clinical review</dt><dd className="mt-0.5 text-ink">Pending; named here when complete</dd></div>
-            </dl>
+            <p className="mt-6 rounded-md bg-sage-tint px-4 py-3 text-[14px] text-ink">Made by a Registered Behavior Technician.</p>
             <p className="mt-4 text-[14px] text-ink-soft">No client data. No treatment recommendations. You customize everything. If a file is broken or not as described, write to us and we&apos;ll fix it or refund you.</p>
           </div>
         </div>

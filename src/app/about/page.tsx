@@ -41,7 +41,6 @@ export default function AboutPage() {
           Written by a Registered Behavior Technician (RBT) with three years in-clinic. An RBT works under the supervision of a
           Board Certified Behavior Analyst (BCBA).
         </p>
-        <p className="rounded-md bg-sage-tint px-4 py-3 text-[15px] text-ink">Reviewed by a BCBA: name and credentials to come.</p>
 
         <div className="pt-4">
           <LinkButton href="/shelf" variant="primary" size="lg">Browse the shelf</LinkButton>

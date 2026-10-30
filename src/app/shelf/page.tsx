@@ -4,8 +4,6 @@ import { SiteHeader } from "@/components/site/SiteHeader";
 import { SiteFooter } from "@/components/site/SiteFooter";
 import { ProductCard } from "@/components/shop/ProductCard";
 import { EmailCapture } from "@/components/shop/EmailCapture";
-import { Photo } from "@/components/site/Photo";
-import { ASSETS } from "@/lib/assets";
 import { getShelves, SHELVES } from "@/lib/shopify/catalog";
 import { metaFor, type ProductMeta } from "@/lib/resources";
 import type { ProductSummary } from "@/lib/shopify/types";
@@ -46,7 +44,7 @@ export default async function ShelfPage() {
     <>
       <SiteHeader />
       <main id="main" className="mx-auto w-full max-w-7xl flex-1 px-5 pb-24 pt-8 sm:px-8 sm:pt-14">
-        <div className="grid items-end gap-8 lg:grid-cols-[minmax(0,6fr)_minmax(0,6fr)]">
+        <div className="max-w-[44rem]">
           <div>
             <p className="text-[13px] uppercase tracking-[0.18em] text-ink-mute">The shelf</p>
             <h1 className="mt-4 text-[clamp(2.2rem,1.6rem+2.4vw,3.8rem)]">A place for the things that make the week <span className="display-italic">easier.</span></h1>
@@ -54,7 +52,6 @@ export default async function ShelfPage() {
               Downloads you print or edit yourself, arranged by what they help you do. Each is delivered by email in under a minute, and you can customize everything.
             </p>
           </div>
-          <Photo asset={ASSETS.placeForEverything} sizes="(min-width: 1024px) 48vw, 100vw" className="hidden lg:block" />
         </div>
 
         {all.length === 0 ? (

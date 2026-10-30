@@ -16,13 +16,13 @@ One Next.js site on Vercel: a storefront for digital downloads (Shopify as a hea
 
 ## Design system and the redesign
 
-The experience direction, audit, and principles are in `docs/CREATIVE-DIRECTION.md`; the photography plan and asset manifest in `docs/ASSETS.md` (source of truth: `src/lib/assets.ts`, where filling `src` swaps a designed placeholder for the real image).
+The experience direction, audit, and principles are in `docs/CREATIVE-DIRECTION.md`; the photography plan (briefs, crops, alt text, licensing) in `docs/ASSETS.md`. No photo slots or placeholders ship; the layout is typographic until real photography exists.
 
 - Tokens live in `src/app/globals.css`: Warm Paper, Forest Ink, Deep Charcoal body text, Soft Sage, Powder Blue and Lavender tints (backgrounds only), Terracotta for the one primary action per page. All text pairs pass WCAG AA.
 - Type: Fraunces (headlines, one italic phrase per page), DM Sans (everything a parent reads to act), Caveat (one handwritten line per page, never instructions).
 - Materials: `.grain` (paper), `.linen` (quiet bands), warm forest-tinted shadows, an oak shelf edge under products.
 - Motion: `.reveal` (one 600ms rise), 2px lifts, the bottom sheet's spring, the binder's page turn. `prefers-reduced-motion` removes all of it.
-- The homepage is eight sections keyed off the live catalog: Welcome → We see the work → Finder → Living Shelf → ABC demo → Support beyond files → Founder → Closing. `src/lib/resources.ts` maps needs to real products and carries the "who it may help / which task" framing; it never creates inventory.
+- The homepage is eight sections keyed off the live catalog: Welcome → We see the work → Finder → Living Shelf → ABC demo → Support beyond files → Founder → Closing. The "Stories from the shelf" block is behind `NEXT_PUBLIC_SHOW_STORIES=1` and stays off until a real story exists. `src/lib/resources.ts` maps needs to real products and carries the "who it may help / which task" framing; it never creates inventory.
 
 **Local design review without a Storefront token:** set `SHOPIFY_FIXTURES=1` in `.env.local`. The four real products appear by handle and price with no invented contents. Ignored whenever a real token is set and always on Vercel.
 

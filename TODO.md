@@ -3,8 +3,9 @@
 **(founder)** = needs you. **(review)** = needs a professional before launch.
 
 ## Global
-- (founder) **Photography.** Seven slots are briefed in `docs/ASSETS.md`; each renders a placeholder until a licensed or owned image is dropped in `public/photos/` and referenced in `src/lib/assets.ts`. The founder portrait must be a real photograph.
-- (founder) Confirm the founder biography wording on the homepage and /about (years, role) and the founder reflection quote in "Stories from the shelf".
+- (founder) **Photography.** Seven images are briefed in `docs/ASSETS.md`. Nothing renders until they exist; when they do, add the slots back to Welcome, We see, Shelf header, Support, Founder, and /about. The founder portrait must be a real photograph.
+- (founder) Confirm the founder biography wording on the homepage and /about (years, role). "Stories from the shelf" is hidden behind `NEXT_PUBLIC_SHOW_STORIES` until a real, permissioned story exists.
+- (founder) Directory and finder copy: replacements incoming; current text is held as-is.
 - (founder) Re-verify the six "Find your people" organizations and their URLs by hand before launch (`src/lib/resources.ts` → `ORGS`); this build could not reach external sites.
 - (founder) Product metadata in `src/lib/resources.ts` (task, who it may help, category) was written from the product names and the brief; confirm each against the actual files.
 - (founder) Upload the actual page images to each Shopify product, in page order; the binder preview uses them as tabs. Add `custom.format` and `custom.included` metafields for exact contents.

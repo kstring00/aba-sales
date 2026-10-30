@@ -1,6 +1,5 @@
-import { Photo } from "@/components/site/Photo";
-import { ASSETS } from "@/lib/assets";
 import { ORGS } from "@/lib/resources";
+import { STORIES_ENABLED } from "@/lib/flags";
 import { AskForHelp } from "@/components/home/AskForHelp";
 
 /**
@@ -36,12 +35,12 @@ export function SupportBeyond() {
           </ul>
           <p className="mt-3 text-[13px] text-ink-mute">These links leave our site. Local parent groups vary a lot; your state&apos;s Parent Center and 211 are the fastest way to find what&apos;s near you.</p>
         </div>
-        <div className="space-y-10">
-          <Photo asset={ASSETS.humanSide2} sizes="(min-width: 1024px) 40vw, 100vw" className="hidden lg:block" />
+        <div>
           <AskForHelp />
         </div>
       </div>
 
+      {STORIES_ENABLED ? (
       <div className="mt-16 grid gap-8 rounded-lg bg-paper p-8 shadow-soft lg:grid-cols-[1fr_2fr]">
         <div>
           <p className="text-[13px] uppercase tracking-[0.18em] text-ink-mute">Stories from the shelf</p>
@@ -58,6 +57,7 @@ export function SupportBeyond() {
           <p className="mt-3 text-[14px] text-ink-mute">The founder, a Registered Behavior Technician. Wording to be confirmed before launch.</p>
         </div>
       </div>
+      ) : null}
     </section>
   );
 }

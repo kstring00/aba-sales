@@ -1,6 +1,4 @@
 import { Reveal } from "@/components/site/Reveal";
-import { Photo } from "@/components/site/Photo";
-import { ASSETS } from "@/lib/assets";
 
 const LINES = [
   "The appointments you prepare for.",
@@ -16,7 +14,7 @@ export function WeSee() {
   return (
     <section className="linen py-[var(--section-y)]" aria-labelledby="wesee-h">
       <div className="mx-auto w-full max-w-7xl px-5 sm:px-8">
-        <div className="grid gap-12 lg:grid-cols-[minmax(0,6fr)_minmax(0,6fr)] lg:gap-20">
+        <div className="max-w-[44rem]">
           <div>
             <p className="text-[13px] uppercase tracking-[0.18em] text-ink-mute">We see the work you do</p>
             <h2 id="wesee-h" className="mt-4 text-[clamp(2rem,1.4rem+2.2vw,3.4rem)]">Most of it happens where no one is watching.</h2>
@@ -36,10 +34,6 @@ export function WeSee() {
                 Not every family carries the same things. This shelf is for whichever of them is yours.
               </p>
             </Reveal>
-          </div>
-          <div className="lg:pt-10">
-            <Photo asset={ASSETS.thingsWeCarry} sizes="(min-width: 1024px) 48vw, 100vw" className="hidden lg:block" />
-            <Photo asset={ASSETS.thingsWeCarry} variant="mobile" sizes="100vw" className="lg:hidden" />
           </div>
         </div>
       </div>

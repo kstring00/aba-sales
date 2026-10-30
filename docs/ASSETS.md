@@ -1,6 +1,6 @@
 # Photography & asset manifest
 
-Source of truth: `src/lib/assets.ts`. Each slot renders a designed placeholder until `src` is filled. Rules: documentary over polish, natural light, no faces of children looking at camera, no fabricated text in frame, no AI-generated person presented as a real family, no staged sadness.
+Briefs for the photography to commission or license. No slots or placeholders ship in the current build; these are re-added when real images exist. Rules: documentary over polish, natural light, no faces of children looking at camera, no fabricated text in frame, no AI-generated person presented as a real family, no staged sadness.
 
 | ID | Title | Placement | Brief (short) | Desktop / mobile crop | Alt text | Format | Licensing |
 | --- | --- | --- | --- | --- | --- | --- | --- |
