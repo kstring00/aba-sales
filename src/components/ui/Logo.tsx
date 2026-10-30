@@ -4,7 +4,7 @@ export function Wordmark({ className = "", href = "/" }: { className?: string; h
   return (
     <Link
       href={href}
-      className={`font-display text-[1.25rem] tracking-tight text-ink no-underline ${className}`}
+      className={`whitespace-nowrap font-display text-[1.1rem] tracking-tight text-ink no-underline sm:text-[1.25rem] ${className}`}
       aria-label="The Support Shelf home"
     >
       <span aria-hidden className="mr-2 inline-block h-[3px] w-5 translate-y-[-5px] rounded-pill bg-sage" />

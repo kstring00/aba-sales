@@ -1,0 +1,53 @@
+import type { Metadata } from "next";
+import { SiteHeader } from "@/components/site/SiteHeader";
+import { SiteFooter } from "@/components/site/SiteFooter";
+import { Prose } from "@/components/site/Prose";
+import { LinkButton } from "@/components/ui/Button";
+
+export const metadata: Metadata = {
+  title: "About",
+  description: "Who makes The Support Shelf, and what it is and isn't.",
+};
+
+export default function AboutPage() {
+  return (
+    <>
+      <SiteHeader />
+      <Prose title="About the shelf" lede="Thoughtfully made tools for the people who care.">
+        <p>
+          <strong>I&apos;m a Registered Behavior Technician.</strong> I&apos;ve spent three years on the floor with kids in ABA
+          therapy and in the hallway with their parents. Most of what families and small clinics need isn&apos;t complicated:
+          a routine that&apos;s clear enough to follow at 7 a.m., a welcome packet that doesn&apos;t look like a tax form, a way to
+          write down what happened without being told what it means.
+        </p>
+        <p>That&apos;s what&apos;s on this shelf.</p>
+
+        <h2>What this is</h2>
+        <ul>
+          <li>Printable and editable downloads for homes and clinics.</li>
+          <li>A free ABC observation logger that keeps everything on your own phone.</li>
+          <li>Plain language, calm design, and nothing that talks down to you.</li>
+        </ul>
+
+        <h2>What this is not</h2>
+        <ul>
+          <li>Not treatment. No download or tool here tells you what to do about a behavior.</li>
+          <li>Not a clinic or a provider. Your child&apos;s team makes the clinical calls.</li>
+          <li>Not a place that collects your child&apos;s information. See the privacy page.</li>
+        </ul>
+
+        <h2>Credentials</h2>
+        <p>
+          Written by a Registered Behavior Technician (RBT) with three years in-clinic. An RBT works under the supervision of a
+          Board Certified Behavior Analyst (BCBA).
+        </p>
+        <p className="rounded-md bg-sage-tint px-4 py-3 text-[15px] text-ink">Reviewed by a BCBA: name and credentials to come.</p>
+
+        <div className="pt-4">
+          <LinkButton href="/shelf" variant="primary" size="lg">Browse the shelf</LinkButton>
+        </div>
+      </Prose>
+      <SiteFooter />
+    </>
+  );
+}

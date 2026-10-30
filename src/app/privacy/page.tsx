@@ -5,64 +5,48 @@ import { Prose } from "@/components/site/Prose";
 
 export const metadata: Metadata = {
   title: "Privacy",
-  description: "How The Support Shelf handles your information, in plain language.",
+  description: "What The Support Shelf stores and what it doesn't, in plain language.",
 };
 
 export default function PrivacyPage() {
   return (
     <>
       <SiteHeader />
-      <Prose
-        title="Privacy"
-        lede="In plain language. This page describes what the product actually does today. It has not yet been reviewed by a lawyer."
-      >
-        <p className="rounded-md bg-sage-tint px-4 py-3 text-[15px] text-ink">
-          TODO (founder): legal review for consumer privacy, health-app, and child-protection
-          obligations before public launch.
-        </p>
-
-        <h2>What we store</h2>
-        <ul>
-          <li>Your email address, so you can sign in.</li>
-          <li>A nickname for each child. Never a full name, date of birth, or photo.</li>
-          <li>The observations you log: what you noticed, what happened right before and after, optional duration, intensity, and notes you write.</li>
-          <li>If you subscribe to Pro, a Stripe customer ID and subscription status. Stripe holds your card details; we never see them.</li>
-          <li>If you join the email list, your email and where you signed up.</li>
-        </ul>
-
-        <h2>Who can see it</h2>
+      <Prose title="Privacy" lede="In plain language. This describes what the site actually does today.">
+        <h2>The ABC logger stores nothing on our servers</h2>
         <p>
-          You, and any caregiver you personally invite. Access is enforced by database rules on
-          every row, not just by the app&apos;s screens. Our hosting providers (Supabase for the
-          database, Vercel for the website) store the data on our behalf and are bound by their own
-          security and processing terms. We don&apos;t read your entries, and we don&apos;t run
-          analytics on them.
+          Entries you log at <strong>/abc</strong> are saved in your own browser&apos;s storage on your own device. They are never sent to
+          us, and we have no way to read them. Clearing your browser data, or using a different browser or device, means the
+          entries aren&apos;t there. Export first if you want to keep them.
         </p>
+        <p>
+          The one exception is the &ldquo;Email me my export&rdquo; button. When you press it, the entries you&apos;ve chosen are sent to our
+          server once, turned into a PDF, emailed to the address you typed, and discarded. We keep the email address so we can
+          send it, and, if you leave the box ticked, to write to you about new downloads. We don&apos;t keep the entries.
+        </p>
+
+        <h2>Shopping</h2>
+        <p>
+          The shelf is run on Shopify. When you check out, Shopify handles your name, email, and payment under its own privacy
+          policy; we see the order so we can help with it. We never see your card details. Your cart is remembered with one cookie
+          on this site.
+        </p>
+
+        <h2>Email list</h2>
+        <p>If you give us your email, it&apos;s stored with Resend, the service that sends our mail. Every email has an unsubscribe link.</p>
 
         <h2>What we don&apos;t do</h2>
         <ul>
-          <li>No advertising trackers on signed-in pages.</li>
-          <li>No analytics on entry content.</li>
-          <li>No selling or sharing data with third parties for marketing.</li>
-          <li>No sending your observations to any AI service without your explicit, specific consent for that specific data.</li>
+          <li>No advertising trackers.</li>
+          <li>No analytics on anything you log.</li>
+          <li>No selling or sharing of your information.</li>
+          <li>No accounts, no passwords, nothing about your child on our servers.</li>
         </ul>
 
-        <h2>Export and deletion</h2>
-        <p>
-          You can export everything as PDF, CSV, or JSON from Settings, free, at any time. You can
-          delete your account from Settings. Deletion is immediate and permanent: your children,
-          entries, invites, and profile are removed from the live database. Backups kept by our
-          hosting provider age out within 30 days.
-        </p>
-
-        <h2>Retention</h2>
-        <p>We keep your data for as long as your account exists. Sign-in sessions expire automatically.</p>
-
-        <h2>Cookies</h2>
-        <p>Only the cookie that keeps you signed in. Nothing for advertising.</p>
-
         <h2>Questions</h2>
-        <p>Write to us from the contact page. A person answers.</p>
+        <p>Email or call us using the details in the footer. A person answers.</p>
+
+        <p className="text-[14px] text-ink-mute">This page has not yet been reviewed by a lawyer.</p>
       </Prose>
       <SiteFooter />
     </>

@@ -1,4 +1,4 @@
-import type { AntecedentCode, ConsequenceCode } from "@/lib/database.types";
+import type { AntecedentCode, ConsequenceCode } from "@/lib/abc/types";
 
 /**
  * Observational vocabulary. Exact wording from the product spec.

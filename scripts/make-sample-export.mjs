@@ -18,6 +18,7 @@ Module._resolveFilename = function (req, ...rest) {
 process.env.TS_NODE_TRANSPILE_ONLY = "1";
 const { buildReport } = require("../src/lib/export/report.ts");
 const { renderReportPdf } = require("../src/lib/export/pdf.ts");
+const { loadFontBytesFromDisk } = require("../src/lib/export/fonts.server.ts");
 const { sampleEntries } = require("../src/lib/export/fixtures.ts");
 
 const report = buildReport({
@@ -28,7 +29,7 @@ const report = buildReport({
   entries: sampleEntries(),
   generatedAt: new Date("2026-03-16T12:00:00Z"),
 });
-const bytes = await renderReportPdf(report);
+const bytes = await renderReportPdf(report, await loadFontBytesFromDisk());
 writeFileSync("public/sample-export.pdf", bytes);
 console.log(`public/sample-export.pdf (${bytes.byteLength} bytes)`);
 try {
