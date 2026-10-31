@@ -1,10 +1,22 @@
 import glossaryJson from "../../../content/glossary.json";
 import resourcesJson from "../../../content/resources.json";
 import uiJson from "../../../content/ui.json";
+import trackerJson from "../../../content/tracker.json";
 import { isProductionDeploy } from "./deploy";
 
 /** Short structured content (JSON). Bundled at build time; safe on server and client. */
 export const ui = uiJson;
+export const tracker = trackerJson;
+
+/** Status-bearing items show when published, or anywhere outside production. */
+export function showItem(item: { status?: string } | null | undefined): boolean {
+  return Boolean(item) && (item!.status === "published" || !isProductionDeploy());
+}
+
+/** Fills {name} placeholders. */
+export function fill(template: string, vars: Record<string, string | number>): string {
+  return template.replace(/\{(\w+)\}/g, (_, k) => String(vars[k] ?? ""));
+}
 
 export type GlossaryTerm = {
   term: string;

@@ -30,6 +30,7 @@ const entrySchema = z.object({
   intensity: z.union([z.literal(1), z.literal(2), z.literal(3)]).nullable(),
   note: z.string().max(2000).nullable(),
   functionCode: z.string().max(20).nullable().optional(),
+  earlySigns: z.array(z.string().max(60)).max(40).nullable().optional(),
   createdAt: z.string(),
   updatedAt: z.string(),
 });

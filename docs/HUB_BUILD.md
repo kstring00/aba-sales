@@ -54,3 +54,32 @@ Gate: build (scope check first), typecheck, lint · unit 46/46 · pages pass (16
 ## Pending content slots (Stage 2)
 
 No new slots: Right now and For you use the sections listed under Stage 1. Interface wording for the tools is in `content/ui.json` → `tools` and `rightNow`; edit freely.
+
+## Stage 3 — The 15-second ABC tracker and "What you're noticing"
+
+| Item | What shipped | Files | Verified |
+| --- | --- | --- | --- |
+| Quick log | One screen, three chip questions in order (What did they do? → What happened right before? → What happened right after?), each with "+ my own words". Time defaults to now with a one-tap change. Save is in a bar pinned to the bottom of the screen. | `src/components/abc/QuickLog.tsx` | At 375×667: three taps, then Save fully on screen without scrolling (y 604–655) |
+| Early signs | Optional "Did you notice anything before it got big?" chips plus own words, stored as optional `earlySigns` on the v2 observation (no new storage version, no migration) | `QuickLog.tsx`, `src/lib/abc/types.ts`, `content/tracker.json` | Stored and exported (CSV `early_signs`, PDF note column) |
+| Add detail | Intensity, duration (ranges + exact minutes) and "What it looked like" behind "+ Add detail" | `QuickLog.tsx` | Journey |
+| Nickname | Asked only at first export; logging seeds the behavior labels without one | `ExportPanel.tsx`, `src/lib/abc/store.ts` (`ensureBehaviors`) | Journey: `child` is null after logging; set at first export |
+| Reflection picker | Removed from logging. `functionCode` stays readable: older entries still render and export | `QuickLog.tsx`, `src/lib/export/report.ts` | A seeded v2 entry with `functionCode: "attention"` lists and exports "Attention" |
+| Describe, don't label | One-line inline prompt when Tantrum, Refusing or Property destruction is picked | `content/tracker.json → labelNudge` | Shows on preview as a pending marker |
+| Safety card | After saving a moment with Self-injury, Hitting, Biting or Running off: the crisis link and "Talk to your child's doctor or BCBA." always; title and body once published | `QuickLog.tsx → SafetyCard`, `content/tracker.json → safetyCard` | Journey (Hitting) |
+| After each save | One rotating "Did you know" line (when published); the existing one-time "What happens next" card, now read from content | `Tracker.tsx`, `content/tracker.json` | Journey |
+| Walkthrough | Dismissible first-visit card (shoes example) once written | `Tracker.tsx`, `content/tracker.json → walkthrough` | Preview shows the pending marker |
+| What you're noticing | Default view at five or more observations (List stays a tab; Time of day and Right before tabs folded into the cards). Template-only cards with counts: most common right before, right after, time-of-day window, most common early sign, moments with an early sign. Then the general lesson link (when it exists) and "Questions you could bring…" (draft wording from the brief's example, preview-only until published). Under five: "Log a few more moments and patterns will show up here." | `src/lib/abc/patterns.ts`, `src/components/abc/Insights.tsx` | Eight hand-worked fixture observations: 5, 4, 4, 3 and 4 of 8, matching in a unit test and in the browser |
+| Client-side pending | `next.config` inlines the deployment environment so client components hide pending items on production too | `next.config.ts`, `src/lib/content/deploy.ts` | — |
+
+Gate: build (scope check: 12 files clean, including all templates), typecheck, lint · unit 51/51 · `/abc` journey 8/8 (rewritten for the new form) · axe 0 on `/abc` with an observation saved and the edit sheet open · pages pass.
+
+## Pending content slots (Stage 3) — all in `content/tracker.json`
+
+| Key | Needed |
+| --- | --- |
+| `earlySigns` | Finalize the chip list (seeded with the brief's examples), then publish |
+| `labelNudge.text` | One line inviting a description when a label-type behavior is picked |
+| `safetyCard.title`, `safetyCard.body` | Calm safety wording; links already show |
+| `didYouKnow.lines` | A handful of short general facts |
+| `walkthrough.title`, `walkthrough.steps` | Three or four steps using the shoes example |
+| `questionsToBring` | Review the draft templates, then publish |

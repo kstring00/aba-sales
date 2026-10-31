@@ -24,7 +24,7 @@ async function step(name, fn) {
 
 const BEFORE = ["An instruction was given", "An item or activity was unavailable", "An activity or location changed", "Someone approached or interacted", "The child was alone", "Not sure"];
 const AFTER = ["An item or activity was provided", "The activity or instruction stopped", "Someone spoke to or interacted with the child", "Someone offered comfort", "No immediate response was observed", "Not sure"];
-const LABELS = ["Hitting", "Screaming", "Dropping to floor", "Running off", "Refusing", "Biting"];
+const LABELS = ["Screaming", "Dropping to floor", "Refusing", "Throwing", "Climbing", "Spitting"];
 
 const browser = await chromium.launch();
 const ctx = await browser.newContext({ viewport: { width: 375, height: 812 }, deviceScaleFactor: 2, isMobile: true, hasTouch: true, acceptDownloads: true });
@@ -33,9 +33,6 @@ page.setDefaultTimeout(15000);
 const errors = [];
 page.on("pageerror", (e) => errors.push(String(e)));
 const form = () => page.locator("form[aria-labelledby]").first();
-const before = () => form().getByLabel("Right before, common phrases");
-const after = () => form().getByLabel("Right after, common phrases");
-const reflect = () => form().getByRole("group", { name: /communicating/i });
 
 try {
   console.log("ABC tracker journey (375px)");
@@ -48,54 +45,58 @@ try {
     await shot(page, "empty");
   });
 
-  await step("the audit's test: tricky nickname, two behaviors plus a custom one with punctuation and an emoji → exactly one observation", async () => {
-    await page.getByLabel("Child nickname").fill('Bean "Jr", Jr.');
-    await form().getByRole("button", { name: "Hitting", exact: true }).click();
-    await form().getByRole("button", { name: "Screaming", exact: true }).click();
-    await form().getByRole("button", { name: /add custom behavior/i }).click();
-    await page.getByLabel("Custom behavior").fill('Covering ears "x", y; <b>z</b> 😀');
-    await form().getByRole("button", { name: "Add", exact: true }).click();
-    await reflect().getByRole("button", { name: "Not sure", exact: true }).click();
-    await before().selectOption({ label: BEFORE[0] });
-    await page.getByLabel("What happened", { exact: true }).fill("Threw the cup, then screamed for about a minute.");
-    await after().selectOption({ label: AFTER[3] });
-    await form().getByRole("button", { name: /2\s*Moderate/ }).click();
+  await step("the audit's test, 15-second form: two behaviors plus a custom one with punctuation and an emoji, an early sign, detail → exactly one observation", async () => {
+    const q = (re) => form().getByRole("group", { name: re });
+    await q(/What did they do/).getByRole("button", { name: "Hitting", exact: true }).click();
+    await q(/What did they do/).getByRole("button", { name: "Screaming", exact: true }).click();
+    await q(/What did they do/).getByRole("button", { name: /my own words/ }).click();
+    await page.getByLabel(/What did they do\?: In your own words/).fill('Covering ears "x", y; <b>z</b> 😀');
+    await q(/What did they do/).getByRole("button", { name: "Add", exact: true }).click();
+    await q(/right before/).getByRole("button", { name: BEFORE[0], exact: true }).click();
+    await q(/right after/).getByRole("button", { name: AFTER[3], exact: true }).click();
+    await q(/before it got big/).getByRole("button", { name: "Pacing", exact: true }).click();
+    await form().getByRole("button", { name: "+ Add detail" }).click();
+    await form().getByRole("button", { name: "Moderate", exact: true }).click();
     await form().getByRole("button", { name: "1–5 min" }).click();
     await shot(page, "filled");
-    await form().getByRole("button", { name: "Save entry" }).click();
-    await page.getByText('Saved 1 observation (3 behaviors) for Bean "Jr", Jr').waitFor();
-    await page.getByText(/Observations · 1/).waitFor();
+    await form().getByRole("button", { name: "Save", exact: true }).click();
+    await page.getByText("Saved: 3 behaviors in one moment.").waitFor();
+    await page.getByText(/Observations · 1\b/).waitFor();
     const stored = await page.evaluate(() => JSON.parse(localStorage.getItem("support-shelf-abc-v2") || "{}"));
     expect(stored.version === 2, "v2 store");
     expect(stored.entries?.length === 1, `1 observation stored (got ${stored.entries?.length})`);
     expect(stored.entries[0].behaviorIds.length === 3, "3 behaviors in the observation");
-    expect(stored.entries[0].functionCode === "not_sure", "reflection stored");
+    expect(stored.entries[0].functionCode === null, "no reflection asked any more");
+    expect(JSON.stringify(stored.entries[0].earlySigns) === '["Pacing"]', "early sign stored");
     expect(stored.entries[0].durationSeconds === 180 && stored.entries[0].intensity === 2, "duration + intensity stored");
-    expect(stored.child?.nickname === 'Bean "Jr", Jr.', "nickname stored");
+    expect(stored.child === null, "no nickname asked while logging");
     expect((await page.evaluate(() => localStorage.getItem("support-shelf-abc-v1"))) === null, "no v1 key");
-    await page.getByRole("button", { name: "Got it" }).click(); // one-time "what to do next" card
+    await page.getByRole("status", { name: "Safety" }).getByRole("link", { name: "Crisis resources" }).waitFor(); // Hitting → safety card
+    await page.getByRole("status", { name: "Safety" }).getByRole("button", { name: "Close" }).click();
+    await page.getByRole("status", { name: "What happens next" }).getByRole("button").click();
   });
 
-  await step("seven more observations; they persist across reload and feed the BCBA table", async () => {
+  await step("seven more observations in three taps plus Save; they persist across reload and feed the BCBA table", async () => {
+    const q = (re) => form().getByRole("group", { name: re });
     for (let i = 0; i < 7; i++) {
-      await form().getByRole("button", { name: LABELS[i % LABELS.length], exact: true }).click();
-      await before().selectOption({ label: BEFORE[i % BEFORE.length] });
-      await after().selectOption({ label: AFTER[i % AFTER.length] });
-      await form().getByRole("button", { name: "Save entry" }).click();
-      await page.getByText(/Saved 1 observation for Bean/).first().waitFor();
+      await q(/What did they do/).getByRole("button", { name: LABELS[i % LABELS.length], exact: true }).click();
+      await q(/right before/).getByRole("button", { name: BEFORE[i % BEFORE.length], exact: true }).click();
+      await q(/right after/).getByRole("button", { name: AFTER[i % AFTER.length], exact: true }).click();
+      await form().getByRole("button", { name: "Save", exact: true }).click();
       await page.getByText(new RegExp(`Observations · ${i + 2}\\b`)).waitFor();
     }
-    await page.getByText(/Observations · 8/).waitFor();
     await page.reload();
     await page.getByText(/Observations · 8/).waitFor();
     expect((await page.getByText("Your entries").count()) >= 1, "table switched to the parent's entries");
-    expect((await page.getByText("This sample uses made-up data.").count()) === 0, "sample caption gone");
     await shot(page, "list");
   });
 
   await step("edit one entry; time is editable; views count facts", async () => {
     // Playwright's auto-scroll inside the fixed bottom sheet is flaky; scroll first, as a person would.
     const tap = async (loc) => { await loc.scrollIntoViewIfNeeded(); await loc.click(); };
+    // Eight observations: the default view is now "What you're noticing"; edits live in the List tab.
+    expect((await page.getByRole("tab", { name: "What you're noticing" }).getAttribute("aria-selected")) === "true", "insights is the default at 5+");
+    await page.getByRole("tab", { name: "List" }).click();
     await tap(page.getByRole("button", { name: /edit entry: hitting/i }).first());
     const d = page.getByRole("dialog");
     await d.getByRole("heading", { name: "Edit observation" }).waitFor();
@@ -107,18 +108,22 @@ try {
     await d.getByRole("button", { name: /save changes/i }).click();
     await page.getByText("Saved.").waitFor();
     const focused = await page.evaluate(() => document.activeElement?.getAttribute("aria-label") || document.activeElement?.tagName);
+    await shot(page, "after-edit");
     expect(/edit entry/i.test(focused || ""), `focus returned to the entry (got ${focused})`);
-    await page.getByRole("tab", { name: "Time of day" }).click();
-    await page.getByText(/Most entries:/).waitFor();
-    await page.getByRole("tab", { name: "Right before" }).click();
-    await page.getByText(/Most often recorded right before:/).waitFor();
+    await page.getByRole("tab", { name: "What you're noticing" }).click();
+    await page.getByText(/Most often right before:/).waitFor();
+    await page.getByText(/ of 8$/).first().waitFor();
     const text = (await page.locator("main").innerText()).toLowerCase();
     for (const banned of ["because", "you should", "diagnosed with"]) expect(!text.includes(banned), `page contains "${banned}"`);
     await shot(page, "views");
     await page.getByRole("tab", { name: "List" }).click();
   });
 
-  await step("one-tap PDF and CSV downloads are real files built in the browser", async () => {
+  await step("first export asks for a nickname (tricky characters), then PDF and CSV are real files built in the browser", async () => {
+    await page.getByLabel("A nickname for the export").fill('Bean "Jr", Jr.');
+    await page.locator("#export").getByRole("button", { name: "Save" }).click();
+    await page.getByRole("button", { name: "Download PDF" }).waitFor();
+    expect((await page.evaluate(() => JSON.parse(localStorage.getItem("support-shelf-abc-v2")).child.nickname)) === 'Bean "Jr", Jr.', "nickname stored at export");
     const [pdf] = await Promise.all([page.waitForEvent("download"), page.getByRole("button", { name: "Download PDF" }).click()]);
     const pdfPath = path.join(SHOTS, "export.pdf");
     await pdf.saveAs(pdfPath);
@@ -133,6 +138,7 @@ try {
     expect(text.trim().split("\n").length === 9, `csv rows: ${text.trim().split("\n").length}`);
     expect(text.includes("Covering ears"), "csv has custom label");
     expect(text.includes("Hitting; Screaming; Covering ears"), "csv lists all behaviors of the first observation in one row");
+    expect(text.includes("early_signs") && text.includes("Pacing"), "csv carries early signs");
     await page.getByText(/Clearing your browser data clears these entries/).waitFor();
   });
 
@@ -154,7 +160,6 @@ try {
     expect((await page.evaluate(() => localStorage.getItem("support-shelf-abc-v2"))) === null, "localStorage key removed");
     await page.reload();
     await page.getByText(/Observations · 0/).waitFor();
-    expect((await page.getByLabel("Child nickname").inputValue()) === "", "nickname cleared");
   });
 
   await step("no horizontal overflow at 375px on /abc", async () => {

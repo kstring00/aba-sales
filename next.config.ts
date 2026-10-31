@@ -27,6 +27,8 @@ const csp = [
 
 const nextConfig: NextConfig = {
   cacheComponents: false,
+  // Inlined into server and client bundles so client components can hide pending content on production.
+  env: { SUPPORT_SHELF_DEPLOY: process.env.VERCEL_ENV ?? "local" },
   poweredByHeader: false,
   images: {
     remotePatterns: [{ protocol: "https", hostname: "cdn.shopify.com" }],

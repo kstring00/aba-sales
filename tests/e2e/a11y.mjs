@@ -34,9 +34,8 @@ for (const p of PAGES) {
   }
   if (p === "/abc") {
     // Exercise the tracker too: save an entry, then open the edit sheet.
-    await page.getByLabel("Child nickname").fill("Bean");
     await page.getByRole("button", { name: "Hitting", exact: true }).click();
-    await page.getByRole("button", { name: "Save entry" }).click();
+    await page.getByRole("button", { name: "Save", exact: true }).click();
     await page.getByText(/Observations · 1/).waitFor();
     await page.getByRole("button", { name: /edit entry: hitting/i }).first().click();
     await page.getByRole("dialog").waitFor();

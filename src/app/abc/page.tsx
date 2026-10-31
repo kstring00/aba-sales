@@ -6,6 +6,7 @@ import { Tracker } from "@/components/abc/Tracker";
 import { FunctionExplainer, HowToUse } from "@/components/abc/Explainers";
 import { I } from "@/components/abc/icons";
 import { getProduct } from "@/lib/shopify/catalog";
+import { isVisible, readPage } from "@/lib/content/pages";
 
 export const revalidate = 300;
 
@@ -36,7 +37,7 @@ export default async function AbcPage() {
           {printable ? <> Prefer paper? <Link href={`/products/${printable.handle}`} className="text-ink underline underline-offset-4">{printable.title}</Link> is the printable version.</> : null}
         </p>
         <div className="mt-8">
-          <Tracker explainers={<><FunctionExplainer /><HowToUse /></>} />
+          <Tracker lessonVisible={isVisible(readPage("learn/why-behavior-happens"))} explainers={<><FunctionExplainer /><HowToUse /></>} />
         </div>
       </main>
       <SiteFooter />

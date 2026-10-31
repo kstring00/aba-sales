@@ -145,6 +145,13 @@ export function setChild(nickname: string, seedLabels: string[] = SEED_BEHAVIORS
   write({ ...s, child: { nickname: nickname.trim().slice(0, 40), createdAt: s.child?.createdAt ?? now() }, behaviors });
 }
 
+/** Seeds the editable behavior labels once, without asking for a nickname. */
+export function ensureBehaviors(seedLabels: string[] = SEED_BEHAVIORS) {
+  const s = readStore();
+  if (s.behaviors.length) return;
+  write({ ...s, behaviors: seedLabels.map((label) => ({ id: uid(), label, isActive: true, createdAt: now() })) });
+}
+
 export function renameChild(nickname: string) {
   const s = readStore();
   if (!s.child) return;
