@@ -22,10 +22,12 @@ for (const p of PAGES) {
     await page.locator("summary[aria-label='Search the shelves']").click();
   }
   if (p === "/abc") {
-    // Exercise the logger too: set up a child and open the sheet.
-    await page.getByLabel("Nickname").fill("Bean");
-    await page.getByRole("button", { name: /start logging/i }).click();
-    await page.getByRole("button", { name: /log what happened/i }).click();
+    // Exercise the tracker too: save an entry, then open the edit sheet.
+    await page.getByLabel("Child nickname").fill("Bean");
+    await page.getByRole("button", { name: "Hitting", exact: true }).click();
+    await page.getByRole("button", { name: "Save entry" }).click();
+    await page.getByText(/Entries · 1/).waitFor();
+    await page.getByRole("button", { name: /edit entry: hitting/i }).first().click();
     await page.getByRole("dialog").waitFor();
   }
   await page.addScriptTag({ content: axeSource });

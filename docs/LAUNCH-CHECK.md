@@ -110,3 +110,13 @@ Legal review of /privacy · BCBA review of wording and the "reviewed by" name ·
 | Pages 375/1280, axe, unit tests, `/abc` journey | all pass (unchanged) |
 | Lighthouse mobile `/` after adding per-shelf scenes, layered cards, thick board | 91–94 perf (scene rendered only for the open panel), 100 a11y/BP/SEO, CLS 0.02 |
 | Last shelf loops with "Back to the first shelf" instead of "Next up" | pass (`tests/e2e/shots/rebuild/1280-shelves-4.png`) |
+
+## ABC tracker rebuild
+
+| Check | Result |
+| --- | --- |
+| Journey at 375px: multi-behavior save, 10 entries persist, edit, views, PDF + CSV (11 rows, reflection column), email path, delete everything | 8 of 8 (`tests/e2e/abc.mjs`) |
+| axe on `/abc` with an entry saved and the edit sheet open | 0 violations |
+| Lighthouse mobile `/abc` | 90 perf (explainers server-rendered; only store-bound parts wait for hydration), 100 a11y/BP/SEO, CLS 0 |
+| No horizontal overflow at 375px (table scrolls inside its own focusable region) | pass |
+| Nav and footer link to the tracker | pass |

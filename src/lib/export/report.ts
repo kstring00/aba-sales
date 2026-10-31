@@ -3,7 +3,7 @@
  * what was recorded and never why anything happened.
  */
 import { addDays, toDateStr } from "@/lib/time/zoned";
-import { antecedentLabel, consequenceLabel, intensityLabel, formatDuration } from "@/lib/observation";
+import { antecedentLabel, consequenceLabel, intensityLabel, formatDuration, functionLabel } from "@/lib/observation";
 import type { EntryWithBehavior } from "@/lib/abc/types";
 
 export type ReportRow = {
@@ -21,6 +21,8 @@ export type ReportRow = {
   intensity: string;
   intensityValue: number | null;
   note: string;
+  /** Parent's reflection, if any. */
+  mightBe: string;
 };
 
 export type ReportWeek = { start: string; end: string; rows: ReportRow[] };
@@ -60,6 +62,7 @@ export function toRow(e: EntryWithBehavior, tz: string): ReportRow {
     intensity: intensityLabel(e.intensity),
     intensityValue: e.intensity,
     note: e.note ?? "",
+    mightBe: functionLabel(e.functionCode),
   };
 }
 

@@ -20,6 +20,13 @@ export type ConsequenceCode =
   | "something_else"
   | "not_sure";
 
+/**
+ * A parent's reflection on what the behavior might be communicating. It is
+ * recorded as the parent's own guess for discussion with the BCBA, never
+ * as a finding, and exports label it that way.
+ */
+export type FunctionCode = "attention" | "escape" | "access" | "sensory" | "pain" | "not_sure";
+
 export type Behavior = {
   id: string;
   label: string;
@@ -37,9 +44,12 @@ export type Entry = {
   consequenceCode: ConsequenceCode | null;
   consequenceNote: string | null;
   durationSeconds: number | null;
-  /** 1 gentle · 2 moderate · 3 intense */
+  /** 1 mild · 2 moderate · 3 high */
   intensity: 1 | 2 | 3 | null;
+  /** "What happened?" in the parent's words. */
   note: string | null;
+  /** Optional reflection; absent on entries saved before it existed. */
+  functionCode?: FunctionCode | null;
   createdAt: string;
   updatedAt: string;
 };

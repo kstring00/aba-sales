@@ -118,6 +118,7 @@ function cellText(r: ReportRow, key: Col["key"]): string {
   }
   if (key === "before") return r.beforeNote ? `${r.before}: ${r.beforeNote}` : r.before;
   if (key === "after") return r.afterNote ? `${r.after}: ${r.afterNote}` : r.after;
+  if (key === "note") return [r.note, r.mightBe ? `Parent's reflection: might be ${r.mightBe.toLowerCase()}` : ""].filter(Boolean).join(" · ");
   return String(r[key] ?? "");
 }
 

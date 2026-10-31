@@ -1,4 +1,4 @@
-import type { AntecedentCode, ConsequenceCode } from "@/lib/abc/types";
+import type { AntecedentCode, ConsequenceCode, FunctionCode } from "@/lib/abc/types";
 
 /**
  * Observational vocabulary. Exact wording from the product spec.
@@ -25,18 +25,51 @@ export const CONSEQUENCES: ReadonlyArray<{ code: ConsequenceCode; label: string 
 ];
 
 export const INTENSITY_LABELS: Record<1 | 2 | 3, string> = {
-  1: "Gentle",
+  1: "Mild",
   2: "Moderate",
-  3: "Intense",
+  3: "High",
 };
+
+/** Duration is recorded as a range; the stored seconds are the range's midpoint-ish anchor. */
+export const DURATION_PRESETS: ReadonlyArray<{ label: string; seconds: number }> = [
+  { label: "< 1 min", seconds: 30 },
+  { label: "1–5 min", seconds: 180 },
+  { label: "6–15 min", seconds: 600 },
+  { label: "15+ min", seconds: 1200 },
+];
+
+/**
+ * "What might the behavior be communicating?" The parent's reflection,
+ * for discussion with the BCBA. Not a diagnosis, and exports say so.
+ */
+export const FUNCTIONS: ReadonlyArray<{ code: FunctionCode; label: string }> = [
+  { code: "attention", label: "Attention" },
+  { code: "escape", label: "Escape" },
+  { code: "access", label: "Access to item/activity" },
+  { code: "sensory", label: "Sensory" },
+  { code: "pain", label: "Pain / discomfort" },
+  { code: "not_sure", label: "Not sure" },
+];
+
+export function functionLabel(code: FunctionCode | null | undefined) {
+  if (!code) return "";
+  return FUNCTIONS.find((f) => f.code === code)?.label ?? code;
+}
 
 /** Editable suggestions offered on first run. Parents own the final list. */
 export const SEED_BEHAVIORS = [
   "Hitting",
+  "Biting",
   "Screaming",
   "Dropping to floor",
-  "Running off",
   "Refusing",
+  "Throwing",
+  "Running off",
+  "Self-injury",
+  "Property destruction",
+  "Tantrum",
+  "Climbing",
+  "Spitting",
 ];
 
 export function antecedentLabel(code: AntecedentCode | null, note?: string | null) {
@@ -58,6 +91,8 @@ export function intensityLabel(v: number | null) {
 
 export function formatDuration(seconds: number | null) {
   if (seconds == null) return "";
+  const preset = DURATION_PRESETS.find((p) => p.seconds === seconds);
+  if (preset) return preset.label;
   if (seconds < 60) return `${seconds}s`;
   const m = Math.floor(seconds / 60);
   const s = seconds % 60;

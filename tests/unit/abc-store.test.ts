@@ -1,5 +1,5 @@
 import { beforeEach, describe, expect, it } from "vitest";
-import { ANTECEDENTS, CONSEQUENCES } from "@/lib/observation";
+import { ANTECEDENTS, CONSEQUENCES, SEED_BEHAVIORS } from "@/lib/observation";
 import { addBehavior, addEntry, clearAll, deleteBehavior, deleteEntry, readStore, setBehaviorActive, setChild, STORAGE_KEY, updateEntry, withLabels } from "@/lib/abc/store";
 import { antecedentCaption, byAntecedent, byHour, hourCaption } from "@/lib/abc/views";
 
@@ -51,7 +51,7 @@ describe("local store", () => {
     setChild("Bean");
     const s = readStore();
     expect(s.child?.nickname).toBe("Bean");
-    expect(s.behaviors.map((b) => b.label)).toEqual(["Hitting", "Screaming", "Dropping to floor", "Running off", "Refusing"]);
+    expect(s.behaviors.map((b) => b.label)).toEqual([...SEED_BEHAVIORS]);
     expect(JSON.parse(mem.get(STORAGE_KEY)!).child.nickname).toBe("Bean");
     expect(mem.get(STORAGE_KEY)).not.toContain("diagnosis");
   });

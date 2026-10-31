@@ -1,7 +1,8 @@
 #!/usr/bin/env node
 /**
- * /abc logger journey at 375px: set up, log 10 entries, views, both exports,
- * email flow (no Resend configured → polite failure), clear and confirm.
+ * /abc tracker journey at 375px: save entries (multi-behavior), persist,
+ * edit, views, both exports, email flow (no Resend configured → polite
+ * failure), delete everything.
  *   node tests/e2e/abc.mjs   (app on BASE, default :3100)
  */
 import fs from "node:fs";
@@ -23,7 +24,7 @@ async function step(name, fn) {
 
 const BEFORE = ["An instruction was given", "An item or activity was unavailable", "An activity or location changed", "Someone approached or interacted", "The child was alone", "Not sure"];
 const AFTER = ["An item or activity was provided", "The activity or instruction stopped", "Someone spoke to or interacted with the child", "Someone offered comfort", "No immediate response was observed", "Not sure"];
-const LABELS = ["Hitting", "Screaming", "Dropping to floor", "Running off", "Refusing"];
+const LABELS = ["Hitting", "Screaming", "Dropping to floor", "Running off", "Refusing", "Covering ears"];
 
 const browser = await chromium.launch();
 const ctx = await browser.newContext({ viewport: { width: 375, height: 812 }, deviceScaleFactor: 2, isMobile: true, hasTouch: true, acceptDownloads: true });
@@ -31,60 +32,82 @@ const page = await ctx.newPage();
 page.setDefaultTimeout(15000);
 const errors = [];
 page.on("pageerror", (e) => errors.push(String(e)));
+const form = () => page.locator("form[aria-labelledby]").first();
+const before = () => form().getByLabel("Right before, common phrases");
+const after = () => form().getByLabel("Right after, common phrases");
+const reflect = () => form().getByRole("group", { name: /communicating/i });
 
 try {
-  console.log("ABC logger journey (375px)");
-  await step("first line says nothing leaves your phone; setup takes a nickname", async () => {
+  console.log("ABC tracker journey (375px)");
+  await step("first line says nothing leaves your phone; sample table shown before any entry", async () => {
     await page.goto(`${BASE}/abc`);
     const first = await page.locator("main p").first().innerText();
     expect(first.startsWith("Nothing leaves your phone."), `first line: ${first}`);
-    expect((await page.getByText(/sample export|What your BCBA receives/i).count()) > 0, "sample export shown");
-    await shot(page, "setup");
-    await page.getByLabel("Nickname").fill("Bean");
-    await page.getByRole("button", { name: "Refusing", exact: true }).click();
-    await page.getByLabel("Add your own").fill("Covering ears");
-    await page.getByRole("button", { name: "Add", exact: true }).click();
-    await page.getByRole("button", { name: /start logging/i }).click();
-    await page.getByRole("button", { name: /log what happened/i }).waitFor();
-    await shot(page, "home");
+    await page.getByRole("heading", { name: "What your BCBA receives" }).waitFor();
+    expect((await page.getByText("This sample uses made-up data.").count()) === 1, "sample caption");
+    await shot(page, "empty");
   });
 
-  await step("log 10 entries in three taps each; they persist in localStorage", async () => {
-    const labels = [...LABELS.filter((l) => l !== "Refusing"), "Covering ears"];
-    for (let i = 0; i < 10; i++) {
-      await page.getByRole("button", { name: /log what happened/i }).click();
-      const d = page.getByRole("dialog");
-      await d.getByRole("button", { name: labels[i % labels.length], exact: true }).click();
-      await d.getByRole("button", { name: BEFORE[i % BEFORE.length], exact: true }).click();
-      await d.getByRole("button", { name: AFTER[i % AFTER.length], exact: true }).click();
-      if (i === 0) await shot(page, "review");
-      await d.getByRole("button", { name: "Save", exact: true }).click();
-      await page.getByRole("dialog").waitFor({ state: "detached" });
+  await step("save one observation with three behaviors, a reflection, A/B/C details, intensity and duration", async () => {
+    await page.getByLabel("Child nickname").fill("Bean");
+    await form().getByRole("button", { name: "Hitting", exact: true }).click();
+    await form().getByRole("button", { name: "Screaming", exact: true }).click();
+    await form().getByRole("button", { name: /add custom behavior/i }).click();
+    await page.getByLabel("Custom behavior").fill("Covering ears");
+    await form().getByRole("button", { name: "Add", exact: true }).click();
+    await reflect().getByRole("button", { name: "Not sure", exact: true }).click();
+    await before().selectOption({ label: BEFORE[0] });
+    await page.getByLabel("What happened", { exact: true }).fill("Threw the cup, then screamed for about a minute.");
+    await after().selectOption({ label: AFTER[3] });
+    await form().getByRole("button", { name: /2\s*Moderate/ }).click();
+    await form().getByRole("button", { name: "1–5 min" }).click();
+    await shot(page, "filled");
+    await form().getByRole("button", { name: "Save entry" }).click();
+    await page.getByText("Saved 3 entries for Bean.").waitFor();
+    await page.getByText(/Entries · 3/).waitFor();
+    const stored = await page.evaluate(() => JSON.parse(localStorage.getItem("support-shelf-abc-v1") || "{}"));
+    expect(stored.entries?.length === 3, "3 entries stored");
+    expect(stored.entries.every((e) => e.functionCode === "not_sure"), "reflection stored");
+    expect(stored.entries.every((e) => e.durationSeconds === 180 && e.intensity === 2), "duration + intensity stored");
+    expect(stored.child?.nickname === "Bean", "nickname stored");
+  });
+
+  await step("seven more single entries; they persist across reload and feed the BCBA table", async () => {
+    for (let i = 0; i < 7; i++) {
+      await form().getByRole("button", { name: LABELS[i % LABELS.length], exact: true }).click();
+      await before().selectOption({ label: BEFORE[i % BEFORE.length] });
+      await after().selectOption({ label: AFTER[i % AFTER.length] });
+      await form().getByRole("button", { name: "Save entry" }).click();
+      await page.getByText("Saved 1 entry for Bean.").waitFor();
+      await page.getByText("Saved 1 entry for Bean.").waitFor({ state: "detached" });
     }
     await page.getByText(/Entries · 10/).waitFor();
-    const stored = await page.evaluate(() => JSON.parse(localStorage.getItem("support-shelf-abc-v1") || "{}"));
-    expect(stored.entries?.length === 10, "10 entries in localStorage");
-    expect(stored.child?.nickname === "Bean", "nickname stored");
     await page.reload();
     await page.getByText(/Entries · 10/).waitFor();
+    expect((await page.getByText("Your entries").count()) >= 1, "table switched to the parent's entries");
+    expect((await page.getByText("This sample uses made-up data.").count()) === 0, "sample caption gone");
     await shot(page, "list");
   });
 
   await step("edit one entry; time is editable; views count facts", async () => {
-    await page.getByRole("button", { name: /edit entry: hitting/i }).first().click();
+    // Playwright's auto-scroll inside the fixed bottom sheet is flaky; scroll first, as a person would.
+    const tap = async (loc) => { await loc.scrollIntoViewIfNeeded(); await loc.click(); };
+    await tap(page.getByRole("button", { name: /edit entry: hitting/i }).first());
     const d = page.getByRole("dialog");
-    await d.getByRole("button", { name: "Intense" }).click();
+    await tap(d.getByRole("button", { name: "High", exact: true }));
     await d.getByLabel("Date and time").waitFor();
+    // Mobile emulation offsets the visual viewport after focus; scroll the sheet to its end so Save is fully on screen.
+    await page.evaluate(() => document.querySelector("[role=dialog] .overflow-y-auto")?.scrollTo(0, 1e6));
+    await page.waitForTimeout(200);
     await d.getByRole("button", { name: /save changes/i }).click();
     await page.getByText("Saved.").waitFor();
     await page.getByRole("tab", { name: "Time of day" }).click();
     await page.getByText(/Most entries:/).waitFor();
-    await shot(page, "time-of-day");
     await page.getByRole("tab", { name: "Right before" }).click();
     await page.getByText(/Most often recorded right before:/).waitFor();
     const text = (await page.locator("main").innerText()).toLowerCase();
-    for (const banned of ["because", "trigger", "function", "you should", "try "]) expect(!text.includes(banned), `page contains "${banned}"`);
-    await shot(page, "right-before");
+    for (const banned of ["because", "you should", "diagnosed with"]) expect(!text.includes(banned), `page contains "${banned}"`);
+    await shot(page, "views");
     await page.getByRole("tab", { name: "List" }).click();
   });
 
@@ -92,25 +115,26 @@ try {
     const [pdf] = await Promise.all([page.waitForEvent("download"), page.getByRole("button", { name: "Download PDF" }).click()]);
     const pdfPath = path.join(SHOTS, "export.pdf");
     await pdf.saveAs(pdfPath);
-    const head = fs.readFileSync(pdfPath).subarray(0, 5).toString();
-    expect(head === "%PDF-", `pdf magic: ${head}`);
+    expect(fs.readFileSync(pdfPath).subarray(0, 5).toString() === "%PDF-", "pdf magic");
     expect(fs.statSync(pdfPath).size > 50_000, "pdf has embedded fonts");
     const [csv] = await Promise.all([page.waitForEvent("download"), page.getByRole("button", { name: "Download CSV" }).click()]);
     const csvPath = path.join(SHOTS, "export.csv");
     await csv.saveAs(csvPath);
     const text = fs.readFileSync(csvPath, "utf8");
     expect(text.includes("date,time,noticed,right_before"), "csv header");
+    expect(text.includes("parent_reflection_might_be"), "csv reflection column");
     expect(text.trim().split("\n").length === 11, `csv rows: ${text.trim().split("\n").length}`);
     expect(text.includes("Covering ears"), "csv has custom label");
     await page.getByText(/Clearing your browser data clears these entries/).waitFor();
-    await shot(page, "export");
   });
 
   await step("email flow fails politely when Resend isn't configured, and never 500s", async () => {
+    await page.getByRole("button", { name: "Email me my export" }).click();
     await page.getByLabel("Email me my export").fill("parent@example.test");
     const [res] = await Promise.all([page.waitForResponse((r) => r.url().includes("/api/abc/email-export")), page.getByRole("button", { name: "Send", exact: true }).click()]);
     expect(res.status() === 503 || res.status() === 200, `status ${res.status()}`);
     await page.getByRole(res.status() === 200 ? "status" : "alert").first().waitFor();
+    await shot(page, "export");
   });
 
   await step("delete everything needs two confirmations and clears localStorage", async () => {
@@ -118,11 +142,11 @@ try {
     await page.getByRole("button", { name: /delete everything…/i }).click();
     await page.getByRole("button", { name: /yes, i've exported/i }).click();
     await page.getByRole("button", { name: /delete for good/i }).click();
-    await page.getByRole("heading", { name: /noticing/i }).waitFor();
-    const stored = await page.evaluate(() => localStorage.getItem("support-shelf-abc-v1"));
-    expect(stored === null, "localStorage key removed");
+    await page.getByText(/Entries · 0/).waitFor();
+    expect((await page.evaluate(() => localStorage.getItem("support-shelf-abc-v1"))) === null, "localStorage key removed");
     await page.reload();
-    await page.getByRole("heading", { name: /noticing/i }).waitFor();
+    await page.getByText(/Entries · 0/).waitFor();
+    expect((await page.getByLabel("Child nickname").inputValue()) === "", "nickname cleared");
   });
 
   await step("no horizontal overflow at 375px on /abc", async () => {

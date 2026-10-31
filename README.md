@@ -31,7 +31,9 @@ The direction, audit, and principles are in `docs/CREATIVE-DIRECTION.md`; the il
 
 ## Pages
 
-`/` · `/shelf` · `/products/[handle]` · `/cart` · `/thanks` · `/abc` · `/about` · `/privacy` · `/crisis` · 404. Phone and email are in the footer on every page (set `NEXT_PUBLIC_CONTACT_EMAIL` and `NEXT_PUBLIC_CONTACT_PHONE`).
+`/` · `/shelf` · `/products/[handle]` · `/cart` · `/thanks` · `/abc` · `/about` · `/privacy` · `/crisis` · 404.
+
+**The ABC tracker (`/abc`)** is one form on one card: nickname, behaviors (multi-select; one entry is saved per selected behavior so counts stay per behavior), an optional "what might it be communicating" reflection (recorded and exported as the parent's own guess, never a finding), A/B/C details with the original "right before" / "right after" phrases as a select plus free text, intensity (Mild/Moderate/High) and duration ranges. Beside it, "What your BCBA receives" shows the latest week of the parent's own entries as the export table (a labelled made-up sample before the first entry) with PDF, CSV and "email me my export". Everything stays in localStorage. Phone and email are in the footer on every page (set `NEXT_PUBLIC_CONTACT_EMAIL` and `NEXT_PUBLIC_CONTACT_PHONE`).
 
 ## Environment
 
