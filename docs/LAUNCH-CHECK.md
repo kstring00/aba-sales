@@ -102,3 +102,11 @@ Legal review of /privacy · BCBA review of wording and the "reviewed by" name ·
 | `/abc` journey unchanged | 7 of 7 |
 | No invented products, testimonials, sign-in, or counts; prices from Shopify ($0 shows as Free) | pass |
 | Boundary line on every page: "These tools record and organize. Your BCBA writes the plan." | footer + product page |
+
+## Shelf personality pass
+
+| Check | Result |
+| --- | --- |
+| Pages 375/1280, axe, unit tests, `/abc` journey | all pass (unchanged) |
+| Lighthouse mobile `/` after adding per-shelf scenes, layered cards, thick board | 91–94 perf (scene rendered only for the open panel), 100 a11y/BP/SEO, CLS 0.02 |
+| Last shelf loops with "Back to the first shelf" instead of "Next up" | pass (`tests/e2e/shots/rebuild/1280-shelves-4.png`) |
