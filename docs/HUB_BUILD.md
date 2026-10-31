@@ -152,7 +152,14 @@ Gate: build (scope check: 21 files clean), typecheck, lint · unit 56/56 · page
 
 Then, in any order: `content/pages/for-you.md`, `learn.md`, `find-care.md`, `glossary.md`, the other four lessons, and the rest of `content/tracker.json` (early signs, label nudge, Did you know, walkthrough, questions to bring). Set `status: published` on each file when it's ready; nothing else needs to change.
 
-## Still open
+## Launch content (written by Claude at the owner's request)
 
-- **Markdown renderer.** Sections render as plain paragraphs (no bold, lists or links inside the text) until you pick: `marked` (14.5 KB gzipped, server-only), `snarkdown` (1 KB), or a small in-repo renderer. Glossary auto-linking and the scope check already work on the files either way.
-- `lastVerified` dates for the five crisis lines (the build warns until they're set).
+All hub content was written in one pass and set to `published` so the hub is live; the owner reviews and rewrites anything that reads wrong.
+
+- Every page, lesson, Find care block, glossary term (39) and tracker item is filled; the scope check passes with no `scope-ok` escapes.
+- Sources: every lesson and the research page cite organization pages or DOIs. Links were confirmed through search; none could be opened from the build environment.
+- Resources: the 5 crisis lines and 5 Find care entries have `lastVerified: 2026-10-31`, meaning checked against each organization's official site that day, not by calling.
+- `reviewedBy` and `lastReviewed` are left empty on purpose: no one has reviewed this content yet.
+- Markdown renderer: a small in-repo renderer (`SectionText.tsx`) handles paragraphs, `-` and `1.` lists, bold, italic and links, with no new dependency. Output is React elements only; unknown link schemes are dropped.
+
+Review first, in this order: Right now, the safety card, "What autistic adults have said" in What ABA is and isn't, the research page numbers, and the Texas facts in Find care.

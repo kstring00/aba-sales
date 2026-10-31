@@ -26,51 +26,62 @@
     "savedMany": "Saved: {n} behaviors in one moment."
   },
   "earlySigns": {
-    "status": "pending",
+    "status": "published",
     "chips": [
       "Covering ears",
       "Pacing",
       "Getting quiet",
-      "Repeating a phrase"
-    ],
-    "_note": "Example chips from the brief. Finalize the list, then set status to published."
+      "Getting louder",
+      "Repeating a phrase",
+      "Moving away",
+      "Saying no to favorites",
+      "Clinging"
+    ]
   },
   "labelNudge": {
-    "status": "pending",
+    "status": "published",
     "behaviors": [
       "Tantrum",
       "Refusing",
       "Property destruction"
     ],
-    "text": "",
-    "_note": "One line shown under the chips when a label-type behavior is picked, inviting a description of what it looked like."
+    "text": "Words like this mean different things to different people. A few words about what it looked like (\"dropped to the floor and cried for 5 minutes\") make your notes more useful."
   },
   "safetyCard": {
-    "status": "pending",
+    "status": "published",
     "behaviors": [
       "Self-injury",
       "Hitting",
       "Biting",
       "Running off"
     ],
-    "title": "",
-    "body": "",
+    "title": "Safety comes first",
+    "body": "Moments like this can be frightening. If anyone is hurt or in danger, call 911. When things are calm, it's worth telling your child's doctor or BCBA what happened.",
     "crisisLink": "Crisis resources",
     "talkLine": "Talk to your child's doctor or BCBA.",
-    "_note": "Shown after saving a moment that includes one of these behaviors. The crisis link and the doctor/BCBA line always show; title and body appear once published.",
     "dismiss": "Close"
   },
   "didYouKnow": {
-    "status": "pending",
-    "lines": [],
-    "_note": "Short general facts, one shown after each save, rotating."
+    "status": "published",
+    "lines": [
+      "What happened right before a moment is often the most useful part of a note.",
+      "A week of notes can show patterns, like time of day, that are hard to see in the moment.",
+      "Describing what you saw (\"cried and dropped to the floor\") tells your child's team more than a label does.",
+      "You can export your notes as a PDF to bring to a doctor, BCBA or teacher.",
+      "Your notes stay on this device. No one else can see them unless you export them.",
+      "Notes about easier days help too: they show what was different."
+    ]
   },
   "walkthrough": {
-    "status": "pending",
-    "title": "",
-    "steps": [],
-    "dismiss": "Got it",
-    "_note": "A 30-second first-visit walkthrough using the asked-to-put-shoes-on example. Three or four short steps."
+    "status": "published",
+    "title": "How this works, in 30 seconds",
+    "steps": [
+      "Say you asked your child to put their shoes on, and they dropped to the floor crying.",
+      "Tap what they did: crying, dropping to the floor.",
+      "Tap what happened right before (asked to put shoes on) and right after (you waited, then helped). Both are optional.",
+      "Save. After a few moments are logged, \"What you're noticing\" shows the patterns in what you recorded."
+    ],
+    "dismiss": "Got it"
   },
   "whatNext": {
     "status": "published",
@@ -98,12 +109,11 @@
     "of": "{n} of {total}"
   },
   "questionsToBring": {
-    "status": "draft",
+    "status": "published",
     "heading": "Questions you could bring to a BCBA, your pediatrician, or your child's teacher",
     "before": "Most moments came right after this: “{label}”. What could help at those times?",
     "after": "Afterwards, “{label}” was recorded most often. Is that worth talking through?",
     "time": "Most moments happened between {from} and {to}. What usually happens around then?",
-    "early": "“{label}” often came first. What could we do when we notice it?",
-    "_note": "Draft wording written from the brief's example; review, then set status to published."
+    "early": "“{label}” often came first. What could we do when we notice it?"
   }
 }

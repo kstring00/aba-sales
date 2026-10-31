@@ -1,7 +1,7 @@
 ---
 title: Glossary
 description: What does BCBA mean? Plain-language definitions of the words, roles and paperwork around autism services.
-status: pending
+status: published
 reviewedBy:
 lastReviewed:
 related:
@@ -10,4 +10,4 @@ sources:
 
 ## Start here
 
-<!-- WRITE: one or two sentences introducing the glossary. -->
+The words, titles and acronyms you'll hear around autism services, in plain language. Wherever you see a dotted underline on this site, tap the word to see what it means.

@@ -1,5 +1,5 @@
 {
-  "_readme": "Every outside phone line, agency and website on the site. lastVerified is the date someone last checked the entry works (YYYY-MM-DD). null means it has never been checked: the build warns. TODO_VERIFY in any field hides the entry on the live site. The crisis entries are the ones already on /crisis; lastVerified is null because they have not been re-checked since they were added.",
+  "_readme": "Every outside phone line, agency and website on the site. lastVerified is the date someone last checked the entry works (YYYY-MM-DD). null means it has never been checked: the build warns. TODO_VERIFY in any field hides the entry on the live site. lastVerified 2026-10-31 means the details were checked against each organization's official website on that date (not by calling).",
   "resources": [
     {
       "id": "911",
@@ -13,7 +13,7 @@
         "href": "tel:911"
       },
       "url": null,
-      "lastVerified": null
+      "lastVerified": "2026-10-31"
     },
     {
       "id": "988",
@@ -21,7 +21,7 @@
       "category": "crisis",
       "region": "US",
       "title": "Suicide and mental health crisis",
-      "whatFor": "988 Suicide & Crisis Lifeline. 24/7. Press 1 for veterans, 2 for Spanish.",
+      "whatFor": "988 Suicide & Crisis Lifeline. Free, 24/7, by call, text or chat. Press 1 for veterans, 2 for Spanish.",
       "action": {
         "label": "Call or text 988",
         "href": "tel:988"
@@ -30,7 +30,7 @@
         "label": "Chat at 988lifeline.org",
         "href": "https://988lifeline.org/"
       },
-      "lastVerified": null
+      "lastVerified": "2026-10-31"
     },
     {
       "id": "childhelp",
@@ -38,7 +38,7 @@
       "category": "crisis",
       "region": "US",
       "title": "Worried about a child's safety, including your own ability to cope",
-      "whatFor": "Childhelp National Child Abuse Hotline. Counselors, 24/7, in 170 languages.",
+      "whatFor": "Childhelp National Child Abuse Hotline. Counselors 24/7 by phone, text or chat, with interpreters in over 170 languages.",
       "action": {
         "label": "Call 1-800-422-4453",
         "href": "tel:18004224453"
@@ -47,7 +47,7 @@
         "label": "childhelphotline.org",
         "href": "https://childhelphotline.org/"
       },
-      "lastVerified": null
+      "lastVerified": "2026-10-31"
     },
     {
       "id": "crisis-text-line",
@@ -55,13 +55,13 @@
       "category": "crisis",
       "region": "US",
       "title": "Prefer to text",
-      "whatFor": "Crisis Text Line. Free, 24/7.",
+      "whatFor": "Crisis Text Line. Free, 24/7, anywhere in the US.",
       "action": {
         "label": "Text HOME to 741741",
         "href": "sms:741741&body=HOME"
       },
       "url": null,
-      "lastVerified": null
+      "lastVerified": "2026-10-31"
     },
     {
       "id": "211",
@@ -69,24 +69,27 @@
       "category": "crisis",
       "region": "US",
       "title": "Local services and support lines",
-      "whatFor": "211 connects you with local health and human services, including respite and family support, in most of the US.",
+      "whatFor": "211 connects you with local health and human services, including respite and family support, across most of the US. Free, 24/7.",
       "action": {
         "label": "Call 211",
         "href": "tel:211"
       },
       "url": null,
-      "lastVerified": null
+      "lastVerified": "2026-10-31"
     },
     {
       "id": "insurer-directory",
-      "name": "TODO_VERIFY",
+      "name": "Your insurance plan's provider directory",
       "category": "find-care",
       "region": "US",
       "title": "Your insurance plan's in-network provider directory",
-      "whatFor": "TODO_VERIFY",
+      "whatFor": "Call the member services number on your insurance card, or search the plan's website, for in-network providers. Ask the questions in the private insurance section above.",
       "action": null,
-      "url": null,
-      "lastVerified": "TODO_VERIFY",
+      "url": {
+        "label": "Texas autism insurance coverage explained (Autism Speaks)",
+        "href": "https://www.autismspeaks.org/texas-state-regulated-insurance-coverage"
+      },
+      "lastVerified": "2026-10-31",
       "appliesTo": {
         "coverage": [
           "private"
@@ -95,14 +98,20 @@
     },
     {
       "id": "texas-medicaid-chip",
-      "name": "TODO_VERIFY",
+      "name": "Your Texas Benefits",
       "category": "find-care",
       "region": "TX",
       "title": "Texas Medicaid and CHIP",
-      "whatFor": "TODO_VERIFY",
-      "action": null,
-      "url": null,
-      "lastVerified": "TODO_VERIFY",
+      "whatFor": "Apply for Texas Medicaid or CHIP for your child online, or by calling 2-1-1 (pick a language, then press 1).",
+      "action": {
+        "label": "Call 2-1-1",
+        "href": "tel:211"
+      },
+      "url": {
+        "label": "yourtexasbenefits.com",
+        "href": "https://www.yourtexasbenefits.com/"
+      },
+      "lastVerified": "2026-10-31",
       "appliesTo": {
         "coverage": [
           "medicaid"
@@ -111,14 +120,17 @@
     },
     {
       "id": "texas-eci",
-      "name": "TODO_VERIFY",
+      "name": "Texas Early Childhood Intervention (ECI)",
       "category": "find-care",
       "region": "TX",
       "title": "Early Childhood Intervention (under 3)",
-      "whatFor": "TODO_VERIFY",
+      "whatFor": "Free evaluation for children from birth to 36 months. Anyone can make a referral; find your local program by city, county or ZIP code.",
       "action": null,
-      "url": null,
-      "lastVerified": "TODO_VERIFY",
+      "url": {
+        "label": "Find your local ECI program",
+        "href": "https://citysearch.hhsc.state.tx.us/"
+      },
+      "lastVerified": "2026-10-31",
       "appliesTo": {
         "age": [
           "under-3"
@@ -127,14 +139,20 @@
     },
     {
       "id": "school-evaluation",
-      "name": "TODO_VERIFY",
+      "name": "SPEDTex",
       "category": "find-care",
       "region": "US",
-      "title": "Your school district's free evaluation",
-      "whatFor": "TODO_VERIFY",
-      "action": null,
-      "url": null,
-      "lastVerified": "TODO_VERIFY",
+      "title": "Help asking your school district for a free evaluation",
+      "whatFor": "The Texas special education information center. Help with asking your school district for a free evaluation, IEPs and ARD meetings.",
+      "action": {
+        "label": "Call 1-855-773-3839",
+        "href": "tel:18557733839"
+      },
+      "url": {
+        "label": "spedtex.org",
+        "href": "https://spedtex.org/"
+      },
+      "lastVerified": "2026-10-31",
       "appliesTo": {
         "age": [
           "3-5",
@@ -144,14 +162,17 @@
     },
     {
       "id": "bacb-registry",
-      "name": "TODO_VERIFY",
+      "name": "BACB certification registry",
       "category": "find-care",
       "region": "US",
       "title": "BACB certificant registry (check a provider's credential)",
-      "whatFor": "TODO_VERIFY",
+      "whatFor": "Check that a BCBA, BCaBA or RBT is currently certified, and whether they have any disciplinary actions. Free.",
       "action": null,
-      "url": null,
-      "lastVerified": "TODO_VERIFY"
+      "url": {
+        "label": "Verify a certification",
+        "href": "https://www.bacb.com/verify-certification/"
+      },
+      "lastVerified": "2026-10-31"
     }
   ]
 }
