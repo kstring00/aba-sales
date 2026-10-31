@@ -40,11 +40,15 @@ export function ShelfHero({ shelves, panels, reviewer }: { shelves: HeroShelf[];
     d.style.setProperty("--notch", `${br.left + br.width / 2 - dr.left}px`);
   }, [active]);
 
+  // Scroll the drawer into view only when it was closed; switching books
+  // while it is open must not move the page under the reader's pointer.
   const openShelf = useCallback((i: number, scroll = true) => {
-    setActive(i);
-    if (scroll) {
-      window.setTimeout(() => drawerRef.current?.scrollIntoView({ block: "nearest", behavior: "smooth" }), 350);
-    }
+    setActive((prev) => {
+      if (scroll && prev < 0) {
+        window.setTimeout(() => drawerRef.current?.scrollIntoView({ block: "nearest", behavior: "smooth" }), 350);
+      }
+      return i;
+    });
   }, []);
 
   useEffect(() => { notch(); }, [notch]);
