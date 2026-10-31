@@ -59,6 +59,9 @@ Until the tags exist the handles above are mapped in `src/lib/shelves.ts`. A new
 - Audience for the email list (sign-ups from the shelf, home, and the "keep me posted" box on `/abc`).
 - **Verified domain** required to email anyone other than the account owner. Add the DNS records Resend shows, then set `RESEND_FROM`.
 
+### If the live shelves are empty
+Open `https://<your-deployment>/api/health/shopify`. It returns no secrets, only: whether the domain and token are set in that environment, which kind of token it is, whether Shopify answered, and the product handles each collection returns. A 401/403 means the token was rejected (copy it again from Sales channels → Headless → Manage → Storefront API; both the public and the private token work). "not set for this environment" means the variable is missing for Production in Vercel. Redeploy after any change.
+
 ## 5. Deploy and operate
 
 - Push to `main` → Vercel deploys production. Preview deploys for branches.

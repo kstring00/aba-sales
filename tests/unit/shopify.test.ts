@@ -73,3 +73,16 @@ describe("cart handoff", () => {
     expect(formatMoney(cart.total)).toBe("$24");
   });
 });
+
+describe("storefront configuration", () => {
+  it("normalizes a pasted domain", async () => {
+    const { normalizeDomain } = await import("@/lib/shopify/client");
+    expect(normalizeDomain("https://vgb9f2-eg.myshopify.com/")).toBe("vgb9f2-eg.myshopify.com");
+    expect(normalizeDomain(" vgb9f2-eg.myshopify.com ")).toBe("vgb9f2-eg.myshopify.com");
+  });
+  it("sends a private Headless token in the private header and a public one in the public header", async () => {
+    const { authHeader } = await import("@/lib/shopify/client");
+    expect(Object.keys(authHeader("shpat_abc"))).toEqual(["Shopify-Storefront-Private-Token"]);
+    expect(Object.keys(authHeader("0123456789abcdef"))).toEqual(["X-Shopify-Storefront-Access-Token"]);
+  });
+});
