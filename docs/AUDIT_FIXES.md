@@ -37,3 +37,17 @@ Source: `docs/FULL_SITE_AUDIT.md` (Oct 30–31, 2026). Plan: `docs/AUDIT_REMEDIA
 | — | "Coming soon"/"Free" pill green deepened to pass AA (4.2 → 5.3:1) | `globals.css` | axe clean | — |
 
 Stage 1 gate: `next build`, typecheck, lint clean · axe 0 on all routes · pages 375/1280 pass · unit 33/33 · `/abc` journey 8/8 · screenshots `tests/e2e/shots/rebuild/375-stage1-home.png`, `768-stage1-home.png`.
+
+## Stage 2 — The catalog (F-01, F-11, F-14)
+
+Most of F-01 already existed in the repo (Storefront client, `/products/[handle]`, cart, Shopify-hosted checkout, `/thanks`); the live site showed none of it because the Production environment has no Storefront credentials (O-8). This stage closes the gaps the audit named.
+
+| ID | What changed | Files | Verified | Left for you |
+| --- | --- | --- | --- | --- |
+| F-01 | Production build fails loudly without `SHOPIFY_STORE_DOMAIN` / `SHOPIFY_STOREFRONT_TOKEN`; `/shelf/:handle` 308-redirects to the built route `/products/:handle`; product page adds "Clinical review: pending", Product JSON-LD with `offers`, "Get it free" + "Checkout takes 30 seconds, no card needed" for $0 items and "Buy · $price" for paid; cart gets "Keep browsing"; homepage sheet caption links to Home ABC Printable when it is live; products render above coming-soon on both `/` and `/shelf` (Stage 1 model) | `src/lib/shopify/client.ts`, `next.config.ts`, `products/[handle]/page.tsx`, `AddToCart.tsx`, `cart/page.tsx`, `WhyItMatters.tsx`, `page.tsx` | Fixtures: every product reachable from `/`, `/shelf` and by URL; `/shelf/care-binder` → 308 → `/products/care-binder`; JSON-LD present; axe 0 on the product page | O-8: set the two variables in Vercel Production, redeploy, then open `/api/health/shopify` (expects `ok: true`, four handles). Token scopes: `unauthenticated_read_product_listings`, `unauthenticated_write_checkouts`, `unauthenticated_read_checkouts`. The $0 add-to-cart → checkout redirect and axe on `/cart` with an item need the real token: run `node tests/e2e/live-checkout.mjs` against a Preview deployment (do not complete checkout). Confirm Shopify → Settings → Checkout → "continue shopping" URL is `https://www.thesupportshelf.org/thanks`. |
+| F-11 | Search hidden until products + tracker ≥ 8 (component kept); empty state reads "Not on the shelf yet. The four shelves below hold everything that exists today." | `SiteHeader.tsx`, `ShelfSearch.tsx` | 0 search forms rendered | — |
+| F-14 | `Content-Security-Policy` on every response (`default-src 'self'`, first-party scripts/styles with `'unsafe-inline'` because Next.js inline bootstrap and JSON-LD would otherwise need a per-request nonce and lose ISR, `img-src` self + cdn.shopify.com, `connect-src` self + the store domain, `frame-ancestors 'none'`, `form-action 'self'`, `object-src 'none'`); `poweredByHeader: false` | `next.config.ts` | Header present; `x-powered-by` gone; hero drawer, tracker, product and cart pages load with 0 console errors under the policy | If a third-party ever gets added (fonts, analytics, chat), extend the policy first |
+
+Lighthouse mobile (local production build, simulated throttling): `/` 80 · `/shelf` 94 · `/products/care-binder` 90 performance; 100 accessibility / best practices / SEO on all three; CLS ≤ 0.006.
+
+Stage 2 gate: build, typecheck, lint clean · axe 0 · pages pass · unit 33/33 · `/abc` journey 8/8.

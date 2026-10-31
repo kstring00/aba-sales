@@ -13,10 +13,14 @@ export function AddToCart({ variantId, available, price, compact = false }: { va
     <form action={action} className="space-y-2">
       <input type="hidden" name="variantId" value={variantId} />
       <Button type="submit" variant="primary" size="lg" className="w-full" disabled={pending}>
-        {pending ? "Adding…" : price === "Free" ? "Get it free →" : compact ? "Get it →" : `Get it · ${price} →`}
+        {pending ? "Adding…" : price === "Free" ? "Get it free" : compact ? `Buy · ${price}` : `Buy · ${price}`}
       </Button>
       {state?.error ? <p role="alert" className="text-[14px]">{state.error}</p> : null}
-      {!compact ? <p className="text-[13px] text-ink-mute">Checkout is handled by Shopify. Files arrive by email.</p> : null}
+      {!compact ? (
+        <p className="text-[13px] text-ink-mute">
+          {price === "Free" ? "Checkout takes 30 seconds, no card needed. " : "Checkout is handled by Shopify. "}Files arrive by email.
+        </p>
+      ) : null}
     </form>
   );
 }
