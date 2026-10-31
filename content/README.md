@@ -21,7 +21,7 @@ sources:
 
 ## Is anyone in danger?
 
-Write the words here, in plain Markdown: **bold**, *italic*, lists with `-`, links like [this](https://example.org).
+Write the words here, in plain Markdown: **bold**, *italic*, lists with `-` or `1.`, links like [this](https://example.org). Those are the only formats the site renders; headings inside a section and tables are not supported.
 ```
 
 **The top part (between the `---` lines)**

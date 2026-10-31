@@ -4,392 +4,469 @@
     {
       "term": "ABA",
       "slug": "aba",
-      "full": "",
-      "short": "",
-      "long": "",
-      "aliases": [],
+      "full": "Applied Behavior Analysis",
+      "short": "A therapy approach that uses how learning works to teach skills and reduce unsafe behavior.",
+      "long": "A BCBA assesses the child, sets goals with the family and writes a plan; therapists carry it out and progress is measured. Approaches range from structured teaching to play-based teaching in everyday settings.",
+      "aliases": [
+        "applied behavior analysis"
+      ],
       "category": "therapy terms",
-      "status": "pending"
+      "status": "published"
     },
     {
       "term": "ABC",
       "slug": "abc",
-      "full": "",
-      "short": "",
-      "long": "",
-      "aliases": [],
+      "full": "Antecedent, Behavior, Consequence",
+      "short": "A simple way to record a moment: what happened before, what the person did, and what happened after.",
+      "long": "ABC notes describe what was seen without guessing why. Collected over time, they help a professional look for patterns. The ABC tracker on this site records exactly these three things.",
+      "aliases": [
+        "ABC data",
+        "ABC notes",
+        "ABC tracker"
+      ],
       "category": "therapy terms",
-      "status": "pending"
+      "status": "published"
     },
     {
       "term": "BCBA",
       "slug": "bcba",
-      "full": "",
-      "short": "",
-      "long": "",
-      "aliases": [],
+      "full": "Board Certified Behavior Analyst",
+      "short": "A graduate-level professional, certified by the BACB, who designs and supervises ABA services.",
+      "long": "The BCBA assesses your child, writes the treatment plan, supervises the RBTs who work with your child, trains parents and decides when the plan changes. You can check a BCBA's certification on the BACB's public registry.",
+      "aliases": [
+        "behavior analyst",
+        "Board Certified Behavior Analyst"
+      ],
       "category": "people",
-      "status": "pending"
+      "status": "published"
     },
     {
       "term": "BCaBA",
       "slug": "bcaba",
-      "full": "",
-      "short": "",
-      "long": "",
+      "full": "Board Certified Assistant Behavior Analyst",
+      "short": "A certified professional with an undergraduate degree who provides behavior analysis under a BCBA's supervision.",
+      "long": "A BCaBA can do some of the assessment and planning work, but always under the supervision of a BCBA.",
       "aliases": [],
       "category": "people",
-      "status": "pending"
+      "status": "published"
     },
     {
       "term": "RBT",
       "slug": "rbt",
-      "full": "",
-      "short": "",
-      "long": "",
-      "aliases": [],
+      "full": "Registered Behavior Technician",
+      "short": "The therapist who often works with a child one-on-one, carrying out the ABA plan a BCBA wrote.",
+      "long": "RBTs complete training and a competency check, pass an exam and are supervised by a BCBA. They don't design treatment or change the plan.",
+      "aliases": [
+        "behavior technician",
+        "Registered Behavior Technician"
+      ],
       "category": "people",
-      "status": "pending"
+      "status": "published"
     },
     {
       "term": "BACB",
       "slug": "bacb",
-      "full": "",
-      "short": "",
-      "long": "",
-      "aliases": [],
+      "full": "Behavior Analyst Certification Board",
+      "short": "The organization that certifies BCBAs, BCaBAs and RBTs and sets their ethics rules.",
+      "long": "The BACB keeps a public registry where anyone can check whether a behavior analyst or technician is currently certified.",
+      "aliases": [
+        "Behavior Analyst Certification Board"
+      ],
       "category": "people",
-      "status": "pending"
+      "status": "published"
     },
     {
       "term": "FBA",
       "slug": "fba",
-      "full": "",
-      "short": "",
-      "long": "",
-      "aliases": [],
+      "full": "Functional Behavior Assessment",
+      "short": "An assessment that looks at when and why a behavior tends to happen, so a plan can be built around it.",
+      "long": "A BCBA or school team observes, collects data and talks with the people who know the child. Schools may do an FBA as part of an IEP; ABA providers usually do one before writing a behavior plan.",
+      "aliases": [
+        "Functional Behavior Assessment",
+        "functional behavior assessment"
+      ],
       "category": "documents",
-      "status": "pending"
+      "status": "published"
     },
     {
       "term": "BIP",
       "slug": "bip",
-      "full": "",
-      "short": "",
-      "long": "",
-      "aliases": [],
+      "full": "Behavior Intervention Plan",
+      "short": "A written plan for supporting a specific behavior, usually based on an FBA.",
+      "long": "It describes what the adults around the child will do: how to prevent hard moments, what skills to teach instead, and how to respond. Schools and ABA providers both write them.",
+      "aliases": [
+        "Behavior Intervention Plan",
+        "behavior plan"
+      ],
       "category": "documents",
-      "status": "pending"
+      "status": "published"
     },
     {
       "term": "IEP",
       "slug": "iep",
-      "full": "",
-      "short": "",
-      "long": "",
-      "aliases": [],
+      "full": "Individualized Education Program",
+      "short": "A legal document for a child in special education that lists their goals, services and supports at school.",
+      "long": "Public schools write an IEP for eligible children from age 3. Parents are part of the team that writes it and must be invited to the meetings. In Texas, the IEP meeting is called an ARD.",
+      "aliases": [
+        "Individualized Education Program"
+      ],
       "category": "school",
-      "status": "pending"
+      "status": "published"
     },
     {
       "term": "ARD",
       "slug": "ard",
-      "full": "",
-      "short": "",
-      "long": "",
-      "aliases": [],
+      "full": "Admission, Review, and Dismissal",
+      "short": "Texas's name for the school meeting where a child's IEP is written, reviewed or changed.",
+      "long": "The ARD committee includes parents, teachers, a school administrator and specialists. It meets at least once a year, and parents can request a meeting at any time.",
+      "aliases": [
+        "ARD committee",
+        "ARD meeting"
+      ],
       "category": "school",
-      "status": "pending"
+      "status": "published"
     },
     {
       "term": "504 plan",
       "slug": "504-plan",
-      "full": "",
-      "short": "",
-      "long": "",
-      "aliases": [],
+      "full": "Section 504 plan",
+      "short": "A school plan for accommodations, such as extra time or a quiet space, for a student with a disability who doesn't need special education.",
+      "long": "It comes from Section 504 of the Rehabilitation Act. It changes how a child accesses school rather than adding specialized instruction, which is what an IEP does.",
+      "aliases": [
+        "504"
+      ],
       "category": "school",
-      "status": "pending"
+      "status": "published"
     },
     {
       "term": "IFSP",
       "slug": "ifsp",
-      "full": "",
-      "short": "",
-      "long": "",
-      "aliases": [],
+      "full": "Individualized Family Service Plan",
+      "short": "The plan for a child under 3 in early intervention, written with the family.",
+      "long": "It lists the family's goals and the services the child and family will get, such as speech or developmental services, usually at home or in other everyday places. In Texas, ECI writes the IFSP.",
+      "aliases": [
+        "Individualized Family Service Plan"
+      ],
       "category": "documents",
-      "status": "pending"
+      "status": "published"
     },
     {
       "term": "ECI",
       "slug": "eci",
-      "full": "",
-      "short": "",
-      "long": "",
-      "aliases": [],
+      "full": "Early Childhood Intervention",
+      "short": "Texas's program for children from birth to age 3 with developmental delays or disabilities.",
+      "long": "ECI is run by Texas Health and Human Services through local programs. It evaluates children and provides services at home or in other everyday places. Other states have similar programs under different names.",
+      "aliases": [
+        "Early Childhood Intervention",
+        "early intervention"
+      ],
       "category": "insurance & services",
-      "status": "pending"
+      "status": "published"
     },
     {
       "term": "OT",
       "slug": "ot",
-      "full": "",
-      "short": "",
-      "long": "",
-      "aliases": [],
+      "full": "Occupational therapist (or therapy)",
+      "short": "Therapy for everyday skills, such as using hands, dressing, eating and handling sensory input.",
+      "long": "An occupational therapist evaluates how a child manages daily activities and works on the skills and supports that make them easier.",
+      "aliases": [
+        "occupational therapist",
+        "occupational therapy"
+      ],
       "category": "people",
-      "status": "pending"
+      "status": "published"
     },
     {
       "term": "SLP",
       "slug": "slp",
-      "full": "",
-      "short": "",
-      "long": "",
-      "aliases": [],
+      "full": "Speech-language pathologist",
+      "short": "A therapist who works on communication: speech, understanding language, social communication and AAC.",
+      "long": "Often called a speech therapist. SLPs also work on feeding and swallowing.",
+      "aliases": [
+        "speech therapist",
+        "speech therapy",
+        "speech-language pathologist"
+      ],
       "category": "people",
-      "status": "pending"
+      "status": "published"
     },
     {
       "term": "PT",
       "slug": "pt",
-      "full": "",
-      "short": "",
+      "full": "Physical therapist (or therapy)",
+      "short": "Therapy for movement: strength, balance, coordination and walking.",
       "long": "",
-      "aliases": [],
+      "aliases": [
+        "physical therapist",
+        "physical therapy"
+      ],
       "category": "people",
-      "status": "pending"
+      "status": "published"
     },
     {
       "term": "AAC",
       "slug": "aac",
-      "full": "",
-      "short": "",
-      "long": "",
-      "aliases": [],
+      "full": "Augmentative and Alternative Communication",
+      "short": "Ways to communicate besides speech, such as pictures, sign, letter boards or speech-generating devices.",
+      "long": "AAC can be used alongside speech or instead of it. An SLP usually helps choose and set up an AAC system.",
+      "aliases": [
+        "augmentative and alternative communication"
+      ],
       "category": "therapy terms",
-      "status": "pending"
+      "status": "published"
     },
     {
       "term": "PECS",
       "slug": "pecs",
-      "full": "",
-      "short": "",
+      "full": "Picture Exchange Communication System",
+      "short": "A way of communicating by handing someone a picture of what you want, building up to picture sentences.",
       "long": "",
       "aliases": [],
       "category": "therapy terms",
-      "status": "pending"
+      "status": "published"
     },
     {
       "term": "DTT",
       "slug": "dtt",
-      "full": "",
-      "short": "",
-      "long": "",
-      "aliases": [],
+      "full": "Discrete Trial Training",
+      "short": "A structured teaching method that breaks a skill into small steps, each taught with a clear instruction, response and feedback.",
+      "long": "Sessions are often at a table and repeat many short practice turns. It is one of several ways ABA teaches skills.",
+      "aliases": [
+        "discrete trial training"
+      ],
       "category": "therapy terms",
-      "status": "pending"
+      "status": "published"
     },
     {
       "term": "NET",
       "slug": "net",
-      "full": "",
-      "short": "",
+      "full": "Natural Environment Teaching",
+      "short": "Teaching skills during play and everyday routines, often following the child's interests.",
       "long": "",
-      "aliases": [],
+      "aliases": [
+        "natural environment teaching"
+      ],
       "category": "therapy terms",
-      "status": "pending"
+      "status": "published"
     },
     {
       "term": "FCT",
       "slug": "fct",
-      "full": "",
-      "short": "",
-      "long": "",
-      "aliases": [],
+      "full": "Functional Communication Training",
+      "short": "Teaching a child a clear way to ask for what they need, such as a word, sign or picture.",
+      "long": "It's often part of a behavior plan, so a child has an easier way to communicate the same need.",
+      "aliases": [
+        "functional communication training"
+      ],
       "category": "therapy terms",
-      "status": "pending"
+      "status": "published"
     },
     {
       "term": "reinforcement",
       "slug": "reinforcement",
       "full": "",
-      "short": "",
-      "long": "",
-      "aliases": [],
+      "short": "Anything that happens after a behavior and makes that behavior more likely to happen again.",
+      "long": "Praise, a favorite toy or a break can be reinforcement, but only if they actually make the behavior more likely for that person. What works differs from person to person.",
+      "aliases": [
+        "reinforcer",
+        "reinforcers"
+      ],
       "category": "therapy terms",
-      "status": "pending"
+      "status": "published"
     },
     {
       "term": "prompt",
       "slug": "prompt",
       "full": "",
-      "short": "",
-      "long": "",
-      "aliases": [],
+      "short": "Help given so a person can do a skill, such as a hint, a gesture, a demonstration or a hand guiding theirs.",
+      "long": "Plans usually aim to fade prompts over time so the person can do the skill on their own.",
+      "aliases": [
+        "prompting"
+      ],
       "category": "therapy terms",
-      "status": "pending"
+      "status": "published"
     },
     {
       "term": "antecedent",
       "slug": "antecedent",
       "full": "",
-      "short": "",
+      "short": "What happens right before a behavior: the A in ABC.",
       "long": "",
       "aliases": [],
       "category": "therapy terms",
-      "status": "pending"
+      "status": "published"
     },
     {
       "term": "behavior",
       "slug": "behavior",
       "full": "",
-      "short": "",
-      "long": "",
-      "aliases": [],
+      "short": "Anything a person does that can be seen or measured, such as talking, crying, running or hitting.",
+      "long": "In behavior analysis the word is neutral: it doesn't mean bad behavior.",
+      "aliases": [
+        "behaviors"
+      ],
       "category": "therapy terms",
-      "status": "pending"
+      "status": "published"
     },
     {
       "term": "consequence",
       "slug": "consequence",
       "full": "",
-      "short": "",
-      "long": "",
+      "short": "What happens right after a behavior: the C in ABC.",
+      "long": "In behavior analysis the word is neutral. It doesn't mean punishment, just whatever followed.",
       "aliases": [],
       "category": "therapy terms",
-      "status": "pending"
+      "status": "published"
     },
     {
       "term": "function",
       "slug": "function",
       "full": "",
-      "short": "",
-      "long": "",
+      "short": "In behavior analysis, the reason a behavior happens or what it gets for the person.",
+      "long": "Only an assessment by a qualified professional, such as an FBA, can say what is behind a particular child's behavior.",
       "aliases": [],
       "category": "therapy terms",
-      "status": "pending"
+      "status": "published"
     },
     {
       "term": "replacement behavior",
       "slug": "replacement-behavior",
       "full": "",
-      "short": "",
+      "short": "A new, easier or safer way to meet the same need as a behavior a plan is trying to change.",
       "long": "",
-      "aliases": [],
+      "aliases": [
+        "replacement behaviors"
+      ],
       "category": "therapy terms",
-      "status": "pending"
+      "status": "published"
     },
     {
       "term": "generalization",
       "slug": "generalization",
       "full": "",
-      "short": "",
+      "short": "Using a skill outside the place it was learned: with new people, in new places or with new materials.",
       "long": "",
       "aliases": [],
       "category": "therapy terms",
-      "status": "pending"
+      "status": "published"
     },
     {
       "term": "parent training",
       "slug": "parent-training",
       "full": "",
-      "short": "",
-      "long": "",
-      "aliases": [],
+      "short": "Sessions where a BCBA or therapist teaches parents the strategies in their child's plan.",
+      "long": "Many insurance plans expect it as part of ABA. It's also a good time to ask questions about the plan.",
+      "aliases": [
+        "caregiver training",
+        "parent coaching"
+      ],
       "category": "therapy terms",
-      "status": "pending"
+      "status": "published"
     },
     {
       "term": "prior authorization",
       "slug": "prior-authorization",
       "full": "",
-      "short": "",
-      "long": "",
-      "aliases": [],
+      "short": "Approval your insurer must give before it will pay for a service.",
+      "long": "The provider usually submits it with an evaluation and a treatment plan. It's often approved for a set number of hours over a set time, then renewed.",
+      "aliases": [
+        "pre-authorization",
+        "preauthorization",
+        "prior auth"
+      ],
       "category": "insurance & services",
-      "status": "pending"
+      "status": "published"
     },
     {
       "term": "Medicaid",
       "slug": "medicaid",
       "full": "",
-      "short": "",
-      "long": "",
+      "short": "Public health coverage for people with limited income or certain disabilities, run by each state.",
+      "long": "In Texas, most children with Medicaid get it through a managed care health plan, such as STAR or STAR Kids.",
       "aliases": [],
       "category": "insurance & services",
-      "status": "pending"
+      "status": "published"
     },
     {
       "term": "CHIP",
       "slug": "chip",
-      "full": "",
-      "short": "",
+      "full": "Children's Health Insurance Program",
+      "short": "Low-cost health coverage for children in families that earn too much for Medicaid but can't afford private insurance.",
       "long": "",
       "aliases": [],
       "category": "insurance & services",
-      "status": "pending"
+      "status": "published"
     },
     {
       "term": "in-network",
       "slug": "in-network",
       "full": "",
-      "short": "",
-      "long": "",
-      "aliases": [],
+      "short": "A provider who has a contract with your insurance plan, which usually means you pay less.",
+      "long": "Your insurer's provider directory lists who is in network. Ask the provider too, since directories can be out of date.",
+      "aliases": [
+        "in network",
+        "out-of-network"
+      ],
       "category": "insurance & services",
-      "status": "pending"
+      "status": "published"
     },
     {
       "term": "waitlist",
       "slug": "waitlist",
       "full": "",
-      "short": "",
-      "long": "",
-      "aliases": [],
+      "short": "A list of families waiting for an opening with a provider.",
+      "long": "Waits for evaluations and therapy are common and can be long. It's normal to be on several at once.",
+      "aliases": [
+        "waiting list",
+        "waitlists"
+      ],
       "category": "insurance & services",
-      "status": "pending"
+      "status": "published"
     },
     {
       "term": "intake",
       "slug": "intake",
       "full": "",
-      "short": "",
+      "short": "The first step with a new provider: forms, insurance details and background about your child.",
       "long": "",
       "aliases": [],
       "category": "insurance & services",
-      "status": "pending"
+      "status": "published"
     },
     {
       "term": "assessment",
       "slug": "assessment",
       "full": "",
-      "short": "",
-      "long": "",
-      "aliases": [],
+      "short": "A structured look at a child's skills and needs, used to decide goals and services.",
+      "long": "An ABA provider usually does an assessment before writing a treatment plan, and repeats it to measure progress.",
+      "aliases": [
+        "assessments",
+        "evaluation"
+      ],
       "category": "documents",
-      "status": "pending"
+      "status": "published"
     },
     {
       "term": "treatment plan",
       "slug": "treatment-plan",
       "full": "",
-      "short": "",
-      "long": "",
-      "aliases": [],
+      "short": "The written plan that lists a child's goals, the services, and how progress will be measured.",
+      "long": "In ABA, the BCBA writes it and insurers usually need it for prior authorization. You can ask for a copy and for it to be explained.",
+      "aliases": [
+        "plan of care"
+      ],
       "category": "documents",
-      "status": "pending"
+      "status": "published"
     },
     {
       "term": "session notes",
       "slug": "session-notes",
       "full": "",
-      "short": "",
+      "short": "The provider's record of what happened in each therapy session.",
       "long": "",
       "aliases": [],
       "category": "documents",
-      "status": "pending"
+      "status": "published"
     }
   ]
 }
