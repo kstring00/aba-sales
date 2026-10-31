@@ -38,9 +38,16 @@ export function readStore(): AbcStore {
       if (legacy) {
         const { store, merged } = migrateV1(JSON.parse(legacy));
         memory = store;
-        window.localStorage.setItem(STORAGE_KEY, JSON.stringify(store));
-        window.localStorage.removeItem(LEGACY_KEY);
-        console.info(`[abc] migrated ${merged.before} entries into ${merged.after} observations (v1 → v2)`);
+        // Persist separately: if the v2 write fails (quota, private mode), keep
+        // the migrated data in memory and leave the v1 key untouched so the
+        // next load can try again. Never fall through to EMPTY here.
+        try {
+          window.localStorage.setItem(STORAGE_KEY, JSON.stringify(store));
+          window.localStorage.removeItem(LEGACY_KEY);
+          console.info(`[abc] migrated ${merged.before} entries into ${merged.after} observations (v1 → v2)`);
+        } catch {
+          console.warn("[abc] migrated in memory; could not write v2 yet, v1 kept");
+        }
       } else {
         memory = EMPTY;
       }
@@ -83,7 +90,9 @@ export function migrateV1(data: unknown): { store: AbcStore; merged: { before: n
   const rows = Array.isArray(d.entries) ? d.entries.map(normalizeEntry) : [];
   const byKey = new Map<string, Entry>();
   for (const e of rows) {
-    const key = [e.occurredAt, e.antecedentCode, e.antecedentNote, e.consequenceCode, e.consequenceNote, e.createdAt].join("|");
+    // Every recorded detail is part of the key: rows saved together but edited
+    // apart afterwards stay separate, so no edit is ever dropped.
+    const key = JSON.stringify([e.occurredAt, e.antecedentCode, e.antecedentNote, e.consequenceCode, e.consequenceNote, e.durationSeconds, e.intensity, e.note, e.functionCode ?? null, e.createdAt]);
     const existing = byKey.get(key);
     if (existing) {
       existing.behaviorIds = [...new Set([...existing.behaviorIds, ...e.behaviorIds])];

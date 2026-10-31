@@ -15,9 +15,12 @@ export const dynamic = "force-dynamic";
  */
 const entrySchema = z.object({
   id: z.string().max(80),
-  behaviorIds: z.array(z.string().max(80)).max(20),
-  behaviorLabels: z.array(z.string().max(60)).max(20),
-  behaviorLabel: z.string().max(400),
+  // Limits follow the tracker: labels are capped at 60 characters and an
+  // observation can hold every label a parent has (bounded here at 100).
+  behaviorIds: z.array(z.string().max(80)).max(100),
+  behaviorLabels: z.array(z.string().max(60)).max(100),
+  // Ignored: the joined label is rebuilt from behaviorLabels on the server.
+  behaviorLabel: z.string().optional(),
   occurredAt: z.string().datetime(),
   antecedentCode: z.string().max(40).nullable(),
   antecedentNote: z.string().max(500).nullable(),
@@ -71,7 +74,7 @@ export async function POST(request: NextRequest) {
       from,
       to,
       tz,
-      entries: entries.map((e) => ({ ...e, antecedentCode: e.antecedentCode as never, consequenceCode: e.consequenceCode as never, functionCode: (e.functionCode ?? null) as never })),
+      entries: entries.map((e) => ({ ...e, behaviorLabel: e.behaviorLabels.join("; "), antecedentCode: e.antecedentCode as never, consequenceCode: e.consequenceCode as never, functionCode: (e.functionCode ?? null) as never })),
     });
     const pdf = await renderReportPdf(report, await loadFontBytesFromDisk());
     const filename = `support-shelf-${nickname.toLowerCase().replace(/[^a-z0-9]+/g, "-")}-${from}-to-${to}.pdf`;

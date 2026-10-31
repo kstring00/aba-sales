@@ -130,3 +130,28 @@ describe("v1 → v2 migration (one observation, many behaviors)", () => {
     expect(withLabels(s)[0].behaviorLabel).toBe("Hitting");
   });
 });
+
+describe("migration review fixes", () => {
+  it("keeps rows saved together but edited apart as separate observations", async () => {
+    const { migrateV1 } = await import("@/lib/abc/store");
+    const base = { occurredAt: "2026-03-02T15:00:00Z", antecedentCode: null, antecedentNote: null, consequenceCode: null, consequenceNote: null, durationSeconds: null, intensity: null, createdAt: "t", updatedAt: "t" };
+    const { store } = migrateV1({ version: 1, child: null, behaviors: [], entries: [{ ...base, id: "a", behaviorId: "b1", note: "edited later" }, { ...base, id: "b", behaviorId: "b2", note: null }] });
+    expect(store.entries).toHaveLength(2);
+    expect(store.entries.map((e) => e.note)).toEqual(["edited later", null]);
+  });
+
+  it("keeps migrated data and the v1 key when writing v2 fails", () => {
+    clearAll();
+    mem.clear();
+    mem.set("support-shelf-abc-v1", JSON.stringify({ version: 1, child: { nickname: "Bean", createdAt: "x" }, behaviors: [], entries: [{ id: "a", behaviorId: "b1", occurredAt: "2026-03-02T15:00:00Z", antecedentCode: null, antecedentNote: null, consequenceCode: null, consequenceNote: null, durationSeconds: null, intensity: null, note: null, createdAt: "y", updatedAt: "y" }] }));
+    const ls = (globalThis as unknown as { window: { localStorage: { setItem: (k: string, v: string) => void } } }).window.localStorage;
+    const original = ls.setItem;
+    ls.setItem = () => { throw new Error("QuotaExceededError"); };
+    try {
+      expect(readStore().entries).toHaveLength(1);
+      expect(mem.has("support-shelf-abc-v1")).toBe(true);
+    } finally {
+      ls.setItem = original;
+    }
+  });
+});
