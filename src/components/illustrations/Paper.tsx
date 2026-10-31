@@ -1,5 +1,5 @@
 import type { SVGProps } from "react";
-import type { Tint } from "@/lib/shelves";
+import type { ShelfId, Tint } from "@/lib/shelves";
 
 /**
  * The whole illustration set, drawn inline so nothing is a raster and every
@@ -116,6 +116,15 @@ export function IconArrow(p: Props) {
   return (
     <Svg viewBox="0 0 24 24" {...p}>
       <path d="M5 12h13M13 6l6 6-6 6" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round" />
+    </Svg>
+  );
+}
+
+export function IconLoop(p: Props) {
+  return (
+    <Svg viewBox="0 0 24 24" {...p}>
+      <path d="M4 12a8 8 0 0 1 13.7-5.6M20 12a8 8 0 0 1-13.7 5.6" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" />
+      <path d="M18 3v4h-4M6 21v-4h4" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round" />
     </Svg>
   );
 }
@@ -395,6 +404,98 @@ export function SampleLogSheet(p: Props) {
       <text x="24" y="350" fill="var(--ink-mute)" fontFamily="var(--font-sans)" fontSize="8">A · right before &nbsp; B · what happened &nbsp; C · right after</text>
       <text x="24" y="364" fill="var(--ink-mute)" fontFamily="var(--font-sans)" fontSize="8">Sample entry shown. Print on US Letter.</text>
       <text x="296" y="382" textAnchor="end" fill="var(--ink-faint)" fontFamily="var(--font-sans)" fontSize="7.5">The Support Shelf · Home ABC Printable</text>
+    </Svg>
+  );
+}
+
+/* ── Per-shelf scenes: a small still life for each panel ─────────────────── */
+
+function Pencil({ x, y, r = -30 }: { x: number; y: number; r?: number }) {
+  return (
+    <g transform={`translate(${x} ${y}) rotate(${r})`}>
+      <rect x="0" y="0" width="70" height="10" rx="2" fill="var(--sun)" />
+      <rect x="0" y="0" width="12" height="10" rx="2" fill="var(--blush)" />
+      <path d="M70 0l12 5-12 5z" fill="#e8d7b8" />
+      <path d="M78 3.4l4 1.6-4 1.6z" fill="var(--ink)" opacity=".7" />
+    </g>
+  );
+}
+
+function Clock({ x, y, tint }: { x: number; y: number; tint: Tint }) {
+  const t = TINT[tint];
+  return (
+    <g transform={`translate(${x} ${y})`}>
+      <circle cx="0" cy="0" r="22" fill="var(--paper)" />
+      <circle cx="0" cy="0" r="22" fill="none" stroke={t.deep} strokeWidth="3" />
+      <path d="M0 0V-12M0 0l8 5" stroke={t.text} strokeWidth="2" strokeLinecap="round" fill="none" />
+      <circle cx="0" cy="0" r="1.8" fill={t.text} />
+    </g>
+  );
+}
+
+function Heart({ x, y, s = 1 }: { x: number; y: number; s?: number }) {
+  return (
+    <path transform={`translate(${x} ${y}) scale(${s})`} d="M0 10S-12 2.5-12-5A6 6 0 0 1 0-7 6 6 0 0 1 12-5c0 7.5-12 15-12 15z" fill="var(--clay-bright)" opacity=".85" />
+  );
+}
+
+/**
+ * One still life per shelf, built from the same paper objects the cards
+ * use. Large enough to read as a scene, quiet enough to sit beside copy.
+ */
+export function ShelfScene({ id, ...p }: Props & { id: ShelfId }) {
+  return (
+    <Svg viewBox="0 0 260 200" {...p}>
+      {/* soft ground shadow */}
+      <ellipse cx="130" cy="186" rx="100" ry="8" fill="var(--ink)" opacity=".07" />
+      {id === "organized" ? (
+        <g>
+          <g transform="translate(10 40) rotate(-6)" opacity=".9"><PaperObject kind="folder" tint="sky" width="150" height="130" /></g>
+          <g transform="translate(96 30)"><PaperObject kind="binder" tint="sky" width="170" height="150" /></g>
+          <g transform="translate(176 96) rotate(8)"><PaperObject kind="checklist" tint="mint" width="90" height="80" /></g>
+          <g transform="translate(10 150) rotate(-100) scale(.5)"><Sprig width="120" height="160" /></g>
+        </g>
+      ) : null}
+      {id === "plan" ? (
+        <g>
+          <g transform="translate(18 34)"><PaperObject kind="calendar" tint="mint" width="170" height="150" /></g>
+          <g transform="translate(140 44) rotate(6)"><PaperObject kind="booklet" tint="mint" width="120" height="110" /></g>
+          <Pencil x={150} y={170} r={-28} />
+          <Clock x={44} y={150} tint="mint" />
+        </g>
+      ) : null}
+      {id === "everyday" ? (
+        <g>
+          <circle cx="176" cy="68" r="46" fill="var(--sun-tint)" />
+          <circle cx="176" cy="68" r="30" fill="var(--sun)" />
+          {Array.from({ length: 8 }).map((_, i) => (
+            <rect key={i} x="174" y="12" width="4" height="12" rx="2" fill="var(--sun)" transform={`rotate(${i * 45} 176 68)`} />
+          ))}
+          <g transform="translate(16 56)"><PaperObject kind="checklist" tint="butter" width="150" height="130" /></g>
+          <Clock x={214} y={150} tint="butter" />
+          <g transform="translate(120 140) rotate(4)">
+            <rect x="0" y="0" width="56" height="40" rx="6" fill="var(--paper)" />
+            <rect x="8" y="10" width="40" height="5" rx="2.5" fill="var(--butter)" />
+            <rect x="8" y="20" width="28" height="5" rx="2.5" fill="var(--butter)" />
+            <circle cx="46" cy="28" r="5" fill="var(--sun)" />
+          </g>
+        </g>
+      ) : null}
+      {id === "home" ? (
+        <g>
+          {/* a roofline, barely there */}
+          <path d="M40 92L130 30l90 62" fill="none" stroke="var(--blush-deep)" strokeWidth="1.5" strokeLinecap="round" opacity=".5" />
+          <g transform="translate(22 48)"><PhoneObject tint="blush" width="150" height="132" /></g>
+          <g transform="translate(150 88)">
+            <circle cx="24" cy="26" r="16" fill="var(--clay-bright)" opacity=".9" />
+            <circle cx="64" cy="30" r="13" fill="#f1c2b7" />
+            <path d="M-2 86c0-18 12-30 26-30s26 12 26 30z" fill="var(--clay-bright)" opacity=".9" />
+            <path d="M42 86c0-15 9-26 22-26s22 11 22 26z" fill="#f1c2b7" />
+          </g>
+          <Heart x={222} y={64} s={1.1} />
+          <Heart x={238} y={88} s={0.7} />
+        </g>
+      ) : null}
     </Svg>
   );
 }

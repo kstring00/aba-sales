@@ -5,7 +5,7 @@ import { useEffect, useId, useRef, useState } from "react";
 import type { ShelfView } from "@/lib/shelves";
 import { TINT_BG, TINT_TEXT } from "@/lib/shelves";
 import { buttonClass } from "@/components/ui/Button";
-import { IconArrow, ShelfIcon, Wave } from "@/components/illustrations/Paper";
+import { IconArrow, IconLoop, ShelfIcon, ShelfScene, Wave } from "@/components/illustrations/Paper";
 import { EmptyShelfCard, LoggerCard, ProductShelfCard } from "@/components/shop/ShelfCard";
 
 /**
@@ -106,20 +106,21 @@ export function ShelfExplorer({ shelves }: { shelves: ShelfView[] }) {
                   aria-controls={`${id}-panel-${s.id}`}
                   tabIndex={selected ? 0 : -1}
                   onClick={() => select(i)}
-                  className={`lift flex min-h-[4.5rem] min-w-[14.5rem] snap-center items-center gap-3 rounded-lg border bg-paper px-4 py-3 text-left md:min-w-0 ${selected ? "-translate-y-1 border-ink shadow-lift md:-translate-y-1.5" : "border-line shadow-soft hover:border-line-strong"}`}
+                  className={`group/tab relative flex min-h-[5.25rem] min-w-[15rem] snap-center items-center gap-3 rounded-lg border bg-paper px-4 py-3 text-left transition-[transform,box-shadow,border-color] duration-200 ease-out motion-reduce:transition-none md:min-w-0 ${selected ? "-translate-y-2 border-ink shadow-lift md:-translate-y-3" : "border-line shadow-soft hover:-translate-y-1 hover:border-line-strong hover:shadow-lift"}`}
                 >
-                  <span className={`flex h-11 w-11 shrink-0 items-center justify-center rounded-md ${TINT_BG[s.tint]}`}>
-                    <ShelfIcon tint={s.tint} className="h-6 w-6" />
+                  <span className={`flex h-13 w-13 shrink-0 items-center justify-center rounded-md ${TINT_BG[s.tint]} transition-transform duration-200 group-hover/tab:-rotate-3 motion-reduce:transition-none`}>
+                    <ShelfIcon tint={s.tint} className="h-7 w-7" />
                   </span>
                   <span className="min-w-0">
-                    <span className={`block text-[12px] ${TINT_TEXT[s.tint]}`}>Shelf {s.number}</span>
-                    <span className="block font-display text-[1.1rem] leading-tight text-ink">{s.title}</span>
+                    <span className={`block text-[12px] font-medium ${TINT_TEXT[s.tint]}`}>Shelf {s.number}</span>
+                    <span className="block font-display text-[1.2rem] leading-tight text-ink">{s.title}</span>
                   </span>
+                  <span aria-hidden className={`absolute inset-x-5 -bottom-px h-[3px] rounded-pill transition-opacity ${selected ? "opacity-100" : "opacity-0"} ${s.tint === "sky" ? "bg-sky-deep" : s.tint === "mint" ? "bg-mint-deep" : s.tint === "butter" ? "bg-butter-deep" : "bg-blush-deep"}`} />
                 </button>
               );
             })}
           </div>
-          <div className="board mx-1" />
+          <div className="board board-thick mx-1" />
         </div>
 
         {/* Panels */}
@@ -132,9 +133,9 @@ export function ShelfExplorer({ shelves }: { shelves: ShelfView[] }) {
               id={`${id}-panel-${s.id}`}
               aria-labelledby={`${id}-tab-${s.id}`}
               hidden={!isActive}
-              className={`${TINT_BG[s.tint]} grain mt-8 rounded-xl p-5 sm:p-7 lg:p-8`}
+              className={`${TINT_BG[s.tint]} panel grain mt-8 rounded-xl p-5 sm:p-7 lg:p-8`}
             >
-              <div className="grid gap-6 lg:grid-cols-[minmax(0,4fr)_minmax(0,9fr)] lg:gap-8">
+              <div className="relative grid gap-6 lg:grid-cols-[minmax(0,4fr)_minmax(0,9fr)] lg:gap-8">
                 <div className="flex flex-col">
                   <p className={`inline-flex self-start rounded-pill bg-paper/80 px-3 py-1 text-[12px] font-medium uppercase tracking-[0.16em] ${TINT_TEXT[s.tint]}`}>Shelf {s.number}</p>
                   <h3 className="mt-4 text-[clamp(1.9rem,1.5rem+1.4vw,2.8rem)] leading-[1.05]">{s.title}</h3>
@@ -142,14 +143,21 @@ export function ShelfExplorer({ shelves }: { shelves: ShelfView[] }) {
                   <Link href={`/shelf#${s.id}`} className={buttonClass("primary", "md", "mt-6 self-start")}>
                     Explore this shelf <IconArrow className="h-4 w-4" />
                   </Link>
-                  <div className="mt-auto hidden pt-10 lg:block" aria-hidden>
-                    <ShelfIcon tint={s.tint} className="h-16 w-16 opacity-80" />
-                  </div>
+                  {/* Only the open panel carries its scene; hidden panels stay light to hydrate. */}
+                  {isActive ? (
+                    <div className="mt-auto hidden pt-8 lg:block">
+                      <ShelfScene id={s.id} className="h-auto w-full max-w-[17rem]" />
+                    </div>
+                  ) : null}
                 </div>
-                <div className={`grid gap-4 sm:grid-cols-2 ${s.products.length + (s.tool ? 1 : 0) >= 3 ? "xl:grid-cols-3" : ""}`}>
-                  {s.tool ? <LoggerCard shelf={s} /> : null}
-                  {s.products.map((p) => <ProductShelfCard key={p.id} product={p} tint={s.tint} />)}
-                  {s.products.length === 0 && !s.tool ? <EmptyShelfCard shelf={s} /> : null}
+                <div>
+                  <div className={`grid gap-5 sm:grid-cols-2 ${s.products.length + (s.tool ? 1 : 0) >= 3 ? "xl:grid-cols-3" : ""}`}>
+                    {s.tool ? <LoggerCard shelf={s} /> : null}
+                    {s.products.map((p) => <ProductShelfCard key={p.id} product={p} tint={s.tint} />)}
+                    {s.products.length === 0 && !s.tool ? <div className="sm:col-span-2"><EmptyShelfCard shelf={s} /></div> : null}
+                  </div>
+                  {/* the plank the cards stand on */}
+                  <div className="board mx-1 mt-3 h-3.5" aria-hidden />
                 </div>
               </div>
             </div>
@@ -158,15 +166,26 @@ export function ShelfExplorer({ shelves }: { shelves: ShelfView[] }) {
 
         {/* Next up */}
         <div className="mt-4 flex justify-end">
-          <button
-            type="button"
-            onClick={() => select(active + 1)}
-            className="lift inline-flex min-h-11 items-center gap-2 rounded-pill px-4 text-[14px] text-ink-soft hover:bg-cream-deep hover:text-ink"
-          >
-            <span className="text-ink-mute">Next up</span>
-            <span className="font-medium text-ink">{next.title}</span>
-            <IconArrow className="h-4 w-4" />
-          </button>
+          {active === count - 1 ? (
+            <button
+              type="button"
+              onClick={() => select(0, true)}
+              className="lift inline-flex min-h-11 items-center gap-2 rounded-pill px-4 text-[14px] text-ink-soft hover:bg-cream-deep hover:text-ink"
+            >
+              <IconLoop className="h-4 w-4" />
+              <span className="font-medium text-ink">Back to the first shelf</span>
+            </button>
+          ) : (
+            <button
+              type="button"
+              onClick={() => select(active + 1)}
+              className="lift inline-flex min-h-11 items-center gap-2 rounded-pill px-4 text-[14px] text-ink-soft hover:bg-cream-deep hover:text-ink"
+            >
+              <span className="text-ink-mute">Next up</span>
+              <span className="font-medium text-ink">{next.title}</span>
+              <IconArrow className="h-4 w-4" />
+            </button>
+          )}
         </div>
         <p className="sr-only">Currently showing {current.title}.</p>
       </div>
