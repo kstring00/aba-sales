@@ -70,3 +70,32 @@ Stage 2 gate: build, typecheck, lint clean · axe 0 · pages pass · unit 33/33 
 | Primer | Three-line "A / B / C, write what you saw" block above the form; one-time "What to do next" card after the first save (export weekly, bring it to your BCBA, the tracker never interprets) | `Tracker.tsx` | Journey dismisses the card | — |
 
 Stage 3 gate: build, typecheck, lint clean · unit 37/37 · `/abc` journey 8/8 · axe 0 on every route with an observation saved and the edit sheet open · 0 console errors on 8 routes.
+
+## Stage 4 — Launch checklist
+
+| Check | Result |
+| --- | --- |
+| Homepage says what / for whom within 5 s | Eyebrow "Real support for real family life", H1 "Practical support for every step of the autism journey.", lede names parents of kids in ABA therapy |
+| One primary CTA per page, visually dominant | `/`: "Find my shelf" (terracotta) opens Shelf 1; "Browse all support" demoted to a text link. Product pages: "Get it free" / "Buy · $price". `/abc`: "Save entry". `/cart`: "Checkout". |
+| Contact reachable from every page | Footer shows the mailbox as a `mailto:`; "Contact" → `/about#contact` |
+| Mobile 375 and 768, every route | `tests/e2e/shots/launch/{375,768}-*.png` (10 routes each); no horizontal overflow; no tappable element under 44px (skip link excluded) |
+| Speed | Lighthouse mobile, local production build: `/` 91 · `/shelf` 94 · `/abc` 89 · `/products/care-binder` 95 performance; 100 accessibility / best practices / SEO on all four; CLS ≤ 0.006. Product images come from the Shopify CDN through `next/image` with `sizes` set. |
+| Credibility | Founder photo slot hidden until `NEXT_PUBLIC_FOUNDER_PHOTO` is set; "Registered Behavior Technician since 2023 · BACB registry"; privacy link in the footer; © 2026 computed; `grep -riE "lorem|TODO|placeholder text|localhost" src public` → only a code comment in `env.ts`. No testimonials (none exist). |
+| Search | Unique `<title>` and description per page; one H1 per page (`tests/e2e/pages.mjs`); every image has alt text (product images use the product title); favicon and `og:image` (`https://www.thesupportshelf.org/og.png`) in the rendered head; sitemap lists the six public routes plus every product page. |
+| Plumbing | `scripts/link-check.mjs`: all 12 internal links resolve. 404 page present. External links (988lifeline.org, childhelphotline.org, bacb.com) cannot be fetched from the build environment: check once in a browser. Waitlist and export email success paths need a Preview deployment with Resend configured. |
+| Handoff | This file; operator actions at the top |
+
+### Still open for you
+
+| # | Item |
+| --- | --- |
+| O-9 | Collect the first three parent quotes (with permission) before adding any testimonial block. Nothing is fabricated in the meantime. |
+| O-10 | Click the three external links once from a browser (they could not be fetched here). |
+| O-11 | Run `node tests/e2e/live-checkout.mjs` and `node tests/e2e/live-email.mjs` against a Preview deployment with the Shopify and Resend variables set; do not complete a checkout. |
+| O-12 | Follow-up feature: multi-child tracker (per-child entries and exports, a switcher, v3 migration). Logged, not built. |
+
+### Three things to fix next, with another day
+
+1. A real "share with your BCBA" step after export: a one-tap mail/share sheet with the PDF attached and a short "what to bring to the meeting" summary.
+2. Product pages with a real spread of each printable (three gallery images per product in Shopify) and the first-sentence "who it's for" pulled from the description once the descriptions are final.
+3. Three plain-language guides ("What is ABC data and what should I write down?", "What happens after a diagnosis?", "How to read an ABA treatment plan"), each ending on the tool that helps, to give search something to rank.

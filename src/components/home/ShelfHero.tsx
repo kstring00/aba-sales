@@ -117,7 +117,7 @@ export function ShelfHero({ shelves, panels, reviewer }: { shelves: HeroShelf[];
             <button type="button" className="sd-btn primary" onClick={() => { booksRef.current?.scrollIntoView({ block: "center", behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth" }); openShelf(0); }}>
               Find my shelf <D.arrow />
             </button>
-            <Link href="/shelf" className="sd-btn">Browse all support</Link>
+            <Link href="/shelf" className="sd-textlink">Browse all support <D.arrow /></Link>
           </div>
           <div className="sd-trust">
             <div><i><D.leaf /></i><span><b>Practical tools</b>You can actually use</span></div>

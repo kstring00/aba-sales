@@ -461,6 +461,9 @@ h2 em {
 .sd-btn.accent:hover { background: var(--heading); border-color: var(--heading); }
 .sd-btn.ghost { width: 100%; background: transparent; }
 .sd-btn svg { width: 16px; height: 16px; flex: none; }
+.sd-textlink { display: inline-flex; align-items: center; gap: 6px; min-height: 46px; padding: 0 6px; font-weight: 600; font-size: 15px; color: var(--heading); text-decoration: underline; text-decoration-color: var(--accent); text-decoration-thickness: 2px; text-underline-offset: 6px; }
+.sd-textlink:hover { color: var(--accent-text); }
+.sd-textlink svg { width: 16px; height: 16px; }
 .sd-trust { display: flex; flex-wrap: wrap; gap: 14px 24px; }
 .sd-trust > div { display: flex; align-items: center; gap: 10px; font-size: 12.5px; line-height: 1.25; color: var(--muted); }
 .sd-trust b { display: block; color: var(--heading); font-weight: 600; }
