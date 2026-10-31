@@ -109,5 +109,45 @@
       "stepOf": "Step {n} of 5",
       "counted": "{n} of {total} noticed"
     }
+  },
+  "learn": {
+    "lessonsHeading": "Lessons",
+    "toolsHeading": "Look something up",
+    "glossaryLink": "Glossary: what does that word mean?",
+    "decodeLink": "Decode my paperwork",
+    "sources": "Sources",
+    "lastReviewed": "Last reviewed {date}",
+    "reviewedBy": "Reviewed by {name}",
+    "related": "Related",
+    "next": "Next step"
+  },
+  "glossary": {
+    "search": "Search the glossary",
+    "searchPlaceholder": "BCBA, prior authorization, IEP…",
+    "noMatch": "No term matches that yet.",
+    "jump": "Jump to a letter",
+    "pendingDefinition": "Definition coming soon.",
+    "categories": {
+      "people": "People",
+      "documents": "Documents",
+      "therapy terms": "Therapy terms",
+      "insurance & services": "Insurance and services",
+      "school": "School"
+    },
+    "close": "Close"
+  },
+  "decode": {
+    "title": "Decode my paperwork",
+    "description": "Paste a sentence from a treatment plan, IEP or report and see what each term means.",
+    "privacy": "This runs entirely on your phone or computer. Nothing you paste is sent anywhere or saved, not even in this browser.",
+    "label": "Paste a sentence or paragraph from a treatment plan, IEP, or report.",
+    "found": "Terms found, in reading order",
+    "none": "No glossary terms found yet. Try a sentence with an acronym like BCBA or IEP.",
+    "unknownHeading": "We don't have this one yet",
+    "suggest": "Suggest it",
+    "suggestSubject": "Glossary suggestion: {term}",
+    "highlighted": "Your text, with terms highlighted",
+    "nextStep": "Want a guided walk through a whole plan?",
+    "nextStepLink": "Read Your Child's Treatment Plan"
   }
 }

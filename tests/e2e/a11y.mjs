@@ -6,7 +6,7 @@ const require = createRequire(import.meta.url);
 const { chromium } = require("playwright");
 const axeSource = fs.readFileSync(require.resolve("axe-core/axe.min.js"), "utf8");
 const BASE = process.env.BASE ?? "http://localhost:3100";
-const PAGES = ["/", "/shelf", "/products/care-binder", "/abc", "/cart", "/thanks", "/about", "/privacy", "/crisis", "/right-now", "/for-you", "/for-you/breathe", "/for-you/ground", "/learn", "/find-care", "/does-not-exist"];
+const PAGES = ["/", "/shelf", "/products/care-binder", "/abc", "/cart", "/thanks", "/about", "/privacy", "/crisis", "/right-now", "/for-you", "/for-you/breathe", "/for-you/ground", "/learn", "/learn/glossary", "/learn/decode", "/learn/tantrum-or-meltdown", "/find-care", "/does-not-exist"];
 const browser = await chromium.launch();
 const ctx = await browser.newContext({ viewport: { width: 375, height: 812 }, isMobile: true, hasTouch: true });
 const page = await ctx.newPage();
@@ -28,6 +28,12 @@ for (const p of PAGES) {
   if (p === "/for-you/ground") {
     await page.getByRole("button", { name: "Found one 1" }).click();
     await page.getByLabel("Do it together").check();
+  }
+  if (p === "/learn/decode") {
+    await page.getByLabel(/Paste a sentence/).fill("The BCBA and the RBT will update the treatment plan before the IEP and the VB-MAPP.");
+  }
+  if (p === "/learn/glossary") {
+    await page.getByLabel("Search the glossary").fill("b");
   }
   if (p === "/right-now") {
     await page.getByRole("button", { name: /No, we're safe/ }).click();

@@ -83,3 +83,29 @@ Gate: build (scope check: 12 files clean, including all templates), typecheck, l
 | `didYouKnow.lines` | A handful of short general facts |
 | `walkthrough.title`, `walkthrough.steps` | Three or four steps using the shoes example |
 | `questionsToBring` | Review the draft templates, then publish |
+
+## Stage 4 — Learn: glossary everywhere, Decode my paperwork, core lessons
+
+| Item | What shipped | Files | Verified |
+| --- | --- | --- | --- |
+| Lessons | Six pending Markdown lessons with slots: What ABA is, and what it isn't (What ABA is · What it isn't · What autistic adults have said · What good modern ABA looks like · Questions to ask a provider), Tantrum or meltdown?, Warning signs before it gets big, Why behavior happens (in general), Transitions, Your child's team. Each page: one H1, sections, sources from front matter, "Last reviewed" / "Reviewed by" line, related lessons, and one soft next step from a `nextStep: /path \| Label` line. | `content/learn/*.md`, `src/app/learn/[slug]/page.tsx` | axe 0 |
+| `/learn` | Introduction, the visible lessons, and the two look-up tools (shown once any glossary term is visible) | `src/app/learn/page.tsx` | — |
+| `/learn/glossary` | Grouped by category, A–Z jump, search as you type in the browser, an anchor per term (`#bcba`), `DefinedTermSet` JSON-LD for published terms with a definition. Production shows only published terms and the page 404s until at least one exists. | `src/app/learn/glossary/page.tsx`, `src/components/hub/GlossaryList.tsx`, `content/pages/glossary.md` | Search "prior" → prior authorization; letter jump to `#bacb` |
+| `<Term>` everywhere | The first occurrence on a page of each visible glossary term or alias in lesson text becomes a button with a definition popover (Enter or tap opens; Esc or a tap elsewhere closes and returns focus). Never in headings, links, buttons or the tracker. | `src/components/hub/Term.tsx`, `src/components/hub/SectionText.tsx`, `src/lib/content/terms.ts` | With temporary lesson text (since removed): BCBA, RBT, IEP wrapped once each; none in headings; keyboard and touch; axe 0 with a popover open |
+| Matching | Acronyms case-sensitive, words case-insensitive, plurals, aliases, longest match first; unknown acronyms of 2–6 capitals, hyphen-joined parts kept together (VB-MAPP) | `src/lib/content/terms.ts` | Unit tests: ten known terms with aliases and plurals in reading order; unknowns listed once |
+| `/learn/decode` | Paste text; every term highlighted and listed in reading order with its definition; unknown acronyms listed with a "Suggest it" email (subject only, no pasted text). Runs entirely in the browser: no request on input (glossary links have prefetch off), nothing saved, not even localStorage. Soft next step: Read Your Child's Treatment Plan. Hidden on production until a term is published. | `src/app/learn/decode/page.tsx`, `src/components/hub/Decode.tsx` | Paragraph with eleven known terms and two unknown acronyms: all highlighted, 0 requests during input, 0 localStorage keys; Lighthouse 92 |
+
+Gate: build (scope check: 19 files clean), typecheck, lint · unit 54/54 · pages pass (21 routes) · axe 0 on 21 routes with Decode filled and glossary searched · `/abc` journey 8/8.
+
+## Pending content slots (Stage 4)
+
+| File | Needed |
+| --- | --- |
+| `content/learn/what-aba-is-and-isnt.md` | All five sections, in your words, with sources |
+| `content/learn/tantrum-or-meltdown.md` | The short version · How they usually differ · What to write down |
+| `content/learn/warning-signs.md` | What parents often notice · Writing them down |
+| `content/learn/why-behavior-happens.md` | The four common reasons (general only) · Why only your child's team can say |
+| `content/learn/transitions.md` | Why transitions are hard · What families often find helps (general only) |
+| `content/learn/your-childs-team.md` | The people you may meet · Who to ask about what |
+| `content/pages/glossary.md` | One or two introductory sentences |
+| `content/glossary.json` | Definitions (see Stage 1); add aliases such as expansions so they link too |

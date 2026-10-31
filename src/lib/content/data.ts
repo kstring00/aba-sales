@@ -30,6 +30,11 @@ export type GlossaryTerm = {
 };
 export const glossary = glossaryJson.terms as GlossaryTerm[];
 
+/** Terms shown on this deployment: published everywhere, all terms outside production. */
+export function visibleTerms(): GlossaryTerm[] {
+  return glossary.filter((t) => t.status === "published" || !isProductionDeploy());
+}
+
 export type Resource = {
   id: string;
   name: string;
