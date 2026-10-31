@@ -149,5 +149,32 @@
     "highlighted": "Your text, with terms highlighted",
     "nextStep": "Want a guided walk through a whole plan?",
     "nextStepLink": "Read Your Child's Treatment Plan"
+  },
+  "findCare": {
+    "age": "How old is your child?",
+    "ages": {
+      "under-3": "Under 3",
+      "3-5": "3 to 5",
+      "6-plus": "6 or older"
+    },
+    "coverage": "What coverage do you have?",
+    "coverages": {
+      "medicaid": "Medicaid or CHIP",
+      "private": "Private insurance",
+      "none": "None, or not sure"
+    },
+    "state": "Which state are you in?",
+    "states": {
+      "TX": "Texas",
+      "other": "Another state"
+    },
+    "resultHeading": "Where to start",
+    "answerAll": "Answer the three questions to see where to start.",
+    "outsideNote": "These steps are written for Texas; the general version applies elsewhere.",
+    "resourcesHeading": "Places to look",
+    "verifyWarning": "Needs verifying. Hidden on the live site until filled in.",
+    "waitlistLink": "The Waitlist Playbook (free)",
+    "share": "These answers live only in this page's address, so you can bookmark or share it. Nothing is stored.",
+    "noNames": "We never name or rank providers."
   }
 }

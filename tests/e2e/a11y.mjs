@@ -6,7 +6,7 @@ const require = createRequire(import.meta.url);
 const { chromium } = require("playwright");
 const axeSource = fs.readFileSync(require.resolve("axe-core/axe.min.js"), "utf8");
 const BASE = process.env.BASE ?? "http://localhost:3100";
-const PAGES = ["/", "/shelf", "/products/care-binder", "/abc", "/cart", "/thanks", "/about", "/privacy", "/crisis", "/right-now", "/for-you", "/for-you/breathe", "/for-you/ground", "/learn", "/learn/glossary", "/learn/decode", "/learn/tantrum-or-meltdown", "/find-care", "/does-not-exist"];
+const PAGES = ["/", "/shelf", "/products/care-binder", "/abc", "/cart", "/thanks", "/about", "/privacy", "/crisis", "/right-now", "/for-you", "/for-you/breathe", "/for-you/ground", "/learn", "/learn/glossary", "/learn/decode", "/learn/tantrum-or-meltdown", "/find-care", "/find-care?age=under-3&coverage=medicaid&state=TX", "/for-you/research", "/does-not-exist"];
 const browser = await chromium.launch();
 const ctx = await browser.newContext({ viewport: { width: 375, height: 812 }, isMobile: true, hasTouch: true });
 const page = await ctx.newPage();

@@ -24,6 +24,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       pages.push({ url: `${base}/learn/decode`, lastModified: now, changeFrequency: "yearly", priority: 0.5 });
     }
   }
+  if (isPublished(readPage("pages/for-you-research"))) pages.push({ url: `${base}/for-you/research`, lastModified: now, changeFrequency: "yearly", priority: 0.5 });
   const handles = await getProductHandles();
   for (const h of handles) pages.push({ url: `${base}/products/${h}`, lastModified: now, changeFrequency: "weekly", priority: 0.8 });
   return pages;

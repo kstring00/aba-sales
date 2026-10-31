@@ -8,7 +8,7 @@ const { chromium } = require("playwright");
 const BASE = process.env.BASE ?? "http://localhost:3100";
 const SHOTS = path.resolve("tests/e2e/shots/pages");
 fs.mkdirSync(SHOTS, { recursive: true });
-const PAGES = ["/", "/shelf", "/products/care-binder", "/abc", "/cart", "/thanks", "/about", "/privacy", "/crisis", "/right-now", "/for-you", "/for-you/breathe", "/for-you/ground", "/learn", "/learn/glossary", "/learn/decode", "/learn/tantrum-or-meltdown", "/find-care", "/does-not-exist"];
+const PAGES = ["/", "/shelf", "/products/care-binder", "/abc", "/cart", "/thanks", "/about", "/privacy", "/crisis", "/right-now", "/for-you", "/for-you/breathe", "/for-you/ground", "/learn", "/learn/glossary", "/learn/decode", "/learn/tantrum-or-meltdown", "/find-care", "/find-care?age=under-3&coverage=medicaid&state=TX", "/for-you/research", "/does-not-exist"];
 const browser = await chromium.launch();
 let failures = 0;
 const seen = new Set();

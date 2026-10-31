@@ -109,3 +109,22 @@ Gate: build (scope check: 19 files clean), typecheck, lint · unit 54/54 · page
 | `content/learn/your-childs-team.md` | The people you may meet · Who to ask about what |
 | `content/pages/glossary.md` | One or two introductory sentences |
 | `content/glossary.json` | Definitions (see Stage 1); add aliases such as expansions so they link too |
+
+## Stage 5 — Find care guide and the research page
+
+| Item | What shipped | Files | Verified |
+| --- | --- | --- | --- |
+| `/find-care` | Three questions (age: under 3 / 3–5 / 6+; coverage: Medicaid or CHIP / private / none or not sure; state: Texas / another state). The result card is assembled from `content/find-care/blocks.md` (where to search for the situation, Outside Texas when relevant, questions to ask, a short call script, red flags, what a waitlist involves → Waitlist Playbook) and the matching `find-care` entries in `resources.json`. Answers live only in the address: read on the server, written with `history.replaceState`. No storage, no geolocation, no provider named or ranked. `TODO_VERIFY` resources show a dashed "Needs verifying" box on preview and are hidden on production. | `src/app/find-care/page.tsx`, `src/components/hub/FindCare.tsx`, `src/lib/content/findCare.ts`, `content/find-care/blocks.md` | All 18 combinations snapshot-tested (each card has at least six blocks, always "Questions to ask a provider" and the BACB registry; Texas-only entries never appear for another state). 0 requests while answering; geolocation never called; 0 storage keys; reload restores the answers from the address; Lighthouse 92–94, CLS 0 |
+| `/for-you/research` | Finding sections (heading = the finding, paragraph, "What this means for you" line) and the sources list from front matter; linked from For you once visible | `src/app/for-you/research/page.tsx`, `content/pages/for-you-research.md` | axe 0 |
+
+Production-mode build (`VERCEL_ENV=production`): `/right-now`, `/for-you`, `/learn`, `/find-care`, `/for-you/research`, `/learn/glossary`, `/learn/decode` and every lesson return 404; the sitemap lists none of them; `/abc` shows no pending markers; `/for-you/breathe`, `/for-you/ground`, `/abc` and `/crisis` return 200.
+
+Gate: build (scope check: 21 files clean), typecheck, lint · unit 56/56 · pages pass · axe 0 on 24 routes · `/abc` journey 8/8.
+
+## Pending content slots (Stage 5)
+
+| File | Needed |
+| --- | --- |
+| `content/find-care/blocks.md` | All ten sections; then set `status: published` |
+| `content/resources.json` | The five `find-care` entries: every `TODO_VERIFY` field, then a `lastVerified` date |
+| `content/pages/for-you-research.md` | Each finding, its "What this means for you" line, and every citation in `sources` |
