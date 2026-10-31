@@ -1,6 +1,8 @@
 import Link from "next/link";
 import { publicEnv } from "@/lib/env";
 import { Wordmark } from "@/components/ui/Logo";
+import { hubSections } from "@/lib/content/pages";
+import { ui } from "@/lib/content/data";
 
 /** The boundary line appears on every page, verbatim. */
 export const BOUNDARY_LINE = "These tools record and organize. Your BCBA writes the plan.";
@@ -8,7 +10,10 @@ export const BOUNDARY_LINE = "These tools record and organize. Your BCBA writes 
 export function SiteFooter() {
   const year = new Date().getFullYear();
   const email = publicEnv.contactEmail;
+  const LABEL = { "right-now": ui.nav.rightNow, learn: ui.nav.learn, "find-care": ui.nav.findCare, "for-you": ui.nav.forYou } as const;
+  const hub = hubSections().filter((s) => s.visible).map((s) => ({ href: s.href, label: LABEL[s.key] }));
   const links = [
+    ...hub,
     { href: "/about", label: "About" },
     { href: "/shelf", label: "Shelves" },
     { href: "/abc", label: "ABC tracker" },

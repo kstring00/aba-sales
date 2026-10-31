@@ -34,6 +34,8 @@ const nextConfig: NextConfig = {
   // PDF export reads brand fonts from disk at runtime; make sure Vercel ships them.
   outputFileTracingIncludes: {
     "/api/abc/email-export": ["./public/fonts/*.ttf"],
+    // Content Markdown is read on the server (header nav, hub pages), including on dynamic routes.
+    "/**": ["./content/**/*"],
   },
   turbopack: {
     rules: {

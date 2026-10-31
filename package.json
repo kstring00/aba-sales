@@ -4,7 +4,9 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
+    "prebuild": "node scripts/scope-check.mjs",
     "build": "next build",
+    "scope-check": "node scripts/scope-check.mjs && node scripts/scope-check.mjs --self-test",
     "start": "next start",
     "lint": "eslint",
     "typecheck": "tsc --noEmit",

@@ -1,0 +1,31 @@
+{
+  "nav": {
+    "rightNow": "Right now",
+    "learn": "Learn",
+    "findCare": "Find care",
+    "forYou": "For you",
+    "shelves": "Shelves",
+    "abc": "ABC tracker",
+    "about": "About",
+    "menu": "Menu",
+    "closeMenu": "Close menu"
+  },
+  "startHere": {
+    "eyebrow": "Start here",
+    "doors": {
+      "right-now": "For a hard moment, right now",
+      "learn": "Understand the words and the paperwork",
+      "find-care": "Where to look for services",
+      "for-you": "For you, the parent"
+    }
+  },
+  "pending": {
+    "banner": "Content pending. This page is hidden on the live site until it is written and marked published.",
+    "slotsHeading": "Sections still to write",
+    "slotWaiting": "Waiting for content"
+  },
+  "resources": {
+    "notAffiliated": "Outside resource. We're not affiliated.",
+    "verifyWarning": "Needs verifying before it can appear on the live site."
+  }
+}

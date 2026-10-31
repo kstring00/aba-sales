@@ -1,6 +1,7 @@
 import type { MetadataRoute } from "next";
 import { publicEnv } from "@/lib/env";
 import { getProductHandles } from "@/lib/shopify/catalog";
+import { hubSections } from "@/lib/content/pages";
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const base = publicEnv.siteUrl;
@@ -11,6 +12,8 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     changeFrequency: p === "/" || p === "/shelf" ? "weekly" : "monthly",
     priority: p === "/" ? 1 : p === "/shelf" ? 0.9 : 0.5,
   }));
+  // Hub sections only once published; pending pages never reach the sitemap.
+  for (const s of hubSections().filter((x) => x.published)) pages.push({ url: `${base}${s.href}`, lastModified: now, changeFrequency: "monthly", priority: 0.7 });
   const handles = await getProductHandles();
   for (const h of handles) pages.push({ url: `${base}/products/${h}`, lastModified: now, changeFrequency: "weekly", priority: 0.8 });
   return pages;

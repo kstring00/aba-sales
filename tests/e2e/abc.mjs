@@ -158,7 +158,7 @@ try {
   });
 
   await step("no horizontal overflow at 375px on /abc", async () => {
-    const overflow = await page.evaluate(() => document.documentElement.scrollWidth > window.innerWidth);
+    const overflow = await page.evaluate(() => document.documentElement.scrollWidth > 375);
     expect(!overflow, "page overflows horizontally");
   });
 
