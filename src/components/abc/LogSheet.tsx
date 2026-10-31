@@ -194,11 +194,11 @@ function LogSheetInner({ onClose, behaviors, mode }: Props) {
 
       {step === "review" ? (
         <div className="space-y-5">
-          <dl className="divide-y divide-line rounded-md bg-cream">
+          <ul className="divide-y divide-line rounded-md bg-cream">
             <ReviewRow label="Noticed" value={behaviorLabel || "—"} onChange={() => setStep("behavior")} />
             <ReviewRow label="Right before" value={antecedentLabel(draft.antecedentCode, draft.antecedentNote) || "Skipped"} onChange={() => setStep("before")} />
             <ReviewRow label="Right after" value={consequenceLabel(draft.consequenceCode, draft.consequenceNote) || "Skipped"} onChange={() => setStep("after")} />
-          </dl>
+          </ul>
 
           <button type="button" className="flex min-h-11 w-full items-center justify-between text-left text-[15px] text-ink-soft" aria-expanded={showDetails} onClick={() => setShowDetails((s) => !s)}>
             <span>{showDetails ? "Hide details" : "Add details (optional)"}</span>
@@ -305,13 +305,13 @@ function StepChips(props: {
 
 function ReviewRow({ label, value, onChange }: { label: string; value: string; onChange: () => void }) {
   return (
-    <div className="flex items-center justify-between gap-4 px-4 py-3">
+    <li className="flex items-center justify-between gap-4 px-4 py-3">
       <div className="min-w-0">
-        <dt className="text-[13px] uppercase tracking-wider text-ink-mute">{label}</dt>
-        <dd className="text-[16px] leading-snug text-ink">{value}</dd>
+        <p className="text-[13px] uppercase tracking-wider text-ink-mute">{label}</p>
+        <p className="text-[16px] leading-snug text-ink">{value}</p>
       </div>
-      <button type="button" onClick={onChange} className="min-h-11 shrink-0 px-2 text-[15px] text-sage-deep hover:text-ink">Change</button>
-    </div>
+      <button type="button" onClick={onChange} className="min-h-11 shrink-0 px-2 text-[15px] text-sage-deep hover:text-ink" aria-label={`Change ${label.toLowerCase()}`}>Change</button>
+    </li>
   );
 }
 

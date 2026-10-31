@@ -1,13 +1,13 @@
-import type { ComponentPropsWithoutRef, ReactNode } from "react";
+import type { ComponentProps, ComponentPropsWithoutRef, ReactNode } from "react";
 
 const control =
   "w-full min-h-12 rounded-md border border-line-strong bg-paper px-4 text-[16px] text-ink placeholder:text-ink-faint focus:border-sage focus:outline-none focus-visible:ring-0";
 
-export function Input({ className = "", ...props }: ComponentPropsWithoutRef<"input">) {
+export function Input({ className = "", ...props }: ComponentProps<"input">) {
   return <input className={`${control} ${className}`} {...props} />;
 }
 
-export function Textarea({ className = "", ...props }: ComponentPropsWithoutRef<"textarea">) {
+export function Textarea({ className = "", ...props }: ComponentProps<"textarea">) {
   return <textarea className={`${control} min-h-24 py-3 leading-relaxed ${className}`} {...props} />;
 }
 

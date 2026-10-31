@@ -80,6 +80,7 @@ src/lib/shelves.ts       the four shelves: tag → shelf mapping with handle fal
 src/lib/resources.ts     one sentence per product, who it may help, which paper object
 src/components/illustrations/Paper.tsx   every illustration (inline SVG, token colors)
 src/components/home/     Hero, ShelfExplorer (tabs), WhyItMatters, ClosingCta
+src/components/abc/      Tracker (page body), TrackerForm, BcbaPreview (live table + exports), Explainers, EntryList, LogSheet (edit), Views
 src/lib/abc/             localStorage store, hook, view aggregations, types
 src/lib/export/          report → PDF (pdf-lib + brand fonts) and CSV
 src/lib/observation.ts   the exact antecedent / consequence wording

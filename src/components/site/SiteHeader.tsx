@@ -4,9 +4,10 @@ import { CartBadge } from "@/components/shop/CartBadge";
 import { IconSearch } from "@/components/illustrations/Paper";
 
 const NAV = [
-  { href: "/about", label: "About" },
-  { href: "/about#how-it-works", label: "How it works" },
-  { href: "/shelf", label: "Shelves" },
+  { href: "/about", label: "About", mobile: false },
+  { href: "/#shelves", label: "How it works", mobile: false },
+  { href: "/shelf", label: "Shelves", mobile: true },
+  { href: "/abc", label: "ABC tracker", mobile: true, short: "ABC" },
 ];
 
 const link = "min-h-11 items-center rounded-pill px-3 text-[15px] text-ink-soft hover:bg-cream-deep hover:text-ink";
@@ -22,8 +23,8 @@ export function SiteHeader() {
       <Wordmark />
       <nav aria-label="Primary" className="flex shrink-0 items-center gap-0.5 whitespace-nowrap sm:gap-1">
         {NAV.map((n) => (
-          <Link key={n.href} href={n.href} className={`${link} ${n.label === "Shelves" ? "inline-flex" : "hidden sm:inline-flex"}`}>
-            {n.label}
+          <Link key={n.href} href={n.href} className={`${link} ${n.mobile ? "inline-flex" : "hidden sm:inline-flex"}`}>
+            {n.short ? (<><span className="sm:hidden">{n.short}</span><span className="hidden sm:inline">{n.label}</span></>) : n.label}
           </Link>
         ))}
         <details className="group relative">

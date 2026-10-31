@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { SiteHeader } from "@/components/site/SiteHeader";
-import { SiteFooter, BOUNDARY_LINE } from "@/components/site/SiteFooter";
+import { SiteFooter } from "@/components/site/SiteFooter";
 import { Prose } from "@/components/site/Prose";
 import { LinkButton } from "@/components/ui/Button";
 import { IconLeaf } from "@/components/illustrations/Paper";
@@ -54,32 +54,12 @@ export default function AboutPage() {
           </figure>
         </section>
 
-        <h2>What this is</h2>
-        <ul>
-          <li>Printable tools for parents and caregivers of kids in ABA therapy, arranged on four shelves.</li>
-          <li>A free ABC observation logger that keeps everything on your own phone.</li>
-          <li>Plain language, calm design, and nothing that talks down to you.</li>
-        </ul>
-
         <h2>What this is not</h2>
         <ul>
           <li>Not treatment. No download or tool here tells you what to do about a behavior.</li>
           <li>Not a clinic or a provider. Your child&apos;s team makes the clinical calls.</li>
           <li>Not a place that collects your child&apos;s information. See the privacy page.</li>
         </ul>
-
-        <h2 id="how-it-works">How it works</h2>
-        <ol>
-          <li>Pick a shelf: Get Organized, Make a Plan, Everyday Life, or Support at Home.</li>
-          <li>Open a tool. Free ones download right away; paid ones check out through Shopify and arrive by email within a minute.</li>
-          <li>Print it, fill it in, and bring it to your next meeting. The free ABC logger works on your phone and keeps everything on your device.</li>
-        </ol>
-
-        <h2>Credentials</h2>
-        <p>
-          Made by Kyle Stringham, a Registered Behavior Technician (RBT). An RBT works under the supervision of a Board Certified Behavior
-          Analyst (BCBA). {BOUNDARY_LINE}
-        </p>
 
         <div className="pt-4">
           <LinkButton href="/shelf" variant="primary" size="lg">Browse the shelves</LinkButton>

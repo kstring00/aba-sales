@@ -13,6 +13,10 @@
 - (review) BCBA review of the chip wording, PDF captions, and product copy.
 - Favicon and social image exist; refresh the OG image to the new palette when the copy is final.
 
+## ABC tracker `/abc`
+- (review) BCBA review of the "Understanding the function of behavior" card and its "Read more" text, and of the step-3 reflection wording. Both are framed as the parent's reflection, not a finding; exports label it "Parent's reflection".
+- Saving with several behaviors selected writes one entry per behavior (same details). Revisit if a BCBA prefers one episode row with several behaviors.
+
 ## Home `/`
 - Shelf tabs remember nothing between visits by design; consider deep-linking `/#shelves` with a shelf id if parents share links.
 
