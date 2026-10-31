@@ -16,6 +16,7 @@ const base = (handle: string, title: string, price: string, tags: string[]): Pro
   compareAtPrice: null,
   tags,
   availableForSale: true,
+  shelf: null,
   descriptionHtml: "<p>Description from Shopify will appear here.</p>",
   description: "Description from Shopify will appear here.",
   images: [],

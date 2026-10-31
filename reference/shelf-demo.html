@@ -1,0 +1,358 @@
+<title>Support Shelf Interactive Demo</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;1,9..144,400;1,9..144,500&family=Figtree:wght@400;500;600;700&family=Caveat:wght@500;600&display=swap">
+<style>
+/* Layout: slim nav, two-column hero (copy left, 3D wooden shelf right), then a drawer band that unfolds beneath the shelf when a binder is pulled forward. */
+:root{
+  --bg:#F8F4EC; --surface:#FFFDF9; --fg:#1C2825; --muted:#5F6B66; --line:#E3DBCE;
+  --accent:#2D6A62; --accent-fg:#FFFFFF; --cta:#C25F3C; --cta-fg:#FFFFFF;
+  --wood-1:#DDBE92; --wood-2:#B98B5A; --wood-3:#8A6140; --wall:#EFE7D9;
+  --b1:#C3DAEC; --b1-ink:#2C6C9A; --b2:#CFE0C7; --b2-ink:#4A7A47;
+  --b3:#F6E6B0; --b3-ink:#B5832A; --b4:#F5CFC0; --b4-ink:#C45A42;
+  --ok:#2E7D5B; --ok-bg:#DDF0E6; --soon:#6B6F6E; --soon-bg:#EFEBE3;
+  --sheet:#FFFFFF; --ink-on-book:#1C2825;
+  --display:"Fraunces",Georgia,"Times New Roman",serif;
+  --body:"Figtree","Segoe UI",system-ui,sans-serif;
+  --hand:"Caveat","Segoe Script",cursive;
+  --shadow:0 30px 60px -28px rgba(45,32,14,.45);
+  --ease:cubic-bezier(.22,.9,.26,1);
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    --bg:#141D1A; --surface:#1C2724; --fg:#EEF1EB; --muted:#A3AEA7; --line:#2C3A35;
+    --accent:#6FB8A8; --accent-fg:#0F1A17; --cta:#E3835F; --cta-fg:#1A1210;
+    --wood-1:#9A7047; --wood-2:#6E4C2E; --wood-3:#4A3220; --wall:#1A2522;
+    --b1:#2F4B62; --b1-ink:#9CC9EC; --b2:#2F4A32; --b2-ink:#A9D4A3;
+    --b3:#5A4A1E; --b3-ink:#F0D27A; --b4:#5B382F; --b4-ink:#F3B19E;
+    --ok:#8FD5B4; --ok-bg:#1F3A2E; --soon:#B3B9B5; --soon-bg:#28332F;
+    --sheet:#233330; --ink-on-book:#EEF1EB;
+    --shadow:0 30px 60px -28px rgba(0,0,0,.7);
+    color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#141D1A; --surface:#1C2724; --fg:#EEF1EB; --muted:#A3AEA7; --line:#2C3A35;
+  --accent:#6FB8A8; --accent-fg:#0F1A17; --cta:#E3835F; --cta-fg:#1A1210;
+  --wood-1:#9A7047; --wood-2:#6E4C2E; --wood-3:#4A3220; --wall:#1A2522;
+  --b1:#2F4B62; --b1-ink:#9CC9EC; --b2:#2F4A32; --b2-ink:#A9D4A3;
+  --b3:#5A4A1E; --b3-ink:#F0D27A; --b4:#5B382F; --b4-ink:#F3B19E;
+  --ok:#8FD5B4; --ok-bg:#1F3A2E; --soon:#B3B9B5; --soon-bg:#28332F;
+  --sheet:#233330; --ink-on-book:#EEF1EB;
+  --shadow:0 30px 60px -28px rgba(0,0,0,.7);
+  color-scheme:dark;
+}
+
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--fg);font-family:var(--body);font-size:16px;line-height:1.55;-webkit-font-smoothing:antialiased}
+.wrap{max-width:1180px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:0}
+button{font:inherit;color:inherit}
+:focus-visible{outline:3px solid var(--accent);outline-offset:3px;border-radius:8px}
+
+/* nav */
+.nav{display:flex;align-items:center;justify-content:space-between;gap:16px;padding-block:18px 8px}
+.logo{display:flex;align-items:center;gap:8px;font-family:var(--display);font-size:24px;font-weight:500;letter-spacing:-.01em;text-decoration:none;color:var(--fg)}
+.logo svg{width:22px;height:22px;color:var(--accent)}
+.links{display:flex;gap:26px;font-size:15px;color:var(--muted)}
+.links span{cursor:pointer}
+.links span:hover{color:var(--fg)}
+.cart{display:flex;align-items:center;gap:6px;color:var(--muted);font-size:13px}
+.cart b{display:inline-grid;place-items:center;width:18px;height:18px;border-radius:50%;background:var(--accent);color:var(--accent-fg);font-size:11px}
+@media (max-width:760px){.links{display:none}}
+
+/* hero */
+.hero{display:grid;grid-template-columns:minmax(0,.9fr) minmax(0,1.1fr);gap:clamp(24px,5vw,64px);align-items:center;padding-block:28px 10px}
+@media (max-width:860px){.hero{grid-template-columns:1fr}}
+.eyebrow{font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:var(--muted);font-weight:600;margin:0 0 14px}
+h1{font-family:var(--display);font-weight:500;font-size:clamp(38px,5.4vw,68px);line-height:1.02;letter-spacing:-.025em;margin:0 0 18px;text-wrap:balance;font-variation-settings:"opsz" 144}
+h1 em{font-style:italic;color:var(--accent);font-weight:400}
+.lede{max-width:40ch;color:var(--muted);font-size:17px;margin:0 0 24px}
+.ctas{display:flex;flex-wrap:wrap;gap:12px;margin-bottom:22px}
+.btn{display:inline-flex;align-items:center;gap:8px;border-radius:999px;padding:13px 22px;border:1.5px solid var(--line);background:var(--surface);cursor:pointer;font-weight:600;font-size:15px;transition:transform .25s var(--ease),box-shadow .25s var(--ease),background .25s}
+.btn:hover{transform:translateY(-2px);box-shadow:0 10px 24px -12px rgba(0,0,0,.35)}
+.btn.primary{background:var(--cta);border-color:var(--cta);color:var(--cta-fg)}
+.btn.accent{background:var(--accent);border-color:var(--accent);color:var(--accent-fg);width:100%;justify-content:center}
+.btn.ghost{width:100%;justify-content:center;background:transparent}
+.trust{display:flex;flex-wrap:wrap;gap:18px 26px}
+.trust div{display:flex;align-items:center;gap:9px;font-size:12px;line-height:1.25;color:var(--muted)}
+.trust b{display:block;color:var(--fg);font-weight:600}
+.trust i{display:grid;place-items:center;width:30px;height:30px;border-radius:50%;background:var(--surface);border:1px solid var(--line);color:var(--accent)}
+.trust i svg{width:15px;height:15px}
+
+/* shelf stage */
+.stage{position:relative;perspective:1400px;padding:34px 0 28px}
+.wall{position:absolute;inset:0 -6% 20px;border-radius:28px;background:
+  radial-gradient(60% 50% at 70% 20%,color-mix(in oklab,var(--b3) 40%,transparent),transparent 70%),
+  linear-gradient(180deg,color-mix(in oklab,var(--wall) 70%,var(--bg)),var(--bg));z-index:0}
+.books{position:relative;z-index:2;display:grid;grid-template-columns:repeat(4,1fr);gap:clamp(6px,1.4vw,14px);align-items:end;padding:0 6%;transform-style:preserve-3d;transition:transform .6s var(--ease)}
+.book{position:relative;aspect-ratio:3/4.3;border:0;padding:0;border-radius:10px 14px 6px 6px;background:var(--c);color:var(--ink-on-book);cursor:pointer;text-align:center;
+  transform-origin:50% 100%;transform-style:preserve-3d;
+  transform:translateY(0) translateZ(0) rotateX(0);
+  transition:transform .7s var(--ease),box-shadow .7s var(--ease),filter .5s,opacity .5s;
+  box-shadow:0 14px 28px -18px rgba(40,30,15,.55),inset 0 1px 0 rgba(255,255,255,.55),inset -1px 0 0 rgba(0,0,0,.05);
+  overflow:hidden;isolation:isolate;animation:settle .9s var(--ease) both;animation-delay:calc(var(--i)*90ms)}
+@keyframes settle{from{transform:translateY(-14px) rotateX(10deg)}to{transform:translateY(0) rotateX(0)}}
+.book::before{content:"";position:absolute;inset:0 auto 0 0;width:9px;border-radius:10px 0 0 6px;background:linear-gradient(90deg,rgba(0,0,0,.14),rgba(0,0,0,.04) 60%,rgba(255,255,255,.3));z-index:1}
+.book::after{content:"";position:absolute;inset:-20% -40%;background:linear-gradient(112deg,transparent 35%,rgba(255,255,255,.42) 50%,transparent 65%);transform:translateX(-120%);transition:transform .9s var(--ease);pointer-events:none;z-index:2}
+.book:hover::after{transform:translateX(120%)}
+.book:hover{transform:translateY(-8px) translateZ(14px)}
+.book.active{transform:translateY(-18px) translateZ(70px) rotateX(-9deg);box-shadow:var(--shadow),0 0 0 2px color-mix(in oklab,var(--ink) 50%,transparent),inset 0 1px 0 rgba(255,255,255,.6);z-index:3}
+.books.has-active .book:not(.active){transform:translateZ(-18px) scale(.975);filter:saturate(.8);opacity:.72}
+.books.has-active .book:not(.active):hover{transform:translateZ(0) translateY(-5px) scale(.985);opacity:.95;filter:none}
+.book .in{position:relative;z-index:1;display:flex;flex-direction:column;align-items:center;justify-content:center;height:100%;padding:8% 10% 18%;gap:6px}
+.book .ic{width:clamp(26px,3.6vw,46px);height:clamp(26px,3.6vw,46px);color:var(--ink);margin-bottom:4px}
+.book .ic svg{width:100%;height:100%}
+.book h3{font-family:var(--display);font-weight:500;font-size:clamp(13px,2.1vw,27px);line-height:1.05;margin:0;letter-spacing:-.02em;text-wrap:balance}
+.book p{margin:0;font-size:clamp(10px,1.1vw,14px);line-height:1.3;color:color-mix(in oklab,var(--ink-on-book) 70%,var(--c));max-width:16ch}
+.book .tab{position:absolute;left:50%;bottom:0;transform:translateX(-50%);width:56%;height:7%;border-radius:4px 4px 0 0;background:var(--ink);opacity:.85}
+@media (max-width:600px){.book p{display:none}.book .in{padding-bottom:14%}}
+
+.plank{position:relative;z-index:1;margin:0 -2%;height:30px;border-radius:4px 4px 10px 10px;
+  background:linear-gradient(180deg,var(--wood-1) 0%,var(--wood-2) 45%,var(--wood-3) 100%);
+  box-shadow:0 18px 30px -14px rgba(40,25,8,.6),inset 0 2px 0 rgba(255,255,255,.35)}
+.plank::before{content:"";position:absolute;left:0;right:0;top:0;height:9px;border-radius:4px 4px 0 0;background:repeating-linear-gradient(90deg,transparent 0 38px,rgba(0,0,0,.05) 38px 41px),linear-gradient(180deg,var(--wood-1),color-mix(in oklab,var(--wood-1) 60%,var(--wood-2)))}
+.plank::after{content:"";position:absolute;left:4%;right:4%;top:-26px;height:26px;background:linear-gradient(180deg,transparent,rgba(40,25,8,.22));filter:blur(6px);border-radius:50%;pointer-events:none}
+
+.hint{position:relative;z-index:2;display:flex;align-items:flex-start;justify-content:center;gap:10px;margin-top:18px;font-family:var(--hand);font-size:clamp(20px,2.2vw,26px);line-height:1.1;color:var(--fg);transition:opacity .5s,transform .5s var(--ease)}
+.hint svg{width:52px;height:38px;flex:none;margin-top:-10px;color:var(--fg)}
+.hint.away{opacity:0;transform:translateY(-6px);pointer-events:none}
+
+/* drawer */
+.drawer{position:relative;display:grid;grid-template-rows:0fr;transition:grid-template-rows .8s var(--ease),margin .6s var(--ease);margin:0 0 20px}
+.drawer.open{grid-template-rows:1fr;margin:12px 0 64px}
+.drawer::before{content:"";position:absolute;top:-10px;left:var(--notch,50%);width:20px;height:20px;transform:translateX(-50%) rotate(45deg);border-radius:4px 0 0 0;
+  background:color-mix(in oklab,var(--shelf,var(--b1)) 38%,var(--bg));border:1px solid color-mix(in oklab,var(--shelf,var(--b1)) 70%,var(--line));border-right:0;border-bottom:0;
+  opacity:0;z-index:3;transition:opacity .35s,left .6s var(--ease),background .5s}
+.drawer.open::before{opacity:1}
+.drawer-inner{min-height:0;overflow:hidden}
+.panel{position:relative;border-radius:30px;padding:clamp(22px,3.6vw,40px);
+  background:color-mix(in oklab,var(--shelf,var(--b1)) 38%,var(--bg));
+  border:1px solid color-mix(in oklab,var(--shelf,var(--b1)) 70%,var(--line));
+  transition:background .5s,border-color .5s}
+.pc{animation:fade .4s var(--ease) both}
+@keyframes fade{from{opacity:0}to{opacity:1}}
+.phead{display:grid;grid-template-columns:minmax(0,1.3fr) minmax(0,.8fr);gap:24px 40px;align-items:start;margin-bottom:26px}
+@media (max-width:760px){.phead{grid-template-columns:1fr}}
+.chip{display:inline-flex;align-items:center;gap:8px;font-size:11px;letter-spacing:.16em;text-transform:uppercase;font-weight:700;background:var(--surface);border:1px solid var(--line);border-radius:999px;padding:5px 12px 5px 6px;color:var(--fg)}
+.chip i{display:inline-grid;place-items:center;width:20px;height:20px;border-radius:50%;background:var(--shelf);color:var(--ink)}
+.chip i svg{width:12px;height:12px}
+.phead h2{font-family:var(--display);font-weight:500;font-size:clamp(30px,4vw,48px);letter-spacing:-.025em;line-height:1;margin:14px 0 8px}
+.phead p{margin:0;color:var(--muted);max-width:56ch;font-size:17px}
+.checks{list-style:none;margin:6px 0 0;padding:0;display:grid;gap:10px;font-size:14.5px}
+.checks li{display:flex;gap:10px;align-items:center;animation:rise .6s var(--ease) both;animation-delay:calc(var(--i)*70ms + 120ms)}
+.checks i{display:grid;place-items:center;width:20px;height:20px;border-radius:50%;background:var(--surface);border:1px solid var(--line);color:var(--accent);flex:none}
+.checks i svg{width:11px;height:11px}
+.cards{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px}
+@media (max-width:980px){.cards{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media (max-width:520px){.cards{grid-template-columns:1fr}}
+.card{display:flex;flex-direction:column;background:var(--surface);border:1px solid var(--line);border-radius:18px;padding:10px 10px 14px;min-width:0;
+  animation:rise .7s var(--ease) both;animation-delay:calc(var(--i)*90ms + 160ms);transition:transform .35s var(--ease),box-shadow .35s var(--ease)}
+.card:hover{transform:translateY(-4px);box-shadow:0 18px 30px -20px rgba(0,0,0,.35)}
+@keyframes rise{from{opacity:0;transform:translateY(22px)}to{opacity:1;transform:none}}
+.cover{position:relative;aspect-ratio:16/9;border-radius:12px;overflow:hidden;background:linear-gradient(160deg,color-mix(in oklab,var(--shelf) 70%,var(--surface)),color-mix(in oklab,var(--shelf) 30%,var(--surface)))}
+.cover .sheet{position:absolute;left:14%;right:14%;top:18%;bottom:-6%;background:var(--sheet);border-radius:8px 8px 0 0;transform:rotate(-2deg);box-shadow:0 10px 24px -12px rgba(0,0,0,.4);padding:14% 12% 0}
+.cover .sheet b{display:block;height:4px;border-radius:2px;background:color-mix(in oklab,var(--fg) 14%,var(--sheet));margin-bottom:9%}
+.cover .sheet b:first-child{width:55%;height:6px;background:color-mix(in oklab,var(--ink) 55%,var(--sheet))}
+.cover .sheet b:nth-child(3){width:80%}
+.cover .badge{position:absolute;right:9%;top:12%;width:34px;height:34px;border-radius:10px;display:grid;place-items:center;background:var(--shelf);color:var(--ink);box-shadow:0 6px 14px -8px rgba(0,0,0,.4)}
+.cover .badge svg{width:18px;height:18px}
+.cover.now{background:linear-gradient(160deg,color-mix(in oklab,var(--accent) 35%,var(--surface)),color-mix(in oklab,var(--shelf) 40%,var(--surface)))}
+.status{position:absolute;left:10px;bottom:10px;font-size:10px;letter-spacing:.14em;text-transform:uppercase;font-weight:700;padding:5px 9px;border-radius:999px;background:var(--soon-bg);color:var(--soon)}
+.status.now{background:var(--ok-bg);color:var(--ok)}
+.card h4{font-family:var(--display);font-weight:500;font-size:21px;letter-spacing:-.02em;margin:14px 6px 4px;line-height:1.1}
+.card p{margin:0 6px 14px;font-size:13.5px;color:var(--muted);flex:1}
+.seeall{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-top:16px;padding:12px 16px;border-radius:14px;background:var(--surface);border:1px solid var(--line);font-size:14.5px;font-weight:600;cursor:pointer;animation:rise .6s var(--ease) both;animation-delay:.55s}
+.seeall:hover{border-color:var(--accent)}
+
+.foot{padding-block:10px 40px;color:var(--muted);font-size:13px;text-align:center}
+@media (prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.01ms!important;animation-delay:0s!important;transition-duration:.01ms!important}.books{transform:none!important}}
+</style>
+
+<svg style="position:absolute;width:0;height:0" aria-hidden="true">
+  <symbol id="i-leaf" viewBox="0 0 24 24"><path fill="currentColor" d="M4 20c1-9 7-14 16-16-1 9-6 15-14 16 2-5 5-8 8-10-4 1-7 4-10 10z"/></symbol>
+  <symbol id="i-folder" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"><path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><path d="M3 11h18"/></symbol>
+  <symbol id="i-cal" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/><path d="M7 14h2M11 14h2M15 14h2M7 17h2M11 17h2"/></symbol>
+  <symbol id="i-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3M4.9 4.9l2.1 2.1M17 17l2.1 2.1M4.9 19.1 7 17M17 7l2.1-2.1"/></symbol>
+  <symbol id="i-people" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="9" cy="8" r="3.2"/><circle cx="17" cy="9.5" r="2.4"/><path d="M3 20c0-3.5 2.7-6 6-6s6 2.5 6 6M15 20c0-2.4 1.6-4.4 4-4.8 1.2.2 2 1.5 2 3.3"/></symbol>
+  <symbol id="i-doc" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"><path d="M6 3h8l4 4v14H6z"/><path d="M14 3v4h4M9 12h6M9 16h6"/></symbol>
+  <symbol id="i-clip" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"><rect x="5" y="4" width="14" height="17" rx="2"/><path d="M9 4V3h6v3H9zM9 12l2 2 4-4"/></symbol>
+  <symbol id="i-files" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"><path d="M8 7h10v14H8z"/><path d="M5 17V4h8"/><path d="M11 12h4M11 16h4"/></symbol>
+  <symbol id="i-map" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"><path d="M3 6l6-2 6 2 6-2v14l-6 2-6-2-6 2z"/><path d="M9 4v14M15 6v14"/></symbol>
+  <symbol id="i-flag" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"><path d="M5 21V4h12l-2 4 2 4H5"/></symbol>
+  <symbol id="i-list" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M8 6h12M8 12h12M8 18h12"/><circle cx="4" cy="6" r="1"/><circle cx="4" cy="12" r="1"/><circle cx="4" cy="18" r="1"/></symbol>
+  <symbol id="i-home" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"><path d="M3 11l9-7 9 7v9a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z"/></symbol>
+  <symbol id="i-heart" viewBox="0 0 24 24"><path fill="currentColor" d="M12 21s-7-4.6-9-9.1C1.6 8.6 3.6 5 7.2 5c2 0 3.4 1.1 4.8 2.7C13.4 6.1 14.8 5 16.8 5c3.6 0 5.6 3.6 4.2 6.9C19 16.4 12 21 12 21z"/></symbol>
+  <symbol id="i-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5 9-10"/></symbol>
+  <symbol id="i-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></symbol>
+  <symbol id="i-clock" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></symbol>
+  <symbol id="i-cart" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 4h2l2.4 11h11l2-7H7"/><circle cx="9" cy="20" r="1.3"/><circle cx="17" cy="20" r="1.3"/></symbol>
+</svg>
+
+<div class="wrap">
+  <nav class="nav">
+    <a class="logo" href="#top"><svg><use href="#i-leaf"/></svg>The Support Shelf</a>
+    <div class="links"><span>About</span><span>How it works</span><span>Shelves</span><span>Resources</span></div>
+    <div class="cart"><svg width="20" height="20"><use href="#i-cart"/></svg><b>0</b></div>
+  </nav>
+
+  <section class="hero" id="top">
+    <div>
+      <p class="eyebrow">Real support for real family life</p>
+      <h1>Practical support for <em>every step</em> of <em>the autism journey.</em></h1>
+      <p class="lede">Tools, guides, and resources to help you feel more organized, prepared, and supported at home, at school, and along the way.</p>
+      <div class="ctas">
+        <button class="btn primary" id="findBtn">Find my shelf <svg width="16" height="16"><use href="#i-arrow"/></svg></button>
+        <button class="btn" id="browseBtn">Browse all support</button>
+      </div>
+      <div class="trust">
+        <div><i><svg><use href="#i-leaf"/></svg></i><span><b>Practical tools</b>You can actually use</span></div>
+        <div><i><svg><use href="#i-heart"/></svg></i><span><b>Made by an RBT</b>With real experience</span></div>
+        <div><i><svg><use href="#i-people"/></svg></i><span><b>You're not alone</b>Support at every step</span></div>
+      </div>
+    </div>
+
+    <div class="stage" id="stage">
+      <div class="wall"></div>
+      <div class="books" id="books" role="group" aria-label="Choose a shelf">
+        <button class="book" style="--c:var(--b1);--ink:var(--b1-ink);--i:0" data-i="0" aria-pressed="false" aria-controls="drawer">
+          <span class="in"><span class="ic"><svg><use href="#i-folder"/></svg></span><h3>Get Organized</h3><p>Track, plan, and keep everything in one place.</p></span><span class="tab"></span>
+        </button>
+        <button class="book" style="--c:var(--b2);--ink:var(--b2-ink);--i:1" data-i="1" aria-pressed="false" aria-controls="drawer">
+          <span class="in"><span class="ic"><svg><use href="#i-cal"/></svg></span><h3>Make a Plan</h3><p>Know what to expect and take the next step.</p></span><span class="tab"></span>
+        </button>
+        <button class="book" style="--c:var(--b3);--ink:var(--b3-ink);--i:2" data-i="2" aria-pressed="false" aria-controls="drawer">
+          <span class="in"><span class="ic"><svg><use href="#i-sun"/></svg></span><h3>Everyday Life</h3><p>Simple strategies for common challenges.</p></span><span class="tab"></span>
+        </button>
+        <button class="book" style="--c:var(--b4);--ink:var(--b4-ink);--i:3" data-i="3" aria-pressed="false" aria-controls="drawer">
+          <span class="in"><span class="ic"><svg><use href="#i-people"/></svg></span><h3>Support at Home</h3><p>Tools for you, your child, and your whole family.</p></span><span class="tab"></span>
+        </button>
+      </div>
+      <div class="plank"></div>
+      <div class="hint" id="hint" aria-hidden="true">
+        <svg viewBox="0 0 52 38" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M46 4C40 6 30 8 22 14c-6 4-10 9-10 16"/><path d="M6 24l6 7 7-5"/></svg>
+        <span>Choose a shelf<br>to see what's inside.</span>
+      </div>
+    </div>
+  </section>
+
+  <section class="drawer" id="drawer" aria-live="polite">
+    <div class="drawer-inner"><div class="panel" id="panel"></div></div>
+  </section>
+
+  <p class="foot">Interaction demo for thesupportshelf.org · click a binder to pull it out, click again to put it back.</p>
+</div>
+
+<script>
+(function(){
+  var shelves=[
+    {key:'b1',ink:'b1-ink',icon:'i-folder',n:1,title:'Get Organized',lead:'Keep the information you need in one place, so you can spend less time searching for it.',
+     checks:['Organize important information','Keep track of appointments','Find helpful templates and trackers','Feel more prepared for meetings'],
+     items:[
+      {t:'Care Binder',d:'Printable templates to organize your child’s important information all in one place.',icon:'i-doc',status:'soon'},
+      {t:'Appointment Notes',d:'Take organized notes and prepare for your next appointment.',icon:'i-cal',status:'soon'},
+      {t:'ABC Tracker',d:'Track what happened before, during, and after a behavior so you can spot patterns and share observations with your BCBA.',icon:'i-clip',status:'now',cta:'Open ABC Tracker'},
+      {t:'Important Documents',d:'A simple guide to the documents you may need and how to keep them organized.',icon:'i-files',status:'soon'}]},
+    {key:'b2',ink:'b2-ink',icon:'i-cal',n:2,title:'Make a Plan',lead:'Know what usually comes next, so each step feels less like a surprise and more like a plan.',
+     checks:['See what to expect after a diagnosis','Prepare for IEP and ARD meetings','Set goals you can actually track','Plan the next transition early'],
+     items:[
+      {t:'Next Steps Roadmap',d:'A plain-language map of what typically happens after a diagnosis and who to call first.',icon:'i-map',status:'soon'},
+      {t:'IEP Meeting Prep',d:'Questions to ask, what to bring, and a one-page summary you can hand to the team.',icon:'i-clip',status:'soon'},
+      {t:'Goal Planner',d:'Break a big goal into small, countable steps you can celebrate at home.',icon:'i-flag',status:'soon'},
+      {t:'Transition Checklist',d:'Everything to line up before a new school, new teacher, or new routine.',icon:'i-list',status:'soon'}]},
+    {key:'b3',ink:'b3-ink',icon:'i-sun',n:3,title:'Everyday Life',lead:'Simple, proven strategies for the moments that happen every single day.',
+     checks:['Smoother mornings and bedtimes','Fewer surprises at mealtime','Outings that go better','Visual tools your child understands'],
+     items:[
+      {t:'Visual Schedules',d:'Printable picture schedules for the routines your child does every day.',icon:'i-cal',status:'soon'},
+      {t:'Morning & Bedtime Routines',d:'Step-by-step routine cards that make transitions predictable.',icon:'i-clock',status:'soon'},
+      {t:'Mealtime Helpers',d:'Gentle strategies for picky eating and calmer family dinners.',icon:'i-sun',status:'soon'},
+      {t:'Outings Toolkit',d:'A grab-and-go kit for the grocery store, the doctor, and family trips.',icon:'i-map',status:'soon'}]},
+    {key:'b4',ink:'b4-ink',icon:'i-people',n:4,title:'Support at Home',lead:'Tools for you, your child, and your whole family, because support works best when everyone has some.',
+     checks:['Take care of yourself, too','Help siblings understand','Build a calm-down space','Keep the whole family on the same page'],
+     items:[
+      {t:'Parent Care Guide',d:'Small, realistic ways to refill your own tank on hard weeks.',icon:'i-heart',status:'soon'},
+      {t:'Sibling Support',d:'Conversation starters and activities so brothers and sisters feel included.',icon:'i-people',status:'soon'},
+      {t:'Calm-Down Corner Kit',d:'How to set up a safe, low-cost calming space at home.',icon:'i-home',status:'soon'},
+      {t:'Family Communication Board',d:'A shared board so everyone knows the plan for the day.',icon:'i-list',status:'soon'}]}
+  ];
+
+  var books=[].slice.call(document.querySelectorAll('.book')),
+      booksWrap=document.getElementById('books'),
+      drawer=document.getElementById('drawer'),
+      panel=document.getElementById('panel'),
+      hint=document.getElementById('hint'),
+      active=-1, closeTimer=null;
+
+  function esc(s){return s.replace(/[&<>"]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]})}
+
+  function render(s){
+    var h='<div class="pc"><div class="phead"><div>'+
+      '<span class="chip"><i><svg><use href="#'+s.icon+'"/></svg></i>Shelf '+s.n+'</span>'+
+      '<h2>'+esc(s.title)+'</h2><p>'+esc(s.lead)+'</p></div><ul class="checks">';
+    s.checks.forEach(function(c,i){h+='<li style="--i:'+i+'"><i><svg><use href="#i-check"/></svg></i>'+esc(c)+'</li>'});
+    h+='</ul></div><div class="cards">';
+    s.items.forEach(function(it,i){
+      var now=it.status==='now';
+      h+='<article class="card" style="--i:'+i+'"><div class="cover'+(now?' now':'')+'"><div class="sheet"><b></b><b></b><b></b></div>'+
+         '<span class="badge"><svg><use href="#'+it.icon+'"/></svg></span>'+
+         '<span class="status'+(now?' now':'')+'">'+(now?'Available now':'Coming soon')+'</span></div>'+
+         '<h4>'+esc(it.t)+'</h4><p>'+esc(it.d)+'</p>'+
+         '<button class="btn '+(now?'accent':'ghost')+'">'+(now?esc(it.cta):'Learn more')+' <svg width="15" height="15"><use href="#i-arrow"/></svg></button></article>';
+    });
+    h+='</div><div class="seeall"><span>See all tools on the '+esc(s.title)+' shelf</span><svg width="18" height="18"><use href="#i-arrow"/></svg></div></div>';
+    panel.innerHTML=h;
+  }
+
+  function notch(){
+    if(active<0)return;
+    var b=books[active].getBoundingClientRect(), d=drawer.getBoundingClientRect();
+    drawer.style.setProperty('--notch',(b.left+b.width/2-d.left)+'px');
+  }
+
+  function open(i){
+    clearTimeout(closeTimer);
+    var s=shelves[i];
+    active=i;
+    books.forEach(function(b,k){b.classList.toggle('active',k===i);b.setAttribute('aria-pressed',k===i?'true':'false')});
+    booksWrap.classList.add('has-active');
+    drawer.style.setProperty('--shelf','var(--'+s.key+')');
+    drawer.style.setProperty('--ink','var(--'+s.ink+')');
+    panel.style.setProperty('--shelf','var(--'+s.key+')');
+    panel.style.setProperty('--ink','var(--'+s.ink+')');
+    render(s);
+    notch();
+    drawer.classList.add('open');
+    hint.classList.add('away');
+    setTimeout(function(){try{drawer.scrollIntoView({block:'nearest',behavior:'smooth'})}catch(e){}},350);
+  }
+
+  function close(){
+    active=-1;
+    books.forEach(function(b){b.classList.remove('active');b.setAttribute('aria-pressed','false')});
+    booksWrap.classList.remove('has-active');
+    drawer.classList.remove('open');
+    hint.classList.remove('away');
+    closeTimer=setTimeout(function(){if(active<0)panel.innerHTML=''},800);
+  }
+
+  books.forEach(function(b){
+    b.addEventListener('click',function(){var i=+b.dataset.i;i===active?close():open(i)});
+  });
+  document.getElementById('findBtn').addEventListener('click',function(){
+    booksWrap.scrollIntoView({block:'center',behavior:'smooth'});
+    open(0);
+  });
+  document.getElementById('browseBtn').addEventListener('click',function(){open(active<0?0:(active+1)%4)});
+  window.addEventListener('resize',notch);
+
+  // gentle pointer parallax on the whole shelf (fine pointers only)
+  var stage=document.getElementById('stage');
+  if(window.matchMedia('(hover:hover) and (pointer:fine)').matches && !window.matchMedia('(prefers-reduced-motion:reduce)').matches){
+    stage.addEventListener('pointermove',function(e){
+      var r=stage.getBoundingClientRect(), x=(e.clientX-r.left)/r.width-.5, y=(e.clientY-r.top)/r.height-.5;
+      booksWrap.style.transform='rotateY('+(x*7)+'deg) rotateX('+(-y*4)+'deg)';
+    });
+    stage.addEventListener('pointerleave',function(){booksWrap.style.transform=''});
+  }
+})();
+</script>

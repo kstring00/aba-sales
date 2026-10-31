@@ -3,7 +3,7 @@ import { CornerLeaves, IconArrow, SunAndLeaves, Wave } from "@/components/illust
 
 export function ClosingCta() {
   return (
-    <section aria-labelledby="close-h" className="relative overflow-hidden">
+    <section aria-labelledby="close-h" className="relative -mx-[max(16px,env(safe-area-inset-left))] overflow-hidden sm:-mx-8">
       <Wave className="block" />
       <div className="relative bg-aqua">
         <CornerLeaves side="left" className="pointer-events-none absolute -bottom-6 -left-6 h-40 w-40 opacity-80 sm:h-56 sm:w-56" />
@@ -16,7 +16,7 @@ export function ClosingCta() {
           <p className="mx-auto mt-5 max-w-[50ch] text-[1.02rem] text-ink-soft">
             Choose a shelf, take one tool, and use it this week. The rest can wait until it can&apos;t.
           </p>
-          <a href="#shelves" className={buttonClass("primary", "lg", "mt-8")}>
+          <a href="#shelf-organized" className={buttonClass("primary", "lg", "mt-8")}>
             Find my shelf <IconArrow className="h-5 w-5" />
           </a>
         </div>

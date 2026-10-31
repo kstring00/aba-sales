@@ -15,7 +15,7 @@ const MARKS = [
  */
 export function WhyItMatters() {
   return (
-    <section aria-labelledby="why-h" className="mx-auto grid w-full max-w-7xl items-center gap-12 px-5 py-[var(--section-y)] sm:px-8 lg:grid-cols-[minmax(0,6fr)_minmax(0,5fr)] lg:gap-16">
+    <section aria-labelledby="why-h" className="grid w-full items-center gap-12 py-[var(--section-y)] lg:grid-cols-[minmax(0,6fr)_minmax(0,5fr)] lg:gap-16">
       <Reveal>
         <p className="kicker">Why it matters</p>
         <h2 id="why-h" className="mt-3">

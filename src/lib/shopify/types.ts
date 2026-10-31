@@ -13,6 +13,8 @@ export type ProductSummary = {
   compareAtPrice: Money | null;
   tags: string[];
   availableForSale: boolean;
+  /** `custom.shelf` metafield: get-organized | make-a-plan | everyday-life | support-at-home */
+  shelf?: string | null;
 };
 
 export type ProductDetail = ProductSummary & {

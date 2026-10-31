@@ -7,79 +7,117 @@
    pastel shelf tints, one terracotta action per section.
    ───────────────────────────────────────────────────────────────────────── */
 :root {
-  /* Surfaces */
-  --cream: #fbf7f0;        /* warm cream, the room */
-  --cream-deep: #f3ecdf;
-  --paper: #ffffff;        /* a sheet of paper */
-  --aqua: #e4f2f6;         /* pale aqua wave bands */
-  --wood: #d9b48a;         /* the shelf board */
-  --wood-deep: #b8906a;
-  --wood-edge: #a07a56;
+  /* ── Demo tokens, verbatim (reference/shelf-demo.html) ─────────────── */
+  --bg: #F8F4EC; --surface: #FFFDF9; --fg: #1C2825; --muted: #5F6B66; --line: #E3DBCE;
+  --accent: #2D6A62; --accent-fg: #FFFFFF; --cta: #C25F3C; --cta-fg: #FFFFFF;
+  --wood-1: #DDBE92; --wood-2: #B98B5A; --wood-3: #8A6140; --wall: #EFE7D9;
+  --b1: #C3DAEC; --b1-ink: #2C6C9A; --b2: #CFE0C7; --b2-ink: #4A7A47;
+  --b3: #F6E6B0; --b3-ink: #B5832A; --b4: #F5CFC0; --b4-ink: #C45A42;
+  --ok: #2E7D5B; --ok-bg: #DDF0E6; --soon: #5E6362; /* demo: #6B6F6E, deepened one step so the 10px pill passes AA (5.2:1) */ --soon-bg: #EFEBE3;
+  --sheet: #FFFFFF; --ink-on-book: #1C2825;
+  --shadow: 0 30px 60px -28px rgba(45, 32, 14, .45);
+  --ease: cubic-bezier(.22, .9, .26, 1);
 
-  /* Ink — deep forest/teal for headings and body */
-  --ink: #1f3a3a;          /* 11.4:1 on cream */
-  --ink-body: #2a4343;
-  --ink-soft: #3b5556;
-  --ink-mute: #4d6164;     /* 6.1:1 on cream, ≥4.9 on every tint */
-  --ink-faint: #93a3a4;
+  /* ── Site semantics, derived from the demo tokens so dark mode flows ── */
+  --cream: var(--bg);
+  --cream-deep: color-mix(in oklab, var(--bg) 85%, var(--line));
+  --paper: var(--surface);
+  --aqua: color-mix(in oklab, var(--accent) 9%, var(--bg));
+  --wood: var(--wood-1);
+  --wood-deep: var(--wood-2);
+  --wood-edge: var(--wood-3);
 
-  /* Lines */
-  --line: #e8e1d5;
-  --line-strong: #d3c9b8;
+  --ink: var(--fg);
+  --ink-body: var(--fg);
+  --ink-soft: color-mix(in oklab, var(--fg) 78%, var(--muted));
+  --ink-mute: var(--muted);
+  --ink-faint: color-mix(in oklab, var(--muted) 55%, var(--bg));
 
-  /* Shelf tints — backgrounds only, never text */
-  --sky: #d9ebf5;
-  --mint: #d7eedc;
-  --butter: #fbedc8;
-  --blush: #f9dad3;
-  /* Deep partners for icons, badges and small labels on white or cream */
-  --sky-deep: #2b6a99;     /* 5.8:1 on white */
-  --mint-deep: #2f7a4a;
-  --butter-deep: #8a5a12;
-  --blush-deep: #a9452f;
+  --line-strong: color-mix(in oklab, var(--line) 70%, var(--muted));
 
-  /* Sage — leaves, the wordmark, selected states */
-  --sage: #8fb59e;
-  --sage-deep: #4f6a52;    /* 5.6:1 on cream */
-  --sage-tint: #e6efe6;
+  /* Shelf tints = the four binders. Backgrounds only, never text. */
+  --sky: var(--b1);
+  --mint: var(--b2);
+  --butter: var(--b3);
+  --blush: var(--b4);
+  /* AA text partners on white/cream (the demo's binder inks are for icons). */
+  --sky-deep: #2C6C9A;
+  --mint-deep: #4A7A47;
+  --butter-deep: #8A5A12;
+  --blush-deep: #B84A32;
 
-  /* Sun — the one warm accent besides terracotta */
-  --sun: #f6c667;
-  --sun-tint: #fdf1d2;
+  --sage: var(--accent);
+  --sage-deep: var(--accent);
+  --sage-tint: color-mix(in oklab, var(--accent) 14%, var(--bg));
 
-  /* Terracotta — the single primary action per section. The brief's #C96A4E
-     is kept for rules, arrows and large marks; text-bearing buttons use the
-     one-step-deeper shade so white text passes AA (4.7:1). */
-  --clay: #b25a3f;
-  --clay-deep: #9c4c33;
-  --clay-bright: #c96a4e;
-  --clay-text: #a9523a;    /* 5.0:1 on cream */
-  --clay-tint: #f6e4dc;
+  --sun: #F6C667;
+  --sun-tint: color-mix(in oklab, var(--b3) 55%, var(--bg));
 
-  /* Shadows are warm ink, never gray */
-  --shadow-soft: 0 10px 30px -10px rgb(31 58 58 / 0.10), 0 2px 6px -2px rgb(31 58 58 / 0.06);
-  --shadow-lift: 0 18px 40px -14px rgb(31 58 58 / 0.18), 0 4px 10px -4px rgb(31 58 58 / 0.08);
-  --shadow-shelf: 0 14px 24px -14px rgb(31 58 58 / 0.24);
-  --shadow-sheet: 0 -16px 48px -12px rgb(31 58 58 / 0.18);
+  /* Terracotta action. The token is the demo's; text-bearing buttons use a
+     one-step-deeper mix so white text passes AA (4.2:1 → 5.0:1). */
+  --clay: color-mix(in oklab, var(--cta) 88%, black);
+  --clay-deep: color-mix(in oklab, var(--cta) 76%, black);
+  --clay-bright: var(--cta);
+  --clay-text: color-mix(in oklab, var(--cta) 84%, black);
+  --clay-tint: color-mix(in oklab, var(--cta) 14%, var(--bg));
 
-  /* Radii */
+  --shadow-soft: 0 10px 30px -10px rgb(28 40 37 / 0.10), 0 2px 6px -2px rgb(28 40 37 / 0.06);
+  --shadow-lift: 0 18px 40px -14px rgb(28 40 37 / 0.18), 0 4px 10px -4px rgb(28 40 37 / 0.08);
+  --shadow-shelf: 0 14px 24px -14px rgb(28 40 37 / 0.24);
+  --shadow-sheet: 0 -16px 48px -12px rgb(28 40 37 / 0.18);
+
   --r-sm: 8px;
   --r-md: 14px;
   --r-lg: 22px;
   --r-xl: 30px;
   --r-pill: 999px;
 
-  /* Rhythm (8px grid) */
   --section-y: 64px;
   --measure: 66ch;
 
-  /* Motion */
   --t-fast: 200ms;
-  --ease-out: cubic-bezier(0.2, 0.8, 0.2, 1);
+  --ease-out: var(--ease);
   --ease-spring: cubic-bezier(0.22, 1.2, 0.36, 1);
 
-  /* Touch */
   --tap: 48px;
+}
+
+/* Full dark-mode set from the demo. Semantics above re-derive automatically. */
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #141D1A; --surface: #1C2724; --fg: #EEF1EB; --muted: #A3AEA7; --line: #2C3A35;
+    --accent: #6FB8A8; --accent-fg: #0F1A17; --cta: #E3835F; --cta-fg: #1A1210;
+    --wood-1: #9A7047; --wood-2: #6E4C2E; --wood-3: #4A3220; --wall: #1A2522;
+    --b1: #2F4B62; --b1-ink: #9CC9EC; --b2: #2F4A32; --b2-ink: #A9D4A3;
+    --b3: #5A4A1E; --b3-ink: #F0D27A; --b4: #5B382F; --b4-ink: #F3B19E;
+    --ok: #8FD5B4; --ok-bg: #1F3A2E; --soon: #B3B9B5; --soon-bg: #28332F;
+    --sheet: #233330; --ink-on-book: #EEF1EB;
+    --shadow: 0 30px 60px -28px rgba(0, 0, 0, .7);
+    --sky-deep: var(--b1-ink); --mint-deep: var(--b2-ink); --butter-deep: var(--b3-ink); --blush-deep: var(--b4-ink);
+    --clay: var(--cta); --clay-deep: color-mix(in oklab, var(--cta) 85%, white); --clay-text: var(--cta);
+    --sun: #F0D27A;
+    --shadow-soft: 0 10px 30px -10px rgb(0 0 0 / 0.5), 0 2px 6px -2px rgb(0 0 0 / 0.4);
+    --shadow-lift: 0 18px 40px -14px rgb(0 0 0 / 0.6), 0 4px 10px -4px rgb(0 0 0 / 0.4);
+    --shadow-shelf: 0 14px 24px -14px rgb(0 0 0 / 0.6);
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #141D1A; --surface: #1C2724; --fg: #EEF1EB; --muted: #A3AEA7; --line: #2C3A35;
+  --accent: #6FB8A8; --accent-fg: #0F1A17; --cta: #E3835F; --cta-fg: #1A1210;
+  --wood-1: #9A7047; --wood-2: #6E4C2E; --wood-3: #4A3220; --wall: #1A2522;
+  --b1: #2F4B62; --b1-ink: #9CC9EC; --b2: #2F4A32; --b2-ink: #A9D4A3;
+  --b3: #5A4A1E; --b3-ink: #F0D27A; --b4: #5B382F; --b4-ink: #F3B19E;
+  --ok: #8FD5B4; --ok-bg: #1F3A2E; --soon: #B3B9B5; --soon-bg: #28332F;
+  --sheet: #233330; --ink-on-book: #EEF1EB;
+  --shadow: 0 30px 60px -28px rgba(0, 0, 0, .7);
+  --sky-deep: var(--b1-ink); --mint-deep: var(--b2-ink); --butter-deep: var(--b3-ink); --blush-deep: var(--b4-ink);
+  --clay: var(--cta); --clay-deep: color-mix(in oklab, var(--cta) 85%, white); --clay-text: var(--cta);
+  --sun: #F0D27A;
+  --shadow-soft: 0 10px 30px -10px rgb(0 0 0 / 0.5), 0 2px 6px -2px rgb(0 0 0 / 0.4);
+  --shadow-lift: 0 18px 40px -14px rgb(0 0 0 / 0.6), 0 4px 10px -4px rgb(0 0 0 / 0.4);
+  --shadow-shelf: 0 14px 24px -14px rgb(0 0 0 / 0.6);
+  color-scheme: dark;
 }
 
 @media (min-width: 768px) {
@@ -101,11 +139,11 @@
   line-gap-override: 0%;
 }
 @font-face {
-  font-family: "Inter Fallback Tuned";
+  font-family: "Figtree Fallback Tuned";
   src: local("Arial"), local("ArialMT"), local("Liberation Sans"), local("Helvetica");
-  size-adjust: 107.1%;
-  ascent-override: 90.5%;
-  descent-override: 22.6%;
+  size-adjust: 100%;
+  ascent-override: 95%;
+  descent-override: 25%;
   line-gap-override: 0%;
 }
 
@@ -143,9 +181,18 @@
   --color-clay-bright: var(--clay-bright);
   --color-clay-text: var(--clay-text);
   --color-clay-tint: var(--clay-tint);
+  --color-accent: var(--accent);
+  --color-accent-fg: var(--accent-fg);
+  --color-cta: var(--cta);
+  --color-cta-fg: var(--cta-fg);
+  --color-surface: var(--surface);
+  --color-ok: var(--ok);
+  --color-ok-bg: var(--ok-bg);
+  --color-soon: var(--soon);
+  --color-soon-bg: var(--soon-bg);
 
   --font-display: var(--font-fraunces), "Fraunces Fallback Tuned", Georgia, serif;
-  --font-sans: var(--font-inter), "Inter Fallback Tuned", system-ui, sans-serif;
+  --font-sans: var(--font-figtree), "Figtree Fallback Tuned", "Segoe UI", system-ui, sans-serif;
   --font-hand: var(--font-caveat), cursive;
 
   --shadow-soft: var(--shadow-soft);
@@ -447,4 +494,126 @@ h2 em {
 /* 24 equal columns for the hour-of-day heat strip. */
 @utility grid-cols-24 {
   grid-template-columns: repeat(24, minmax(0, 1fr));
+}
+
+/* ─────────────────────────────────────────────────────────────────────────────
+   Shelf drawer (homepage hero). Motion, timing and layout follow
+   reference/shelf-demo.html; class names are prefixed sd- to stay out of the
+   way of the rest of the site. Binders set --c / --ink; the drawer sets
+   --shelf / --ink from the active binder.
+   ───────────────────────────────────────────────────────────────────────── */
+.sd-hero { display: grid; grid-template-columns: minmax(0, .9fr) minmax(0, 1.1fr); gap: clamp(24px, 5vw, 64px); align-items: center; padding-block: 28px 10px; }
+@media (max-width: 860px) { .sd-hero { grid-template-columns: 1fr; } }
+.sd-eyebrow { font-size: 11px; letter-spacing: .18em; text-transform: uppercase; color: var(--muted); font-weight: 600; margin: 0 0 14px; }
+.sd-hero h1 { font-size: clamp(38px, 5.4vw, 68px); line-height: 1.02; letter-spacing: -.025em; margin: 0 0 18px; }
+.sd-hero h1 em { color: var(--accent); }
+.sd-lede { max-width: 40ch; color: var(--muted); font-size: 17px; margin: 0 0 24px; }
+.sd-ctas { display: flex; flex-wrap: wrap; gap: 12px; margin-bottom: 22px; }
+.sd-btn { display: inline-flex; align-items: center; justify-content: center; gap: 8px; min-height: 44px; border-radius: 999px; padding: 11px 22px; border: 1.5px solid var(--line); background: var(--surface); color: var(--fg); cursor: pointer; font-weight: 600; font-size: 15px; text-decoration: none; transition: transform .25s var(--ease), box-shadow .25s var(--ease), background .25s, border-color .25s; }
+.sd-btn:hover { transform: translateY(-2px); box-shadow: 0 10px 24px -12px rgba(0, 0, 0, .35); }
+.sd-btn.primary { background: var(--clay); border-color: var(--clay); color: var(--cta-fg); }
+.sd-btn.accent { background: var(--accent); border-color: var(--accent); color: var(--accent-fg); width: 100%; }
+.sd-btn.ghost { width: 100%; background: transparent; }
+.sd-btn.ghost:hover { border-color: var(--accent); }
+.sd-btn svg { width: 16px; height: 16px; flex: none; }
+.sd-trust { display: flex; flex-wrap: wrap; gap: 18px 26px; }
+.sd-trust > div { display: flex; align-items: center; gap: 9px; font-size: 12px; line-height: 1.25; color: var(--muted); }
+.sd-trust b { display: block; color: var(--fg); font-weight: 600; }
+.sd-trust i { display: grid; place-items: center; width: 30px; height: 30px; border-radius: 50%; background: var(--surface); border: 1px solid var(--line); color: var(--accent); flex: none; }
+.sd-trust i svg { width: 15px; height: 15px; }
+.sd-reviewed { margin: 12px 0 0; font-size: 13px; color: var(--muted); }
+
+/* stage */
+.sd-stage { position: relative; perspective: 1400px; padding: 34px 0 28px; }
+.sd-scope { overflow-x: clip; }
+.sd-wall { position: absolute; inset: 0 -6% 20px; border-radius: 28px; z-index: 0; background:
+  radial-gradient(60% 50% at 70% 20%, color-mix(in oklab, var(--b3) 40%, transparent), transparent 70%),
+  linear-gradient(180deg, color-mix(in oklab, var(--wall) 70%, var(--bg)), var(--bg)); }
+.sd-books { position: relative; z-index: 2; display: grid; grid-template-columns: repeat(4, 1fr); gap: clamp(6px, 1.4vw, 14px); align-items: end; padding: 0 6%; transform-style: preserve-3d; transition: transform .6s var(--ease); }
+.sd-book { position: relative; aspect-ratio: 3 / 4.5; border: 0; padding: 0; border-radius: 10px 14px 6px 6px; background: var(--c); color: var(--ink-on-book); cursor: pointer; text-align: center; font: inherit;
+  transform-origin: 50% 100%; transform-style: preserve-3d; transform: translateY(0) translateZ(0) rotateX(0);
+  transition: transform .7s var(--ease), box-shadow .7s var(--ease), filter .5s, opacity .5s;
+  box-shadow: 0 14px 28px -18px rgba(40, 30, 15, .55), inset 0 1px 0 rgba(255, 255, 255, .55), inset -1px 0 0 rgba(0, 0, 0, .05);
+  overflow: hidden; isolation: isolate; animation: sd-settle .9s var(--ease) both; animation-delay: calc(var(--i) * 90ms); }
+@keyframes sd-settle { from { transform: translateY(-14px) rotateX(10deg); } to { transform: translateY(0) rotateX(0); } }
+.sd-book::before { content: ""; position: absolute; inset: 0 auto 0 0; width: 9px; border-radius: 10px 0 0 6px; background: linear-gradient(90deg, rgba(0, 0, 0, .14), rgba(0, 0, 0, .04) 60%, rgba(255, 255, 255, .3)); z-index: 1; }
+.sd-book::after { content: ""; position: absolute; inset: -20% -40%; background: linear-gradient(112deg, transparent 35%, rgba(255, 255, 255, .42) 50%, transparent 65%); transform: translateX(-120%); transition: transform .9s var(--ease); pointer-events: none; z-index: 2; }
+.sd-book:hover::after { transform: translateX(120%); }
+.sd-book:hover { transform: translateY(-8px) translateZ(14px); }
+.sd-book[aria-pressed="true"] { transform: translateY(-18px) translateZ(70px) rotateX(-9deg); box-shadow: var(--shadow), 0 0 0 2px color-mix(in oklab, var(--ink) 50%, transparent), inset 0 1px 0 rgba(255, 255, 255, .6); z-index: 3; }
+.sd-books.has-active .sd-book:not([aria-pressed="true"]) { transform: translateZ(-18px) scale(.975); filter: saturate(.8); opacity: .72; }
+.sd-books.has-active .sd-book:not([aria-pressed="true"]):hover { transform: translateZ(0) translateY(-5px) scale(.985); opacity: .95; filter: none; }
+.sd-book .in { position: relative; z-index: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100%; padding: 8% 10% 16%; gap: 4px; }
+.sd-book .ic { width: clamp(24px, 3.2vw, 40px); height: clamp(24px, 3.2vw, 40px); color: var(--ink); margin-bottom: 2px; }
+.sd-book .ic svg { width: 100%; height: 100%; }
+.sd-book .t { font-family: var(--font-display); font-variation-settings: "opsz" 144; font-weight: 500; font-size: clamp(13px, 1.85vw, 24px); line-height: 1.05; margin: 0; letter-spacing: -.02em; text-wrap: balance; color: var(--ink-on-book); }
+.sd-book .d { margin: 0; font-size: clamp(10px, 1vw, 13px); line-height: 1.25; color: color-mix(in oklab, var(--ink-on-book) 70%, var(--c)); max-width: 16ch; }
+.sd-book .tab { position: absolute; left: 50%; bottom: 0; transform: translateX(-50%); width: 56%; height: 7%; border-radius: 4px 4px 0 0; background: var(--ink); opacity: .85; }
+@media (max-width: 600px) { .sd-book .d { display: none; } .sd-book .in { padding-bottom: 14%; } }
+.sd-book:focus-visible { outline: 3px solid var(--accent); outline-offset: 3px; }
+
+.sd-plank { position: relative; z-index: 1; margin: 0 -2%; height: 30px; border-radius: 4px 4px 10px 10px;
+  background: linear-gradient(180deg, var(--wood-1) 0%, var(--wood-2) 45%, var(--wood-3) 100%);
+  box-shadow: 0 18px 30px -14px rgba(40, 25, 8, .6), inset 0 2px 0 rgba(255, 255, 255, .35); }
+.sd-plank::before { content: ""; position: absolute; left: 0; right: 0; top: 0; height: 9px; border-radius: 4px 4px 0 0; background: repeating-linear-gradient(90deg, transparent 0 38px, rgba(0, 0, 0, .05) 38px 41px), linear-gradient(180deg, var(--wood-1), color-mix(in oklab, var(--wood-1) 60%, var(--wood-2))); }
+.sd-plank::after { content: ""; position: absolute; left: 4%; right: 4%; top: -26px; height: 26px; background: linear-gradient(180deg, transparent, rgba(40, 25, 8, .22)); filter: blur(6px); border-radius: 50%; pointer-events: none; }
+
+.sd-hint { position: relative; z-index: 2; display: flex; align-items: flex-start; justify-content: center; gap: 10px; margin-top: 18px; font-family: var(--font-hand); font-size: clamp(20px, 2.2vw, 26px); line-height: 1.1; color: var(--fg); transition: opacity .5s, transform .5s var(--ease); }
+.sd-hint svg { width: 52px; height: 38px; flex: none; margin-top: -10px; color: var(--fg); }
+.sd-hint.away { opacity: 0; transform: translateY(-6px); pointer-events: none; }
+
+/* drawer: grid-rows 0fr → 1fr, no height measuring */
+.sd-drawer { position: relative; display: grid; grid-template-rows: 0fr; transition: grid-template-rows .8s var(--ease), margin .6s var(--ease); margin: 0 0 20px; }
+.sd-drawer.open { grid-template-rows: 1fr; margin: 12px 0 64px; }
+.sd-drawer::before { content: ""; position: absolute; top: -10px; left: var(--notch, 50%); width: 20px; height: 20px; transform: translateX(-50%) rotate(45deg); border-radius: 4px 0 0 0;
+  background: color-mix(in oklab, var(--shelf, var(--b1)) 38%, var(--bg)); border: 1px solid color-mix(in oklab, var(--shelf, var(--b1)) 70%, var(--line)); border-right: 0; border-bottom: 0;
+  opacity: 0; z-index: 3; transition: opacity .35s, left .6s var(--ease), background .5s; }
+.sd-drawer.open::before { opacity: 1; }
+.sd-drawer-inner { min-height: 0; overflow: hidden; }
+.sd-panel { position: relative; border-radius: 30px; padding: clamp(22px, 3.6vw, 40px);
+  background: color-mix(in oklab, var(--shelf, var(--b1)) 38%, var(--bg));
+  border: 1px solid color-mix(in oklab, var(--shelf, var(--b1)) 70%, var(--line));
+  transition: background .5s, border-color .5s; }
+.sd-panel[hidden] { display: none; }
+.sd-pc { animation: sd-fade .4s var(--ease) both; }
+@keyframes sd-fade { from { opacity: 0; } to { opacity: 1; } }
+.sd-phead { display: grid; grid-template-columns: minmax(0, 1.3fr) minmax(0, .8fr); gap: 24px 40px; align-items: start; margin-bottom: 26px; }
+@media (max-width: 760px) { .sd-phead { grid-template-columns: 1fr; } }
+.sd-chip { display: inline-flex; align-items: center; gap: 8px; font-size: 11px; letter-spacing: .16em; text-transform: uppercase; font-weight: 700; background: var(--surface); border: 1px solid var(--line); border-radius: 999px; padding: 5px 12px 5px 6px; color: var(--fg); }
+.sd-chip i { display: inline-grid; place-items: center; width: 20px; height: 20px; border-radius: 50%; background: var(--shelf); color: var(--ink); }
+.sd-chip i svg { width: 12px; height: 12px; }
+.sd-panel h2, .sd-panel h3 { color: var(--fg); }
+.sd-phead h2 { font-size: clamp(30px, 4vw, 48px); letter-spacing: -.025em; line-height: 1; margin: 14px 0 8px; }
+.sd-phead p { margin: 0; color: var(--muted); max-width: 56ch; font-size: 17px; }
+.sd-checks { list-style: none; margin: 6px 0 0; padding: 0; display: grid; gap: 10px; font-size: 14.5px; }
+.sd-checks li { display: flex; gap: 10px; align-items: center; max-width: none; animation: sd-rise .6s var(--ease) both; animation-delay: calc(var(--i) * 70ms + 120ms); }
+.sd-checks i { display: grid; place-items: center; width: 20px; height: 20px; border-radius: 50%; background: var(--surface); border: 1px solid var(--line); color: var(--accent); flex: none; }
+.sd-checks i svg { width: 11px; height: 11px; }
+.sd-cards { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 14px; }
+@media (max-width: 980px) { .sd-cards { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (max-width: 520px) { .sd-cards { grid-template-columns: 1fr; } }
+.sd-card { display: flex; flex-direction: column; background: var(--surface); border: 1px solid var(--line); border-radius: 18px; padding: 10px 10px 14px; min-width: 0;
+  animation: sd-rise .7s var(--ease) both; animation-delay: calc(var(--i) * 90ms + 160ms); transition: transform .35s var(--ease), box-shadow .35s var(--ease); }
+.sd-card:hover { transform: translateY(-4px); box-shadow: 0 18px 30px -20px rgba(0, 0, 0, .35); }
+@keyframes sd-rise { from { opacity: 0; transform: translateY(22px); } to { opacity: 1; transform: none; } }
+.sd-cover { position: relative; aspect-ratio: 16 / 9; border-radius: 12px; overflow: hidden; background: linear-gradient(160deg, color-mix(in oklab, var(--shelf) 70%, var(--surface)), color-mix(in oklab, var(--shelf) 30%, var(--surface))); }
+.sd-cover.now { background: linear-gradient(160deg, color-mix(in oklab, var(--accent) 35%, var(--surface)), color-mix(in oklab, var(--shelf) 40%, var(--surface))); }
+.sd-cover img { object-fit: cover; }
+.sd-sheet { position: absolute; left: 14%; right: 14%; top: 18%; bottom: -6%; background: var(--sheet); border-radius: 8px 8px 0 0; transform: rotate(-2deg); box-shadow: 0 10px 24px -12px rgba(0, 0, 0, .4); padding: 14% 12% 0; }
+.sd-sheet b { display: block; height: 4px; border-radius: 2px; background: color-mix(in oklab, var(--fg) 14%, var(--sheet)); margin-bottom: 9%; }
+.sd-sheet b:first-child { width: 55%; height: 6px; background: color-mix(in oklab, var(--ink) 55%, var(--sheet)); }
+.sd-sheet b:nth-child(3) { width: 80%; }
+.sd-badge { position: absolute; right: 9%; top: 12%; width: 34px; height: 34px; border-radius: 10px; display: grid; place-items: center; background: var(--shelf); color: var(--ink); box-shadow: 0 6px 14px -8px rgba(0, 0, 0, .4); }
+.sd-badge svg { width: 18px; height: 18px; }
+.sd-status { position: absolute; left: 10px; bottom: 10px; font-size: 10px; letter-spacing: .14em; text-transform: uppercase; font-weight: 700; padding: 5px 9px; border-radius: 999px; background: var(--soon-bg); color: var(--soon); }
+.sd-status.now { background: var(--ok-bg); color: var(--ok); }
+.sd-card h3 { font-size: 21px; letter-spacing: -.02em; margin: 14px 6px 4px; line-height: 1.1; }
+.sd-card p { margin: 0 6px 14px; font-size: 13.5px; color: var(--muted); flex: 1; }
+.sd-seeall { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-top: 16px; padding: 12px 16px; min-height: 44px; border-radius: 14px; background: var(--surface); border: 1px solid var(--line); color: var(--fg); font-size: 14.5px; font-weight: 600; text-decoration: none; animation: sd-rise .6s var(--ease) both; animation-delay: .55s; }
+.sd-seeall:hover { border-color: var(--accent); }
+.sd-seeall svg { width: 18px; height: 18px; flex: none; }
+
+@media (prefers-reduced-motion: reduce) {
+  .sd-books, .sd-book, .sd-book[aria-pressed="true"], .sd-books.has-active .sd-book:not([aria-pressed="true"]), .sd-card, .sd-btn { transform: none !important; }
+  .sd-book::after { display: none; }
 }

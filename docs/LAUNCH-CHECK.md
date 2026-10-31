@@ -120,3 +120,22 @@ Legal review of /privacy · BCBA review of wording and the "reviewed by" name ·
 | Lighthouse mobile `/abc` | 90 perf (explainers server-rendered; only store-bound parts wait for hydration), 100 a11y/BP/SEO, CLS 0 |
 | No horizontal overflow at 375px (table scrolls inside its own focusable region) | pass |
 | Nav and footer link to the tracker | pass |
+
+## Hero + shelf drawer (reference/shelf-demo.html)
+
+| Check | Result |
+| --- | --- |
+| One H1: "Practical support for every step of the autism journey." | pass |
+| Hero says what / for whom in 5 seconds; "Find my shelf" dominant, "Browse all support" outline | pass (`tests/e2e/shots/rebuild/1280-hero-closed.png`, `375-hero-closed.png`, `390-hero-closed.png`) |
+| Binders: pull-forward transform from bottom-center, others recede/desaturate; click again closes; `<button aria-pressed aria-controls>` | pass |
+| Drawer: grid-template-rows 0fr→1fr, tinted to the binder, notch under the active binder, recomputed on resize; rise stagger; hint fades | pass |
+| All four panels server-rendered; inactive hidden with CSS (16 cards in HTML before any script) | pass |
+| Parallax fine-pointer only; reduced motion removes transforms and makes open/close instant | pass (CSS + matchMedia guard) |
+| No horizontal scroll at 375 / 390 / 1280, open or closed | pass |
+| Buttons ≥ 44px; every hero and drawer button leads to a real page (`/shelf#<shelf>` names the coming-soon item and takes an email) | pass |
+| Prices only from Shopify ("Free" at $0, "Coming soon" for `coming-soon` tag); no empty drawer (content fillers) | pass (unit tests) |
+| axe, all pages, drawer open | 0 violations (the "Coming soon" pill text deepened one step to pass AA) |
+| Lighthouse mobile `/` · `/shelf` | 95 · 92 perf, 100 a11y/BP/SEO, CLS 0.002 |
+| Unique title + description; favicon + social image; computed year; privacy link in footer | pass |
+| `grep -ri lorem`; placeholder text in rendered output | none |
+| Dark mode token set | pass (`1280-hero-dark-open.png`) |

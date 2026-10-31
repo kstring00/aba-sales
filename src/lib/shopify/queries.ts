@@ -33,6 +33,9 @@ export const PRODUCT_SUMMARY_FRAGMENT = /* GraphQL */ `
     benefit: metafield(namespace: "custom", key: "benefit") {
       value
     }
+    shelf: metafield(namespace: "custom", key: "shelf") {
+      value
+    }
   }
   ${IMAGE_FRAGMENT}
 `;
