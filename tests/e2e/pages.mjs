@@ -8,7 +8,7 @@ const { chromium } = require("playwright");
 const BASE = process.env.BASE ?? "http://localhost:3100";
 const SHOTS = path.resolve("tests/e2e/shots/pages");
 fs.mkdirSync(SHOTS, { recursive: true });
-const PAGES = ["/", "/shelf", "/products/care-binder", "/abc", "/cart", "/thanks", "/about", "/privacy", "/crisis", "/does-not-exist"];
+const PAGES = ["/", "/shelf", "/products/care-binder", "/abc", "/cart", "/thanks", "/about", "/privacy", "/crisis", "/right-now", "/for-you", "/for-you/breathe", "/for-you/ground", "/learn", "/learn/glossary", "/learn/decode", "/learn/tantrum-or-meltdown", "/find-care", "/find-care?age=under-3&coverage=medicaid&state=TX", "/for-you/research", "/does-not-exist"];
 const browser = await chromium.launch();
 let failures = 0;
 const seen = new Set();
@@ -20,7 +20,8 @@ for (const width of [375, 1280]) {
     const status = res.status();
     const h1 = await page.locator("h1").count();
     const title = await page.title();
-    const overflow = await page.evaluate(() => document.documentElement.scrollWidth > window.innerWidth);
+    // Compare with the configured width: mobile emulation widens innerWidth to fit overflowing content.
+    const overflow = await page.evaluate((w) => document.documentElement.scrollWidth > w, width);
     // The product page needs a catalog (token or SHOPIFY_FIXTURES=1); skip it cleanly otherwise.
     if (p.startsWith("/products/") && status === 404) { console.log(`– ${width}px ${p} skipped (no catalog)`); continue; }
     const expected = p === "/does-not-exist" ? 404 : 200;

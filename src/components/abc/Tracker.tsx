@@ -6,12 +6,15 @@ import { Button } from "@/components/ui/Button";
 import { Input } from "@/components/ui/Field";
 import { useAbcStore } from "@/lib/abc/useAbcStore";
 import { addBehavior, clearAll, deleteBehavior, renameChild, setBehaviorActive, withLabels } from "@/lib/abc/store";
-import { TrackerForm } from "@/components/abc/TrackerForm";
+import { QuickLog, SafetyCard } from "@/components/abc/QuickLog";
 import { BcbaPreview } from "@/components/abc/BcbaPreview";
 import { EntryList } from "@/components/abc/EntryList";
-import { AntecedentView, TimeOfDayView } from "@/components/abc/Views";
+import { Insights } from "@/components/abc/Insights";
+import { MIN_FOR_PATTERNS } from "@/lib/abc/patterns";
+import { showItem, tracker } from "@/lib/content/data";
 
-type View = "list" | "time" | "before";
+type View = "insights" | "list";
+const WALKTHROUGH_KEY = "support-shelf-abc-walkthrough-seen";
 
 /**
  * The tracker page body: form and entries on the left, what the BCBA
@@ -21,13 +24,30 @@ type View = "list" | "time" | "before";
  */
 const NEXT_SEEN_KEY = "support-shelf-abc-next-seen";
 
-export function Tracker({ explainers }: { explainers: React.ReactNode }) {
+export function Tracker({ explainers, lessonVisible = false }: { explainers: React.ReactNode; lessonVisible?: boolean }) {
   const { store, hydrated } = useAbcStore();
-  const [view, setView] = useState<View>("list");
+  const [chosenView, setView] = useState<View | null>(null);
   const [settings, setSettings] = useState(false);
   const [showNext, setShowNext] = useState(false);
+  const [lastSaved, setLastSaved] = useState<string[] | null>(null);
+  const [walkthrough, setWalkthrough] = useState(false);
   const entries = useMemo(() => withLabels(store), [store]);
   const nickname = store.child?.nickname ?? "";
+  // "What you're noticing" is the default once there are enough moments; List stays a tab.
+  const view: View = chosenView ?? (entries.length >= MIN_FOR_PATTERNS ? "insights" : "list");
+  const dyk = tracker.didYouKnow;
+  const dykLine = showItem(dyk) ? (dyk.lines.length ? dyk.lines[entries.length % dyk.lines.length] : `[${dyk.status}: "Did you know" lines]`) : null;
+
+  // First visit: a short walkthrough, once, when its wording exists (or on preview).
+  useEffect(() => {
+    if (!hydrated || !showItem(tracker.walkthrough)) return;
+    let seen = false;
+    try { seen = Boolean(localStorage.getItem(WALKTHROUGH_KEY)); } catch { /* show it */ }
+    if (seen || entries.length > 0) return;
+    const id = requestAnimationFrame(() => setWalkthrough(true));
+    return () => cancelAnimationFrame(id);
+  }, [hydrated, entries.length]);
+  const dismissWalkthrough = () => { setWalkthrough(false); try { localStorage.setItem(WALKTHROUGH_KEY, "1"); } catch { /* ignore */ } };
 
   // One-time "what to do next" card after the first saved observation.
   useEffect(() => {
@@ -47,16 +67,25 @@ export function Tracker({ explainers }: { explainers: React.ReactNode }) {
           <p><strong className="font-medium text-ink">A</strong> is what happened right before. <strong className="font-medium text-ink">B</strong> is the behavior you saw. <strong className="font-medium text-ink">C</strong> is what happened right after.</p>
           <p className="mt-1">Write what you saw, not what it means. Noticing what happens before and after can help you and your BCBA spot what the behavior might be communicating.</p>
         </section>
-        <TrackerForm key={store.child?.nickname ?? "new"} store={store} />
+        {walkthrough ? (
+          <section className="rounded-lg border border-dashed border-honey bg-honey-soft p-5" aria-label="How it works">
+            <p className="font-display text-[1.15rem] text-ink">{tracker.walkthrough.title || `[${tracker.walkthrough.status}: walkthrough title]`}</p>
+            {tracker.walkthrough.steps.length ? (
+              <ol className="mt-2 list-decimal space-y-1 pl-5 text-[14.5px] text-ink-soft">{(tracker.walkthrough.steps as string[]).map((s) => <li key={s}>{s}</li>)}</ol>
+            ) : <p className="mt-2 text-[14.5px] text-ink-soft">[{tracker.walkthrough.status}: three or four steps using the shoes example]</p>}
+            <Button type="button" size="sm" variant="secondary" className="mt-3" onClick={dismissWalkthrough}>{tracker.walkthrough.dismiss}</Button>
+          </section>
+        ) : null}
+        <QuickLog store={store} onSaved={(labels) => setLastSaved(labels)} />
+        {lastSaved ? <SafetyCard labels={lastSaved} onClose={() => setLastSaved(null)} /> : null}
+        {lastSaved && dykLine ? <p role="status" className="rounded-md bg-cream px-4 py-3 text-[14.5px] text-ink-soft">{dykLine}</p> : null}
         {showNext ? (
-          <section className="rounded-lg bg-sage-tint p-5" role="status" aria-label="What to do next">
-            <p className="font-display text-[1.15rem] text-ink">Saved. What to do next</p>
+          <section className="rounded-lg bg-sage-tint p-5" role="status" aria-label="What happens next">
+            <p className="font-display text-[1.15rem] text-ink">{tracker.whatNext.title}</p>
             <ul className="mt-2 space-y-1 text-[14.5px] text-ink-soft">
-              <li>Export once a week. The PDF is one page per week with counts at the end.</li>
-              <li>Bring it to your BCBA. The tracker records; it never interprets.</li>
-              <li>Keep going on hard days and easy ones; patterns need both.</li>
+              {tracker.whatNext.items.map((t) => <li key={t}>{t}</li>)}
             </ul>
-            <Button type="button" size="sm" variant="secondary" className="mt-3" onClick={dismissNext}>Got it</Button>
+            <Button type="button" size="sm" variant="secondary" className="mt-3" onClick={dismissNext}>{tracker.whatNext.dismiss}</Button>
           </section>
         ) : null}
 
@@ -64,7 +93,7 @@ export function Tracker({ explainers }: { explainers: React.ReactNode }) {
           <div className="flex flex-wrap items-center justify-between gap-3">
             <h2 id="entries-h" className="text-[1.25rem]">Observations <span className="tnum text-[15px] text-ink-mute">· {entries.length}</span></h2>
             <div role="tablist" aria-label="View" className="flex gap-1 rounded-pill bg-cream-deep p-1">
-              {([["list", "List"], ["time", "Time of day"], ["before", "Right before"]] as const).map(([v, label]) => (
+              {([["insights", tracker.insights.tab], ["list", tracker.insights.listTab]] as const).map(([v, label]) => (
                 <button key={v} role="tab" aria-selected={view === v} onClick={() => setView(v)}
                   className={`min-h-10 rounded-pill px-3 text-[14px] ${view === v ? "bg-paper text-ink shadow-soft" : "text-ink-soft"}`}>{label}</button>
               ))}
@@ -73,8 +102,7 @@ export function Tracker({ explainers }: { explainers: React.ReactNode }) {
           <div className="mt-4">
             {!hydrated ? <p className="text-[15px] text-ink-mute">Loading your observations…</p> : null}
             {hydrated && view === "list" ? <EntryList entries={entries} behaviors={store.behaviors} emptyText={nickname ? `Nothing logged for ${nickname} yet. That's fine.` : "Nothing logged yet. Your saved observations appear here, and you can tap one to edit it."} /> : null}
-            {hydrated && view === "time" ? <TimeOfDayView entries={entries} /> : null}
-            {hydrated && view === "before" ? <AntecedentView entries={entries} /> : null}
+            {hydrated && view === "insights" ? <Insights entries={entries} lessonVisible={lessonVisible} /> : null}
           </div>
         </section>
 

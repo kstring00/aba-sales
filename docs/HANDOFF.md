@@ -22,10 +22,10 @@ No database, no auth provider, no analytics, no payment processor of our own.
 | `SHOPIFY_STORE_DOMAIN` | `vgb9f2-eg.myshopify.com` | yes |
 | `SHOPIFY_STOREFRONT_TOKEN` | Shopify admin → Sales channels → Headless → your storefront → Storefront API → Public access token | yes |
 | `SHOPIFY_API_VERSION` | `2025-10` (update yearly; see Shopify release notes) | default in code |
-| `RESEND_API_KEY` | Resend → API keys (sending access) | for email export + list |
+| `RESEND_API_KEY` | Resend → API keys, **Full access** (contacts need it) | for email export + list |
 | `RESEND_FROM` | `"The Support Shelf <hello@yourdomain>"` on a verified domain; until then `onboarding@resend.dev` (delivers only to your own Resend email) | for email export |
-| `RESEND_AUDIENCE_ID` | Resend → Audiences → the list's ID | optional; without it, sign-ups are accepted but not stored |
-| `NEXT_PUBLIC_CONTACT_EMAIL` | the address shown in the footer | yes |
+| `RESEND_SEGMENT_ID` | Resend → Audience → Segments → the list's segment ID | for the list; without it, shelf sign-ups say the list isn't open yet and exports still send |
+| `NEXT_PUBLIC_CONTACT_EMAIL` | the address shown in the footer; also Reply-To on every email | yes |
 | `NEXT_PUBLIC_CONTACT_PHONE` | the phone shown in the footer | optional |
 
 Local development: copy `.env.example` to `.env.local` and fill the same names.

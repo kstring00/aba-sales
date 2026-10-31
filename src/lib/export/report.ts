@@ -23,8 +23,10 @@ export type ReportRow = {
   intensity: string;
   intensityValue: number | null;
   note: string;
-  /** Parent's reflection, if any. */
+  /** Parent's reflection, if any (older entries only). */
   mightBe: string;
+  /** What the parent noticed before it got big, "; "-joined. */
+  earlySigns: string;
 };
 
 export type ReportWeek = { start: string; end: string; rows: ReportRow[] };
@@ -74,6 +76,7 @@ export function toRow(e: EntryWithBehavior, tz: string): ReportRow {
     note: e.note ?? "",
     // "Not sure" is not a reflection worth printing (audit F-18).
     mightBe: e.functionCode && e.functionCode !== "not_sure" ? functionLabel(e.functionCode) : "",
+    earlySigns: (e.earlySigns ?? []).join("; "),
   };
 }
 

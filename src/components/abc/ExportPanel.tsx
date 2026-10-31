@@ -9,6 +9,7 @@ import { buildReport } from "@/lib/export/report";
 import { reportToCsv } from "@/lib/export/csv";
 import { downloadBlob, slugify } from "@/lib/export/download";
 import { addDays, toDateStr } from "@/lib/time/zoned";
+import { setChild } from "@/lib/abc/store";
 
 type Props = { nickname: string; entries: EntryWithBehavior[] };
 
@@ -25,6 +26,9 @@ export function exportRange(entries: EntryWithBehavior[], tz: string) {
  */
 export function ExportActions({ nickname, entries }: Props) {
   const { toast } = useToast();
+  // A nickname is asked for only here, the first time someone exports.
+  const [nickDraft, setNickDraft] = useState("");
+  const needsNick = !nickname.trim();
   const [busy, setBusy] = useState<"pdf" | "csv" | "email" | null>(null);
   const [emailOpen, setEmailOpen] = useState(false);
   const [email, setEmail] = useState("");
@@ -87,6 +91,24 @@ export function ExportActions({ nickname, entries }: Props) {
     } finally {
       setBusy(null);
     }
+  }
+
+  if (needsNick && entries.length > 0) {
+    return (
+      <div id="export" className="scroll-mt-24">
+        <form
+          onSubmit={(e) => { e.preventDefault(); if (nickDraft.trim()) setChild(nickDraft.trim()); }}
+          className="space-y-2"
+        >
+          <label htmlFor="export-nick" className="block text-[15px] text-ink">A nickname for the export</label>
+          <p className="text-[13.5px] text-ink-mute">The PDF needs a name at the top. A nickname is enough, and it stays in this browser. One child per browser for now.</p>
+          <div className="flex gap-2">
+            <Input id="export-nick" value={nickDraft} maxLength={40} autoComplete="off" onChange={(e) => setNickDraft(e.target.value)} placeholder="Bean, Little A, my kiddo…" />
+            <Button type="submit" variant="secondary" disabled={!nickDraft.trim()}>Save</Button>
+          </div>
+        </form>
+      </div>
+    );
   }
 
   return (

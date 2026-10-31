@@ -27,6 +27,8 @@ const csp = [
 
 const nextConfig: NextConfig = {
   cacheComponents: false,
+  // Inlined into server and client bundles so client components can hide pending content on production.
+  env: { SUPPORT_SHELF_DEPLOY: process.env.VERCEL_ENV ?? "local" },
   poweredByHeader: false,
   images: {
     remotePatterns: [{ protocol: "https", hostname: "cdn.shopify.com" }],
@@ -34,6 +36,8 @@ const nextConfig: NextConfig = {
   // PDF export reads brand fonts from disk at runtime; make sure Vercel ships them.
   outputFileTracingIncludes: {
     "/api/abc/email-export": ["./public/fonts/*.ttf"],
+    // Content Markdown is read on the server (header nav, hub pages), including on dynamic routes.
+    "/**": ["./content/**/*"],
   },
   turbopack: {
     rules: {
@@ -49,6 +53,14 @@ const nextConfig: NextConfig = {
   },
   async headers() {
     return [
+      {
+        // The offline worker must never be served stale.
+        source: "/sw.js",
+        headers: [
+          { key: "Cache-Control", value: "no-cache, no-store, must-revalidate" },
+          { key: "Service-Worker-Allowed", value: "/" },
+        ],
+      },
       {
         source: "/(.*)",
         headers: [

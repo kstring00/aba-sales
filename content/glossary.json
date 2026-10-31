@@ -1,0 +1,395 @@
+{
+  "_readme": "Glossary terms. Fill full (the expansion, for acronyms), short (one line) and optionally long (a paragraph). Add other spellings to aliases. Set status to published when a term is ready; only published terms appear on the live site or get linked in lessons. category is one of: people, documents, therapy terms, insurance & services, school.",
+  "terms": [
+    {
+      "term": "ABA",
+      "slug": "aba",
+      "full": "",
+      "short": "",
+      "long": "",
+      "aliases": [],
+      "category": "therapy terms",
+      "status": "pending"
+    },
+    {
+      "term": "ABC",
+      "slug": "abc",
+      "full": "",
+      "short": "",
+      "long": "",
+      "aliases": [],
+      "category": "therapy terms",
+      "status": "pending"
+    },
+    {
+      "term": "BCBA",
+      "slug": "bcba",
+      "full": "",
+      "short": "",
+      "long": "",
+      "aliases": [],
+      "category": "people",
+      "status": "pending"
+    },
+    {
+      "term": "BCaBA",
+      "slug": "bcaba",
+      "full": "",
+      "short": "",
+      "long": "",
+      "aliases": [],
+      "category": "people",
+      "status": "pending"
+    },
+    {
+      "term": "RBT",
+      "slug": "rbt",
+      "full": "",
+      "short": "",
+      "long": "",
+      "aliases": [],
+      "category": "people",
+      "status": "pending"
+    },
+    {
+      "term": "BACB",
+      "slug": "bacb",
+      "full": "",
+      "short": "",
+      "long": "",
+      "aliases": [],
+      "category": "people",
+      "status": "pending"
+    },
+    {
+      "term": "FBA",
+      "slug": "fba",
+      "full": "",
+      "short": "",
+      "long": "",
+      "aliases": [],
+      "category": "documents",
+      "status": "pending"
+    },
+    {
+      "term": "BIP",
+      "slug": "bip",
+      "full": "",
+      "short": "",
+      "long": "",
+      "aliases": [],
+      "category": "documents",
+      "status": "pending"
+    },
+    {
+      "term": "IEP",
+      "slug": "iep",
+      "full": "",
+      "short": "",
+      "long": "",
+      "aliases": [],
+      "category": "school",
+      "status": "pending"
+    },
+    {
+      "term": "ARD",
+      "slug": "ard",
+      "full": "",
+      "short": "",
+      "long": "",
+      "aliases": [],
+      "category": "school",
+      "status": "pending"
+    },
+    {
+      "term": "504 plan",
+      "slug": "504-plan",
+      "full": "",
+      "short": "",
+      "long": "",
+      "aliases": [],
+      "category": "school",
+      "status": "pending"
+    },
+    {
+      "term": "IFSP",
+      "slug": "ifsp",
+      "full": "",
+      "short": "",
+      "long": "",
+      "aliases": [],
+      "category": "documents",
+      "status": "pending"
+    },
+    {
+      "term": "ECI",
+      "slug": "eci",
+      "full": "",
+      "short": "",
+      "long": "",
+      "aliases": [],
+      "category": "insurance & services",
+      "status": "pending"
+    },
+    {
+      "term": "OT",
+      "slug": "ot",
+      "full": "",
+      "short": "",
+      "long": "",
+      "aliases": [],
+      "category": "people",
+      "status": "pending"
+    },
+    {
+      "term": "SLP",
+      "slug": "slp",
+      "full": "",
+      "short": "",
+      "long": "",
+      "aliases": [],
+      "category": "people",
+      "status": "pending"
+    },
+    {
+      "term": "PT",
+      "slug": "pt",
+      "full": "",
+      "short": "",
+      "long": "",
+      "aliases": [],
+      "category": "people",
+      "status": "pending"
+    },
+    {
+      "term": "AAC",
+      "slug": "aac",
+      "full": "",
+      "short": "",
+      "long": "",
+      "aliases": [],
+      "category": "therapy terms",
+      "status": "pending"
+    },
+    {
+      "term": "PECS",
+      "slug": "pecs",
+      "full": "",
+      "short": "",
+      "long": "",
+      "aliases": [],
+      "category": "therapy terms",
+      "status": "pending"
+    },
+    {
+      "term": "DTT",
+      "slug": "dtt",
+      "full": "",
+      "short": "",
+      "long": "",
+      "aliases": [],
+      "category": "therapy terms",
+      "status": "pending"
+    },
+    {
+      "term": "NET",
+      "slug": "net",
+      "full": "",
+      "short": "",
+      "long": "",
+      "aliases": [],
+      "category": "therapy terms",
+      "status": "pending"
+    },
+    {
+      "term": "FCT",
+      "slug": "fct",
+      "full": "",
+      "short": "",
+      "long": "",
+      "aliases": [],
+      "category": "therapy terms",
+      "status": "pending"
+    },
+    {
+      "term": "reinforcement",
+      "slug": "reinforcement",
+      "full": "",
+      "short": "",
+      "long": "",
+      "aliases": [],
+      "category": "therapy terms",
+      "status": "pending"
+    },
+    {
+      "term": "prompt",
+      "slug": "prompt",
+      "full": "",
+      "short": "",
+      "long": "",
+      "aliases": [],
+      "category": "therapy terms",
+      "status": "pending"
+    },
+    {
+      "term": "antecedent",
+      "slug": "antecedent",
+      "full": "",
+      "short": "",
+      "long": "",
+      "aliases": [],
+      "category": "therapy terms",
+      "status": "pending"
+    },
+    {
+      "term": "behavior",
+      "slug": "behavior",
+      "full": "",
+      "short": "",
+      "long": "",
+      "aliases": [],
+      "category": "therapy terms",
+      "status": "pending"
+    },
+    {
+      "term": "consequence",
+      "slug": "consequence",
+      "full": "",
+      "short": "",
+      "long": "",
+      "aliases": [],
+      "category": "therapy terms",
+      "status": "pending"
+    },
+    {
+      "term": "function",
+      "slug": "function",
+      "full": "",
+      "short": "",
+      "long": "",
+      "aliases": [],
+      "category": "therapy terms",
+      "status": "pending"
+    },
+    {
+      "term": "replacement behavior",
+      "slug": "replacement-behavior",
+      "full": "",
+      "short": "",
+      "long": "",
+      "aliases": [],
+      "category": "therapy terms",
+      "status": "pending"
+    },
+    {
+      "term": "generalization",
+      "slug": "generalization",
+      "full": "",
+      "short": "",
+      "long": "",
+      "aliases": [],
+      "category": "therapy terms",
+      "status": "pending"
+    },
+    {
+      "term": "parent training",
+      "slug": "parent-training",
+      "full": "",
+      "short": "",
+      "long": "",
+      "aliases": [],
+      "category": "therapy terms",
+      "status": "pending"
+    },
+    {
+      "term": "prior authorization",
+      "slug": "prior-authorization",
+      "full": "",
+      "short": "",
+      "long": "",
+      "aliases": [],
+      "category": "insurance & services",
+      "status": "pending"
+    },
+    {
+      "term": "Medicaid",
+      "slug": "medicaid",
+      "full": "",
+      "short": "",
+      "long": "",
+      "aliases": [],
+      "category": "insurance & services",
+      "status": "pending"
+    },
+    {
+      "term": "CHIP",
+      "slug": "chip",
+      "full": "",
+      "short": "",
+      "long": "",
+      "aliases": [],
+      "category": "insurance & services",
+      "status": "pending"
+    },
+    {
+      "term": "in-network",
+      "slug": "in-network",
+      "full": "",
+      "short": "",
+      "long": "",
+      "aliases": [],
+      "category": "insurance & services",
+      "status": "pending"
+    },
+    {
+      "term": "waitlist",
+      "slug": "waitlist",
+      "full": "",
+      "short": "",
+      "long": "",
+      "aliases": [],
+      "category": "insurance & services",
+      "status": "pending"
+    },
+    {
+      "term": "intake",
+      "slug": "intake",
+      "full": "",
+      "short": "",
+      "long": "",
+      "aliases": [],
+      "category": "insurance & services",
+      "status": "pending"
+    },
+    {
+      "term": "assessment",
+      "slug": "assessment",
+      "full": "",
+      "short": "",
+      "long": "",
+      "aliases": [],
+      "category": "documents",
+      "status": "pending"
+    },
+    {
+      "term": "treatment plan",
+      "slug": "treatment-plan",
+      "full": "",
+      "short": "",
+      "long": "",
+      "aliases": [],
+      "category": "documents",
+      "status": "pending"
+    },
+    {
+      "term": "session notes",
+      "slug": "session-notes",
+      "full": "",
+      "short": "",
+      "long": "",
+      "aliases": [],
+      "category": "documents",
+      "status": "pending"
+    }
+  ]
+}

@@ -52,8 +52,10 @@ export type Entry = {
   intensity: 1 | 2 | 3 | null;
   /** "What happened?" in the parent's words. */
   note: string | null;
-  /** Optional reflection; absent on entries saved before it existed. */
+  /** Optional reflection; no longer asked. Kept so older entries still render and export. */
   functionCode?: FunctionCode | null;
+  /** Optional: what the parent noticed before it got big. */
+  earlySigns?: string[] | null;
   createdAt: string;
   updatedAt: string;
 };

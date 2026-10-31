@@ -4,6 +4,7 @@ import { SiteFooter } from "@/components/site/SiteFooter";
 import { ShelfHero } from "@/components/home/ShelfHero";
 import { DrawerPanel } from "@/components/home/DrawerPanel";
 import { WhyItMatters } from "@/components/home/WhyItMatters";
+import { StartHere } from "@/components/home/StartHere";
 import { ClosingCta } from "@/components/home/ClosingCta";
 import { getShelves } from "@/lib/shopify/catalog";
 import { buildDrawer } from "@/lib/drawer";
@@ -37,6 +38,7 @@ export default async function HomePage() {
           panels={drawer.map((s) => <DrawerPanel key={s.id} shelf={s} />)}
           reviewer={publicEnv.bcbaReviewer}
         />
+        <StartHere />
         <WhyItMatters printableHref={catalog.some((p) => p.handle === "home-abc-printable") ? "/products/home-abc-printable" : null} />
         <ClosingCta />
       </main>

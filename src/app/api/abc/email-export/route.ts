@@ -3,15 +3,16 @@ import { z } from "zod";
 import { buildReport } from "@/lib/export/report";
 import { renderReportPdf } from "@/lib/export/pdf";
 import { loadFontBytesFromDisk } from "@/lib/export/fonts.server";
-import { addToAudience, resendConfigured, sendEmail } from "@/lib/email/resend";
+import { addToList, listConfigured, resendConfigured, sendEmail } from "@/lib/email/resend";
 import { isDateStr, isValidTimeZone } from "@/lib/time/zoned";
 
 export const dynamic = "force-dynamic";
 
 /**
  * "Email me my export". Entries arrive in the request, become a PDF, go out
- * through Resend, and are gone when the response is sent. Nothing is stored
- * except the email address (for sending, and for the list if asked).
+ * through Resend, and are gone when the response is sent. Sending never adds
+ * anyone to the list: the address joins the list only when the parent ticked
+ * the box (keepInTouch), and only after the export went out.
  */
 const entrySchema = z.object({
   id: z.string().max(80),
@@ -30,6 +31,7 @@ const entrySchema = z.object({
   intensity: z.union([z.literal(1), z.literal(2), z.literal(3)]).nullable(),
   note: z.string().max(2000).nullable(),
   functionCode: z.string().max(20).nullable().optional(),
+  earlySigns: z.array(z.string().max(60)).max(40).nullable().optional(),
   createdAt: z.string(),
   updatedAt: z.string(),
 });
@@ -81,11 +83,14 @@ export async function POST(request: NextRequest) {
     await sendEmail({
       to: email,
       subject: `Your ABC export for ${nickname}`,
-      text: `Attached: your observations for ${nickname}, ${from} to ${to} (${report.total} ${report.total === 1 ? "observation" : "observations"}).\n\nThis PDF describes what was recorded. It doesn't say why anything happened.\n\nThe Support Shelf`,
-      html: `<p>Attached: your observations for <strong>${escapeHtml(nickname)}</strong>, ${from} to ${to} (${report.total} ${report.total === 1 ? "observation" : "observations"}).</p><p>This PDF describes what was recorded. It doesn't say why anything happened.</p><p>— The Support Shelf</p>`,
+      text: `Attached: your observations for ${nickname}, ${from} to ${to} (${report.total} ${report.total === 1 ? "observation" : "observations"}).\n\nThis PDF describes what was recorded. It doesn't say why anything happened.\n\n${footerText(keepInTouch)}\n\nThe Support Shelf`,
+      html: `<p>Attached: your observations for <strong>${escapeHtml(nickname)}</strong>, ${from} to ${to} (${report.total} ${report.total === 1 ? "observation" : "observations"}).</p><p>This PDF describes what was recorded. It doesn't say why anything happened.</p><p style="color:#5c6660;font-size:13px">${escapeHtml(footerText(keepInTouch))}</p><p>— The Support Shelf</p>`,
       attachments: [{ filename, content: Buffer.from(pdf).toString("base64") }],
     });
-    if (keepInTouch) await addToAudience(email, "abc-export").catch(() => {});
+    if (keepInTouch && listConfigured()) {
+      // The export already went out; a list hiccup shouldn't turn it into an error.
+      await addToList(email, "abc-export").catch((e) => console.warn(`[abc-export] list add failed: ${e instanceof Error ? e.message : String(e)}`));
+    }
     return NextResponse.json({ ok: true });
   } catch (e) {
     // Error text only; never the entries.
@@ -95,6 +100,13 @@ export async function POST(request: NextRequest) {
       : "We couldn't send that just now. Download the PDF instead, or try again in a minute.";
     return NextResponse.json({ error: msg }, { status: 502 });
   }
+}
+
+/** One-off email: say plainly whether it signed anyone up. */
+function footerText(keepInTouch: boolean) {
+  return keepInTouch
+    ? "You also asked to hear when new downloads reach the shelf. Every one of those emails has an unsubscribe link. Questions? Just reply."
+    : "This was a one-time email. It didn't add you to any list. Questions? Just reply.";
 }
 
 function escapeHtml(s: string) {

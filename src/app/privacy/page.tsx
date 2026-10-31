@@ -18,7 +18,7 @@ export default function PrivacyPage() {
     <>
       <SiteHeader />
       <Prose title="Privacy" lede="In plain language. This describes what the site actually does today.">
-        <p className="!mt-0 text-[14px] text-ink-mute">Last updated {LAST_UPDATED}. Version 2.</p>
+        <p className="!mt-0 text-[14px] text-ink-mute">Last updated {LAST_UPDATED}. Version 3.</p>
 
         <h2>The ABC tracker stores nothing on our servers</h2>
         <p>
@@ -36,9 +36,9 @@ export default function PrivacyPage() {
           <li>The entries are discarded as soon as the email is handed off. Nothing is written to a database or a log.</li>
         </ol>
         <p>
-          Your email address is kept only to send that export. If you tick the optional box, it is also kept to tell you when new
-          downloads reach the shelf; that box is off unless you turn it on. Every email we send has an unsubscribe link, and
-          unsubscribing removes the address.
+          Your email address is used only to send that export. Sending an export never adds you to our email list. If you tick
+          the optional box, the address is also kept on the list to tell you when new downloads reach the shelf; that box is off
+          unless you turn it on.
         </p>
 
         <h2>Shopping</h2>
@@ -50,7 +50,14 @@ export default function PrivacyPage() {
         </p>
 
         <h2>Email list</h2>
-        <p>If you give us your email on a shelf, it&apos;s stored with Resend. Every email has an unsubscribe link.</p>
+        <p>
+          You&apos;re on the list only if you asked to be: by signing up on a shelf, or by ticking the box when you email yourself
+          an export. The list is kept with Resend, along with which of those forms you used. Nothing else about you is stored.
+        </p>
+        <p>
+          Every email sent to the list has an unsubscribe link, and unsubscribing stops them. To have your address deleted
+          entirely, email us (below). Replies to any of our emails reach a person.
+        </p>
 
         <h2>What we don&apos;t do</h2>
         <ul>

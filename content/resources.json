@@ -1,0 +1,157 @@
+{
+  "_readme": "Every outside phone line, agency and website on the site. lastVerified is the date someone last checked the entry works (YYYY-MM-DD). null means it has never been checked: the build warns. TODO_VERIFY in any field hides the entry on the live site. The crisis entries are the ones already on /crisis; lastVerified is null because they have not been re-checked since they were added.",
+  "resources": [
+    {
+      "id": "911",
+      "name": "911",
+      "category": "crisis",
+      "region": "US",
+      "whatFor": "Immediate danger or a medical emergency. Emergency services, 24/7.",
+      "title": "Immediate danger or a medical emergency",
+      "action": {
+        "label": "Call 911",
+        "href": "tel:911"
+      },
+      "url": null,
+      "lastVerified": null
+    },
+    {
+      "id": "988",
+      "name": "988 Suicide & Crisis Lifeline",
+      "category": "crisis",
+      "region": "US",
+      "title": "Suicide and mental health crisis",
+      "whatFor": "988 Suicide & Crisis Lifeline. 24/7. Press 1 for veterans, 2 for Spanish.",
+      "action": {
+        "label": "Call or text 988",
+        "href": "tel:988"
+      },
+      "url": {
+        "label": "Chat at 988lifeline.org",
+        "href": "https://988lifeline.org/"
+      },
+      "lastVerified": null
+    },
+    {
+      "id": "childhelp",
+      "name": "Childhelp National Child Abuse Hotline",
+      "category": "crisis",
+      "region": "US",
+      "title": "Worried about a child's safety, including your own ability to cope",
+      "whatFor": "Childhelp National Child Abuse Hotline. Counselors, 24/7, in 170 languages.",
+      "action": {
+        "label": "Call 1-800-422-4453",
+        "href": "tel:18004224453"
+      },
+      "url": {
+        "label": "childhelphotline.org",
+        "href": "https://childhelphotline.org/"
+      },
+      "lastVerified": null
+    },
+    {
+      "id": "crisis-text-line",
+      "name": "Crisis Text Line",
+      "category": "crisis",
+      "region": "US",
+      "title": "Prefer to text",
+      "whatFor": "Crisis Text Line. Free, 24/7.",
+      "action": {
+        "label": "Text HOME to 741741",
+        "href": "sms:741741&body=HOME"
+      },
+      "url": null,
+      "lastVerified": null
+    },
+    {
+      "id": "211",
+      "name": "211",
+      "category": "crisis",
+      "region": "US",
+      "title": "Local services and support lines",
+      "whatFor": "211 connects you with local health and human services, including respite and family support, in most of the US.",
+      "action": {
+        "label": "Call 211",
+        "href": "tel:211"
+      },
+      "url": null,
+      "lastVerified": null
+    },
+    {
+      "id": "insurer-directory",
+      "name": "TODO_VERIFY",
+      "category": "find-care",
+      "region": "US",
+      "title": "Your insurance plan's in-network provider directory",
+      "whatFor": "TODO_VERIFY",
+      "action": null,
+      "url": null,
+      "lastVerified": "TODO_VERIFY",
+      "appliesTo": {
+        "coverage": [
+          "private"
+        ]
+      }
+    },
+    {
+      "id": "texas-medicaid-chip",
+      "name": "TODO_VERIFY",
+      "category": "find-care",
+      "region": "TX",
+      "title": "Texas Medicaid and CHIP",
+      "whatFor": "TODO_VERIFY",
+      "action": null,
+      "url": null,
+      "lastVerified": "TODO_VERIFY",
+      "appliesTo": {
+        "coverage": [
+          "medicaid"
+        ]
+      }
+    },
+    {
+      "id": "texas-eci",
+      "name": "TODO_VERIFY",
+      "category": "find-care",
+      "region": "TX",
+      "title": "Early Childhood Intervention (under 3)",
+      "whatFor": "TODO_VERIFY",
+      "action": null,
+      "url": null,
+      "lastVerified": "TODO_VERIFY",
+      "appliesTo": {
+        "age": [
+          "under-3"
+        ]
+      }
+    },
+    {
+      "id": "school-evaluation",
+      "name": "TODO_VERIFY",
+      "category": "find-care",
+      "region": "US",
+      "title": "Your school district's free evaluation",
+      "whatFor": "TODO_VERIFY",
+      "action": null,
+      "url": null,
+      "lastVerified": "TODO_VERIFY",
+      "appliesTo": {
+        "age": [
+          "3-5",
+          "6-plus"
+        ]
+      }
+    },
+    {
+      "id": "bacb-registry",
+      "name": "TODO_VERIFY",
+      "category": "find-care",
+      "region": "US",
+      "title": "BACB certificant registry (check a provider's credential)",
+      "whatFor": "TODO_VERIFY",
+      "action": null,
+      "url": null,
+      "lastVerified": "TODO_VERIFY"
+    }
+  ]
+}

@@ -41,7 +41,7 @@ export function BcbaPreview({ nickname, entries, hydrated }: { nickname: string;
         <div className="flex flex-wrap items-baseline justify-between gap-2 border-b border-line bg-cream px-4 py-3">
           <div>
             <p className="font-display text-[1rem] text-ink">Week of {week ? fmtRangeLabel(week.start, week.end) : fmtRangeLabel(from, to)}</p>
-            <p className="tnum text-[12.5px] text-ink-mute">{week?.rows.length ?? 0} {week?.rows.length === 1 ? "observation" : "observations"} · {name}</p>
+            <p className="tnum text-[12.5px] text-ink-mute">{week?.rows.length ?? 0} {week?.rows.length === 1 ? "observation" : "observations"}{name ? ` · ${name}` : ""}</p>
           </div>
           <p className="text-[12px] text-ink-mute">{!hydrated ? "" : live ? "Your entries" : "Sample"}</p>
         </div>

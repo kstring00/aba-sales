@@ -38,9 +38,11 @@ export const SHELF_CONTENT: Record<ShelfId, ShelfContent> = {
   },
   plan: {
     lead: "Know what usually comes next, so each step feels less like a surprise and more like a plan.",
+    // scope-ok: refers to a diagnosis the family already received, not to diagnosing
     checks: ["See what to expect after a diagnosis", "Prepare for IEP and ARD meetings", "Set goals you can actually track", "Plan the next transition early"],
     tool: null,
     comingSoon: [
+      // scope-ok: refers to a diagnosis the family already received, not to diagnosing
       { title: "Next Steps Roadmap", blurb: "A plain-language map of what typically happens after a diagnosis and who to call first.", icon: "map" },
       { title: "IEP Meeting Prep", blurb: "Questions to ask, what to bring, and a one-page summary you can hand to the team.", icon: "clip" },
       { title: "Goal Planner", blurb: "Break a big goal into small, countable steps you can celebrate at home.", icon: "flag" },

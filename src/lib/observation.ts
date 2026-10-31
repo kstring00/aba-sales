@@ -40,6 +40,7 @@ export const DURATION_PRESETS: ReadonlyArray<{ label: string; seconds: number }>
 
 /**
  * "What might the behavior be communicating?" The parent's reflection,
+ * scope-ok: the line below is a disclaimer that this is not a diagnosis
  * for discussion with the BCBA. Not a diagnosis, and exports say so.
  */
 export const FUNCTIONS: ReadonlyArray<{ code: FunctionCode; label: string }> = [

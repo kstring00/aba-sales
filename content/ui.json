@@ -1,0 +1,180 @@
+{
+  "nav": {
+    "rightNow": "Right now",
+    "learn": "Learn",
+    "findCare": "Find care",
+    "forYou": "For you",
+    "shelves": "Shelves",
+    "abc": "ABC tracker",
+    "about": "About",
+    "menu": "Menu",
+    "closeMenu": "Close menu"
+  },
+  "startHere": {
+    "eyebrow": "Start here",
+    "doors": {
+      "right-now": "For a hard moment, right now",
+      "learn": "Understand the words and the paperwork",
+      "find-care": "Where to look for services",
+      "for-you": "For you, the parent"
+    }
+  },
+  "pending": {
+    "banner": "Content pending. This page is hidden on the live site until it is written and marked published.",
+    "slotsHeading": "Sections still to write",
+    "slotWaiting": "Waiting for content"
+  },
+  "resources": {
+    "notAffiliated": "Outside resource. We're not affiliated.",
+    "verifyWarning": "Needs verifying before it can appear on the live site."
+  },
+  "rightNow": {
+    "yes": "Yes, someone may be in danger",
+    "no": "No, we're safe",
+    "call911": "Call 911",
+    "crisisLink": "All crisis lines",
+    "breathe": "Breathe with a square (1 minute)",
+    "ground": "5-4-3-2-1 grounding",
+    "logIt": "Log it in the ABC tracker",
+    "fullLesson": "Read more: tantrum or meltdown?"
+  },
+  "forYou": {
+    "toolsHeading": "Two quick tools",
+    "researchLink": "What parents of autistic children carry"
+  },
+  "tools": {
+    "back": "Back to For you",
+    "together": "Do it together",
+    "togetherHint": "Bigger and simpler, to do alongside your child.",
+    "breathe": {
+      "title": "Breathe with a square",
+      "description": "Box breathing: in, hold, out, hold, four counts each. Follow the dot around the square.",
+      "intro": "Follow the dot around the square. Breathe in along the first side, hold along the top, breathe out down the side, hold along the bottom.",
+      "phases": [
+        "Breathe in",
+        "Hold",
+        "Breathe out",
+        "Hold"
+      ],
+      "phasesTogether": [
+        "In",
+        "Hold",
+        "Out",
+        "Hold"
+      ],
+      "start": "Start",
+      "stop": "Stop",
+      "pace": "Seconds per side",
+      "rounds": "Rounds",
+      "vibrate": "Gentle vibration when the step changes",
+      "ready": "Ready when you are."
+    },
+    "ground": {
+      "title": "5-4-3-2-1 grounding",
+      "description": "A quick way back to the room: notice five things you can see, four you can feel, three you can hear, two you can smell, one you can taste.",
+      "intro": "One step at a time. Look around and notice. There is no right answer.",
+      "steps": [
+        {
+          "count": 5,
+          "text": "things you can see",
+          "together": "things you see"
+        },
+        {
+          "count": 4,
+          "text": "things you can feel",
+          "together": "things you feel"
+        },
+        {
+          "count": 3,
+          "text": "things you can hear",
+          "together": "things you hear"
+        },
+        {
+          "count": 2,
+          "text": "things you can smell",
+          "together": "things you smell"
+        },
+        {
+          "count": 1,
+          "text": "thing you can taste",
+          "together": "thing you taste"
+        }
+      ],
+      "found": "Found one",
+      "next": "Next",
+      "back": "Back",
+      "doneTitle": "Done.",
+      "doneText": "Take one more slow breath. You can do it again any time.",
+      "again": "Start again",
+      "stepOf": "Step {n} of 5",
+      "counted": "{n} of {total} noticed"
+    }
+  },
+  "learn": {
+    "lessonsHeading": "Lessons",
+    "toolsHeading": "Look something up",
+    "glossaryLink": "Glossary: what does that word mean?",
+    "decodeLink": "Decode my paperwork",
+    "sources": "Sources",
+    "lastReviewed": "Last reviewed {date}",
+    "reviewedBy": "Reviewed by {name}",
+    "related": "Related",
+    "next": "Next step"
+  },
+  "glossary": {
+    "search": "Search the glossary",
+    "searchPlaceholder": "BCBA, prior authorization, IEP…",
+    "noMatch": "No term matches that yet.",
+    "jump": "Jump to a letter",
+    "pendingDefinition": "Definition coming soon.",
+    "categories": {
+      "people": "People",
+      "documents": "Documents",
+      "therapy terms": "Therapy terms",
+      "insurance & services": "Insurance and services",
+      "school": "School"
+    },
+    "close": "Close"
+  },
+  "decode": {
+    "title": "Decode my paperwork",
+    "description": "Paste a sentence from a treatment plan, IEP or report and see what each term means.",
+    "privacy": "This runs entirely on your phone or computer. Nothing you paste is sent anywhere or saved, not even in this browser.",
+    "label": "Paste a sentence or paragraph from a treatment plan, IEP, or report.",
+    "found": "Terms found, in reading order",
+    "none": "No glossary terms found yet. Try a sentence with an acronym like BCBA or IEP.",
+    "unknownHeading": "We don't have this one yet",
+    "suggest": "Suggest it",
+    "suggestSubject": "Glossary suggestion: {term}",
+    "highlighted": "Your text, with terms highlighted",
+    "nextStep": "Want a guided walk through a whole plan?",
+    "nextStepLink": "Read Your Child's Treatment Plan"
+  },
+  "findCare": {
+    "age": "How old is your child?",
+    "ages": {
+      "under-3": "Under 3",
+      "3-5": "3 to 5",
+      "6-plus": "6 or older"
+    },
+    "coverage": "What coverage do you have?",
+    "coverages": {
+      "medicaid": "Medicaid or CHIP",
+      "private": "Private insurance",
+      "none": "None, or not sure"
+    },
+    "state": "Which state are you in?",
+    "states": {
+      "TX": "Texas",
+      "other": "Another state"
+    },
+    "resultHeading": "Where to start",
+    "answerAll": "Answer the three questions to see where to start.",
+    "outsideNote": "These steps are written for Texas; the general version applies elsewhere.",
+    "resourcesHeading": "Places to look",
+    "verifyWarning": "Needs verifying. Hidden on the live site until filled in.",
+    "waitlistLink": "The Waitlist Playbook (free)",
+    "share": "These answers live only in this page's address, so you can bookmark or share it. Nothing is stored.",
+    "noNames": "We never name or rank providers."
+  }
+}
