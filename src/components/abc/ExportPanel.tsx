@@ -28,7 +28,7 @@ export function ExportActions({ nickname, entries }: Props) {
   const [busy, setBusy] = useState<"pdf" | "csv" | "email" | null>(null);
   const [emailOpen, setEmailOpen] = useState(false);
   const [email, setEmail] = useState("");
-  const [keep, setKeep] = useState(true);
+  const [keep, setKeep] = useState(false); // never pre-ticked (audit F-05)
   const [status, setStatus] = useState<{ ok?: true; error?: string } | null>(null);
   const tz = Intl.DateTimeFormat().resolvedOptions().timeZone;
   const none = entries.length === 0;
@@ -101,10 +101,10 @@ export function ExportActions({ nickname, entries }: Props) {
             <Input id="export-email" type="email" inputMode="email" autoComplete="email" required value={email} onChange={(e) => setEmail(e.target.value)} placeholder="you@example.com" />
             <Button type="submit" variant="secondary" disabled={busy !== null}>{busy === "email" ? "Sending…" : "Send"}</Button>
           </div>
-          <label className="flex items-start gap-3 text-[13.5px] text-ink-soft">
-            <input type="checkbox" checked={keep} onChange={(e) => setKeep(e.target.checked)} className="mt-0.5 h-6 w-6 shrink-0 accent-[var(--sage-deep)]" />
-            <span>Also tell me when new downloads reach the shelf. A few emails a year, unsubscribe any time.</span>
-          </label>
+          <div className="flex items-start gap-3 text-[13.5px] text-ink-soft">
+            <input id="export-keep" type="checkbox" checked={keep} onChange={(e) => setKeep(e.target.checked)} className="mt-0.5 h-6 w-6 shrink-0 accent-[var(--sage-deep)]" />
+            <label htmlFor="export-keep">Also tell me when new downloads reach the shelf. A few emails a year, unsubscribe any time.</label>
+          </div>
           {status?.ok ? <p role="status" className="text-[14px] text-ink">Sent. Check your inbox (and spam, once).</p> : null}
           {status?.error ? <p role="alert" className="text-[14px] text-ink">{status.error}</p> : null}
         </form>

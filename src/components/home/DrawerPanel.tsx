@@ -1,7 +1,7 @@
-import Image from "next/image";
 import Link from "next/link";
 import type { DrawerShelf } from "@/lib/drawer";
 import { D, DrawerGlyph, SHELF_GLYPH } from "@/components/home/drawer-icons";
+import { DrawerCards } from "@/components/home/DrawerCards";
 
 /**
  * One shelf's drawer contents, server-rendered so product names and prices
@@ -26,33 +26,7 @@ export function DrawerPanel({ shelf }: { shelf: DrawerShelf }) {
           ))}
         </ul>
       </div>
-      <div className="sd-cards">
-        {shelf.cards.map((card, i) => {
-          const now = card.status !== "soon";
-          return (
-            <article key={card.key} className="sd-card" style={{ "--i": i } as React.CSSProperties}>
-              <div className={`sd-cover${now ? " now" : ""}`}>
-                {card.image ? (
-                  <Image src={card.image.url} alt={card.image.alt} fill sizes="(min-width: 980px) 22vw, (min-width: 520px) 45vw, 90vw" />
-                ) : (
-                  <>
-                    <div className="sd-sheet" aria-hidden><b /><b /><b /></div>
-                    <span className="sd-badge"><DrawerGlyph name={card.icon} /></span>
-                  </>
-                )}
-                <span className={`sd-status${now ? " now" : ""}`}>{card.status === "soon" ? "Coming soon" : card.priceLabel}</span>
-              </div>
-              <h3>{card.title}</h3>
-              <p>{card.blurb}</p>
-              <Link href={card.href} className={`sd-btn ${now ? "accent" : "ghost"}`}>
-                {card.cta}
-                {card.status === "soon" ? <span className="sr-only"> about {card.title}</span> : null}
-                <D.arrow />
-              </Link>
-            </article>
-          );
-        })}
-      </div>
+      <DrawerCards cards={shelf.cards} />
       <Link href={`/shelf#${shelf.id}`} className="sd-seeall">
         <span>See all tools on the {shelf.title} shelf</span>
         <D.arrow />

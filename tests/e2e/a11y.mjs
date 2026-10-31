@@ -18,7 +18,8 @@ for (const p of PAGES) {
     // Pull a binder forward (drawer open) and open the header search too.
     await page.getByRole("button", { name: /make a plan/i }).click();
     await page.waitForTimeout(900);
-    await page.locator("summary[aria-label='Search the shelves']").click();
+    const search = page.locator("summary[aria-label='Search the shelves']");
+    if (await search.count()) await search.click(); // header search is gated until the catalog has 8+ items
   }
   if (p === "/abc") {
     // Exercise the tracker too: save an entry, then open the edit sheet.

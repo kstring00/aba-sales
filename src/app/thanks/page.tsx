@@ -3,6 +3,7 @@ import { SiteHeader } from "@/components/site/SiteHeader";
 import { SiteFooter } from "@/components/site/SiteFooter";
 import { LinkButton } from "@/components/ui/Button";
 import { clearCartCookie } from "@/lib/shopify/cart";
+import { publicEnv } from "@/lib/env";
 
 export const metadata: Metadata = { title: "Thank you", robots: { index: false } };
 export const dynamic = "force-dynamic";
@@ -16,7 +17,8 @@ export default async function ThanksPage() {
       <main id="main" className="mx-auto flex w-full max-w-3xl flex-1 flex-col px-5 pb-24 pt-16 sm:px-8">
         <h1>Thank <span className="display-italic">you.</span></h1>
         <p className="mt-5 max-w-[52ch] text-[1.15rem] text-ink-soft">
-          Check your email for your files. The download link arrives within a minute from Shopify. If it isn&apos;t there, look in spam, then write to us.
+          Check your email for your files. The download link arrives within a minute from Shopify. If it isn&apos;t there, look in spam, then write to{" "}
+          <a href={`mailto:${publicEnv.contactEmail}`} className="text-ink underline underline-offset-4">{publicEnv.contactEmail}</a>.
         </p>
         <div className="mt-8 flex flex-wrap gap-3">
           <LinkButton href="/abc" variant="primary" size="lg">Try the free ABC logger</LinkButton>

@@ -22,8 +22,8 @@ export default function CrisisPage() {
 
         <div className="mt-10 space-y-4">
           <Line title="Immediate danger or a medical emergency" action="Call 911" href="tel:911" body="Emergency services, 24/7." />
-          <Line title="Suicide and mental health crisis" action="Call or text 988" href="tel:988" body="988 Suicide & Crisis Lifeline. 24/7. Press 1 for veterans, 2 for Spanish. Chat at 988lifeline.org." />
-          <Line title="Worried about a child's safety, including your own ability to cope" action="Call 1-800-422-4453" href="tel:18004224453" body="Childhelp National Child Abuse Hotline. Counselors, 24/7, in 170 languages. childhelphotline.org." />
+          <Line title="Suicide and mental health crisis" action="Call or text 988" href="tel:988" body="988 Suicide & Crisis Lifeline. 24/7. Press 1 for veterans, 2 for Spanish." site={{ label: "Chat at 988lifeline.org", href: "https://988lifeline.org/" }} />
+          <Line title="Worried about a child's safety, including your own ability to cope" action="Call 1-800-422-4453" href="tel:18004224453" body="Childhelp National Child Abuse Hotline. Counselors, 24/7, in 170 languages." site={{ label: "childhelphotline.org", href: "https://childhelphotline.org/" }} />
           <Line title="Prefer to text" action="Text HOME to 741741" href="sms:741741&body=HOME" body="Crisis Text Line. Free, 24/7." />
           <Line title="Local services and support lines" action="Call 211" href="tel:211" body="211 connects you with local health and human services, including respite and family support, in most of the US." />
         </div>
@@ -46,12 +46,20 @@ export default function CrisisPage() {
   );
 }
 
-function Line({ title, action, href, body }: { title: string; action: string; href: string; body: string }) {
+function Line({ title, action, href, body, site }: { title: string; action: string; href: string; body: string; site?: { label: string; href: string } }) {
   return (
     <div className="rounded-lg bg-paper p-6 shadow-soft">
       <h2 className="text-[1.25rem] leading-snug">{title}</h2>
       <a href={href} className="lift mt-4 inline-flex min-h-14 items-center rounded-pill bg-ink px-6 text-[17px] font-medium text-paper hover:bg-ink-soft">{action}</a>
-      <p className="mt-4 text-[15px] text-ink-soft">{body}</p>
+      <p className="mt-4 text-[15px] text-ink-soft">
+        {body}
+        {site ? (
+          <>
+            {" "}
+            <a href={site.href} target="_blank" rel="noopener" className="text-ink underline underline-offset-4">{site.label}</a>.
+          </>
+        ) : null}
+      </p>
     </div>
   );
 }

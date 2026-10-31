@@ -1,6 +1,6 @@
 "use client";
 
-import { useId, useRef, useState } from "react";
+import { useEffect, useId, useRef, useState } from "react";
 import { Button } from "@/components/ui/Button";
 import { Input, Textarea } from "@/components/ui/Field";
 import { useToast } from "@/components/ui/Toast";
@@ -21,7 +21,12 @@ export function TrackerForm({ store }: { store: AbcStore }) {
   const id = useId();
   const { toast } = useToast();
   const [nickname, setNickname] = useState(store.child?.nickname ?? "");
-  const [when, setWhen] = useState(() => toLocalInputValue(new Date().toISOString()));
+  // Empty on the server and during hydration; filled with "now" after mount (audit F-10).
+  const [when, setWhen] = useState("");
+  useEffect(() => {
+    const id = requestAnimationFrame(() => setWhen((w) => w || toLocalInputValue(new Date().toISOString())));
+    return () => cancelAnimationFrame(id);
+  }, []);
   const [selected, setSelected] = useState<string[]>([]);
   const [extra, setExtra] = useState<string[]>([]);
   const [customOpen, setCustomOpen] = useState(false);

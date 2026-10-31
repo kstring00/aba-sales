@@ -42,6 +42,8 @@ export const metadata: Metadata = {
   description:
     "Practical, printable tools for parents and caregivers of kids in ABA therapy, plus a free ABC observation logger that stays on your phone.",
   applicationName: "The Support Shelf",
+  // "./" resolves to each page's own path against metadataBase (audit F-24).
+  alternates: { canonical: "./" },
   openGraph: {
     type: "website",
     siteName: "The Support Shelf",
@@ -62,6 +64,28 @@ export const viewport: Viewport = {
   viewportFit: "cover",
 };
 
+const jsonLd = {
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Organization",
+      "@id": `${publicEnv.siteUrl}/#org`,
+      name: "The Support Shelf",
+      url: publicEnv.siteUrl,
+      logo: `${publicEnv.siteUrl}/icons/icon-512.png`,
+      founder: { "@type": "Person", name: "Kyle Stringham", jobTitle: "Registered Behavior Technician" },
+      email: publicEnv.contactEmail,
+    },
+    {
+      "@type": "WebSite",
+      "@id": `${publicEnv.siteUrl}/#site`,
+      url: publicEnv.siteUrl,
+      name: "The Support Shelf",
+      publisher: { "@id": `${publicEnv.siteUrl}/#org` },
+    },
+  ],
+};
+
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en" className={`${fraunces.variable} ${figtree.variable} ${caveat.variable}`}>
@@ -73,6 +97,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           Skip to content
         </a>
         <ToastProvider>{children}</ToastProvider>
+        <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
       </body>
     </html>
   );
