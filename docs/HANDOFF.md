@@ -84,12 +84,15 @@ src/lib/drawer.ts        drawer model: live products → built-in tool → comin
 src/content/shelf-drawer.ts   lead lines, checklists, the ABC tool card, coming-soon items per shelf
 reference/shelf-demo.html     the approved interaction target for the hero
 src/components/abc/      Tracker (page body), TrackerForm, BcbaPreview (live table + exports), Explainers, EntryList, LogSheet (edit), Views
-src/lib/abc/             localStorage store, hook, view aggregations, types
+src/lib/abc/             localStorage store (v2, observations with behaviorIds[]; v1 merged on load), hook, views, types
 src/lib/export/          report → PDF (pdf-lib + brand fonts) and CSV
 src/lib/observation.ts   the exact antecedent / consequence wording
 src/app/globals.css      every design token
 tests/unit               vitest; tests/e2e  Playwright scripts (see README)
 ```
+
+## 6b. Audit remediation
+`docs/AUDIT_FIXES.md` is the finding-by-finding log from the Oct 2026 site audit, including the operator actions (env vars, Shopify and Vercel settings) that only you can do.
 
 ## 7. Checks to run before any public launch
 

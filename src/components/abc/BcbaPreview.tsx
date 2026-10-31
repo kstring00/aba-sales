@@ -41,13 +41,13 @@ export function BcbaPreview({ nickname, entries, hydrated }: { nickname: string;
         <div className="flex flex-wrap items-baseline justify-between gap-2 border-b border-line bg-cream px-4 py-3">
           <div>
             <p className="font-display text-[1rem] text-ink">Week of {week ? fmtRangeLabel(week.start, week.end) : fmtRangeLabel(from, to)}</p>
-            <p className="tnum text-[12.5px] text-ink-mute">{week?.rows.length ?? 0} {week?.rows.length === 1 ? "entry" : "entries"} · {name}</p>
+            <p className="tnum text-[12.5px] text-ink-mute">{week?.rows.length ?? 0} {week?.rows.length === 1 ? "observation" : "observations"} · {name}</p>
           </div>
           <p className="text-[12px] text-ink-mute">{!hydrated ? "" : live ? "Your entries" : "Sample"}</p>
         </div>
-        <div className="overflow-x-auto" tabIndex={0} role="region" aria-label="Weekly entries table">
+        <div className="scroll-fade overflow-x-auto" tabIndex={0} role="region" aria-label="Weekly observations table">
           <table className="w-full min-w-[34rem] text-left text-[12.5px]">
-            <thead className="bg-cream-deep/60 text-[11.5px] uppercase tracking-wide text-ink-mute">
+            <thead className="bg-cream-deep/60 text-[12px] uppercase tracking-wide text-ink-mute">
               <tr>
                 <Th>Date / time</Th><Th>Behavior</Th><Th>Right before</Th><Th>Right after</Th><Th>Intensity</Th><Th>Duration</Th>
               </tr>
@@ -62,10 +62,11 @@ export function BcbaPreview({ nickname, entries, hydrated }: { nickname: string;
           </table>
         </div>
       </div>
+      <p className="mt-1 text-[12px] text-ink-mute sm:hidden" aria-hidden>Swipe sideways to see every column →</p>
       <p className="mt-3 text-[13px] text-ink-mute">
         {live
-          ? "One page per week, counts at the end, no interpretation. Your reflection, when you add one, is labelled as yours."
-          : "One page per week, counts at the end, no interpretation. This sample uses made-up data."}
+          ? "One page per week, counts at the end, no interpretation. One row per observation; your reflection, when you add one, is labelled as yours."
+          : "One page per week, counts at the end, no interpretation. One row per observation, even when several behaviors happened together. This sample uses made-up data."}
       </p>
       <div className="mt-4 border-t border-line pt-4">
         <ExportActions nickname={nickname} entries={entries} />

@@ -44,10 +44,12 @@ describe("shelves", () => {
     expect(unshelved.map((p) => p.handle)).toEqual(["mystery-item"]);
   });
 
-  it("keeps the empty shelf honest and the logger shelf static", () => {
+  it("keeps the empty shelf honest and places the free tracker on Shelf 1 in the content file", async () => {
+    const { SHELF_CONTENT } = await import("@/content/shelf-drawer");
     const { shelves } = assignShelves([]);
     expect(shelves.find((s) => s.id === "everyday")?.empty?.title).toMatch(/being made/i);
-    expect(shelves.find((s) => s.id === "home")?.tool?.href).toBe("/abc");
+    expect(SHELF_CONTENT.organized.tool?.href).toBe("/abc");
+    expect(SHELF_CONTENT.home.tool).toBeNull();
   });
 
   it("copy never implies outcomes or diagnoses", () => {

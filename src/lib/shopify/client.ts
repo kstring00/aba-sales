@@ -20,6 +20,14 @@ export function normalizeDomain(raw: string): string {
 }
 const DOMAIN = normalizeDomain(RAW_DOMAIN);
 
+// Production fails at build time without the Storefront credentials: an
+// empty catalog would otherwise ship silently as "coming soon" (audit F-01).
+if (process.env.VERCEL_ENV === "production" && (!DOMAIN || !TOKEN)) {
+  throw new Error(
+    "SHOPIFY_STORE_DOMAIN and SHOPIFY_STOREFRONT_TOKEN must be set for the Production environment (Headless channel, public Storefront token with unauthenticated_read_product_listings and unauthenticated_write_checkouts). See docs/AUDIT_FIXES.md → Operator actions.",
+  );
+}
+
 export function tokenKind(token: string = TOKEN): "private" | "public" | "none" {
   if (!token) return "none";
   return token.startsWith("shpat_") ? "private" : "public";

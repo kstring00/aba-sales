@@ -15,8 +15,12 @@ export const dynamic = "force-dynamic";
  */
 const entrySchema = z.object({
   id: z.string().max(80),
-  behaviorId: z.string().max(80),
-  behaviorLabel: z.string().max(60),
+  // Limits follow the tracker: labels are capped at 60 characters and an
+  // observation can hold every label a parent has (bounded here at 100).
+  behaviorIds: z.array(z.string().max(80)).max(100),
+  behaviorLabels: z.array(z.string().max(60)).max(100),
+  // Ignored: the joined label is rebuilt from behaviorLabels on the server.
+  behaviorLabel: z.string().optional(),
   occurredAt: z.string().datetime(),
   antecedentCode: z.string().max(40).nullable(),
   antecedentNote: z.string().max(500).nullable(),
@@ -25,6 +29,7 @@ const entrySchema = z.object({
   durationSeconds: z.number().int().min(0).max(86400).nullable(),
   intensity: z.union([z.literal(1), z.literal(2), z.literal(3)]).nullable(),
   note: z.string().max(2000).nullable(),
+  functionCode: z.string().max(20).nullable().optional(),
   createdAt: z.string(),
   updatedAt: z.string(),
 });
@@ -69,15 +74,15 @@ export async function POST(request: NextRequest) {
       from,
       to,
       tz,
-      entries: entries.map((e) => ({ ...e, antecedentCode: e.antecedentCode as never, consequenceCode: e.consequenceCode as never })),
+      entries: entries.map((e) => ({ ...e, behaviorLabel: e.behaviorLabels.join("; "), antecedentCode: e.antecedentCode as never, consequenceCode: e.consequenceCode as never, functionCode: (e.functionCode ?? null) as never })),
     });
     const pdf = await renderReportPdf(report, await loadFontBytesFromDisk());
     const filename = `support-shelf-${nickname.toLowerCase().replace(/[^a-z0-9]+/g, "-")}-${from}-to-${to}.pdf`;
     await sendEmail({
       to: email,
       subject: `Your ABC export for ${nickname}`,
-      text: `Attached: your observations for ${nickname}, ${from} to ${to} (${report.total} entries).\n\nThis PDF describes what was recorded. It doesn't say why anything happened.\n\nThe Support Shelf`,
-      html: `<p>Attached: your observations for <strong>${escapeHtml(nickname)}</strong>, ${from} to ${to} (${report.total} ${report.total === 1 ? "entry" : "entries"}).</p><p>This PDF describes what was recorded. It doesn't say why anything happened.</p><p>— The Support Shelf</p>`,
+      text: `Attached: your observations for ${nickname}, ${from} to ${to} (${report.total} ${report.total === 1 ? "observation" : "observations"}).\n\nThis PDF describes what was recorded. It doesn't say why anything happened.\n\nThe Support Shelf`,
+      html: `<p>Attached: your observations for <strong>${escapeHtml(nickname)}</strong>, ${from} to ${to} (${report.total} ${report.total === 1 ? "observation" : "observations"}).</p><p>This PDF describes what was recorded. It doesn't say why anything happened.</p><p>— The Support Shelf</p>`,
       attachments: [{ filename, content: Buffer.from(pdf).toString("base64") }],
     });
     if (keepInTouch) await addToAudience(email, "abc-export").catch(() => {});

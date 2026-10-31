@@ -24,7 +24,7 @@ async function step(name, fn) {
 
 const BEFORE = ["An instruction was given", "An item or activity was unavailable", "An activity or location changed", "Someone approached or interacted", "The child was alone", "Not sure"];
 const AFTER = ["An item or activity was provided", "The activity or instruction stopped", "Someone spoke to or interacted with the child", "Someone offered comfort", "No immediate response was observed", "Not sure"];
-const LABELS = ["Hitting", "Screaming", "Dropping to floor", "Running off", "Refusing", "Covering ears"];
+const LABELS = ["Hitting", "Screaming", "Dropping to floor", "Running off", "Refusing", "Biting"];
 
 const browser = await chromium.launch();
 const ctx = await browser.newContext({ viewport: { width: 375, height: 812 }, deviceScaleFactor: 2, isMobile: true, hasTouch: true, acceptDownloads: true });
@@ -48,12 +48,12 @@ try {
     await shot(page, "empty");
   });
 
-  await step("save one observation with three behaviors, a reflection, A/B/C details, intensity and duration", async () => {
-    await page.getByLabel("Child nickname").fill("Bean");
+  await step("the audit's test: tricky nickname, two behaviors plus a custom one with punctuation and an emoji → exactly one observation", async () => {
+    await page.getByLabel("Child nickname").fill('Bean "Jr", Jr.');
     await form().getByRole("button", { name: "Hitting", exact: true }).click();
     await form().getByRole("button", { name: "Screaming", exact: true }).click();
     await form().getByRole("button", { name: /add custom behavior/i }).click();
-    await page.getByLabel("Custom behavior").fill("Covering ears");
+    await page.getByLabel("Custom behavior").fill('Covering ears "x", y; <b>z</b> 😀');
     await form().getByRole("button", { name: "Add", exact: true }).click();
     await reflect().getByRole("button", { name: "Not sure", exact: true }).click();
     await before().selectOption({ label: BEFORE[0] });
@@ -63,27 +63,31 @@ try {
     await form().getByRole("button", { name: "1–5 min" }).click();
     await shot(page, "filled");
     await form().getByRole("button", { name: "Save entry" }).click();
-    await page.getByText("Saved 3 entries for Bean.").waitFor();
-    await page.getByText(/Entries · 3/).waitFor();
-    const stored = await page.evaluate(() => JSON.parse(localStorage.getItem("support-shelf-abc-v1") || "{}"));
-    expect(stored.entries?.length === 3, "3 entries stored");
-    expect(stored.entries.every((e) => e.functionCode === "not_sure"), "reflection stored");
-    expect(stored.entries.every((e) => e.durationSeconds === 180 && e.intensity === 2), "duration + intensity stored");
-    expect(stored.child?.nickname === "Bean", "nickname stored");
+    await page.getByText('Saved 1 observation (3 behaviors) for Bean "Jr", Jr').waitFor();
+    await page.getByText(/Observations · 1/).waitFor();
+    const stored = await page.evaluate(() => JSON.parse(localStorage.getItem("support-shelf-abc-v2") || "{}"));
+    expect(stored.version === 2, "v2 store");
+    expect(stored.entries?.length === 1, `1 observation stored (got ${stored.entries?.length})`);
+    expect(stored.entries[0].behaviorIds.length === 3, "3 behaviors in the observation");
+    expect(stored.entries[0].functionCode === "not_sure", "reflection stored");
+    expect(stored.entries[0].durationSeconds === 180 && stored.entries[0].intensity === 2, "duration + intensity stored");
+    expect(stored.child?.nickname === 'Bean "Jr", Jr.', "nickname stored");
+    expect((await page.evaluate(() => localStorage.getItem("support-shelf-abc-v1"))) === null, "no v1 key");
+    await page.getByRole("button", { name: "Got it" }).click(); // one-time "what to do next" card
   });
 
-  await step("seven more single entries; they persist across reload and feed the BCBA table", async () => {
+  await step("seven more observations; they persist across reload and feed the BCBA table", async () => {
     for (let i = 0; i < 7; i++) {
       await form().getByRole("button", { name: LABELS[i % LABELS.length], exact: true }).click();
       await before().selectOption({ label: BEFORE[i % BEFORE.length] });
       await after().selectOption({ label: AFTER[i % AFTER.length] });
       await form().getByRole("button", { name: "Save entry" }).click();
-      await page.getByText("Saved 1 entry for Bean.").waitFor();
-      await page.getByText("Saved 1 entry for Bean.").waitFor({ state: "detached" });
+      await page.getByText(/Saved 1 observation for Bean/).first().waitFor();
+      await page.getByText(new RegExp(`Observations · ${i + 2}\\b`)).waitFor();
     }
-    await page.getByText(/Entries · 10/).waitFor();
+    await page.getByText(/Observations · 8/).waitFor();
     await page.reload();
-    await page.getByText(/Entries · 10/).waitFor();
+    await page.getByText(/Observations · 8/).waitFor();
     expect((await page.getByText("Your entries").count()) >= 1, "table switched to the parent's entries");
     expect((await page.getByText("This sample uses made-up data.").count()) === 0, "sample caption gone");
     await shot(page, "list");
@@ -94,6 +98,7 @@ try {
     const tap = async (loc) => { await loc.scrollIntoViewIfNeeded(); await loc.click(); };
     await tap(page.getByRole("button", { name: /edit entry: hitting/i }).first());
     const d = page.getByRole("dialog");
+    await d.getByRole("heading", { name: "Edit observation" }).waitFor();
     await tap(d.getByRole("button", { name: "High", exact: true }));
     await d.getByLabel("Date and time").waitFor();
     // Mobile emulation offsets the visual viewport after focus; scroll the sheet to its end so Save is fully on screen.
@@ -101,6 +106,8 @@ try {
     await page.waitForTimeout(200);
     await d.getByRole("button", { name: /save changes/i }).click();
     await page.getByText("Saved.").waitFor();
+    const focused = await page.evaluate(() => document.activeElement?.getAttribute("aria-label") || document.activeElement?.tagName);
+    expect(/edit entry/i.test(focused || ""), `focus returned to the entry (got ${focused})`);
     await page.getByRole("tab", { name: "Time of day" }).click();
     await page.getByText(/Most entries:/).waitFor();
     await page.getByRole("tab", { name: "Right before" }).click();
@@ -123,8 +130,9 @@ try {
     const text = fs.readFileSync(csvPath, "utf8");
     expect(text.includes("date,time,noticed,right_before"), "csv header");
     expect(text.includes("parent_reflection_might_be"), "csv reflection column");
-    expect(text.trim().split("\n").length === 11, `csv rows: ${text.trim().split("\n").length}`);
+    expect(text.trim().split("\n").length === 9, `csv rows: ${text.trim().split("\n").length}`);
     expect(text.includes("Covering ears"), "csv has custom label");
+    expect(text.includes("Hitting; Screaming; Covering ears"), "csv lists all behaviors of the first observation in one row");
     await page.getByText(/Clearing your browser data clears these entries/).waitFor();
   });
 
@@ -142,10 +150,10 @@ try {
     await page.getByRole("button", { name: /delete everything…/i }).click();
     await page.getByRole("button", { name: /yes, i've exported/i }).click();
     await page.getByRole("button", { name: /delete for good/i }).click();
-    await page.getByText(/Entries · 0/).waitFor();
-    expect((await page.evaluate(() => localStorage.getItem("support-shelf-abc-v1"))) === null, "localStorage key removed");
+    await page.getByText(/Observations · 0/).waitFor();
+    expect((await page.evaluate(() => localStorage.getItem("support-shelf-abc-v2"))) === null, "localStorage key removed");
     await page.reload();
-    await page.getByText(/Entries · 0/).waitFor();
+    await page.getByText(/Observations · 0/).waitFor();
     expect((await page.getByLabel("Child nickname").inputValue()) === "", "nickname cleared");
   });
 

@@ -33,10 +33,10 @@ export function SiteFooter() {
       </div>
       <div className="mx-auto flex w-full max-w-7xl flex-col gap-2 px-5 pb-8 text-[13px] text-ink-mute sm:flex-row sm:items-center sm:justify-between sm:px-8">
         <p>
-          © {year} The Support Shelf. The free ABC logger stores nothing on our servers.{" "}
+          © {year} The Support Shelf.{" "}
           <Link href="/crisis" className="underline underline-offset-4 hover:text-ink">Crisis resources</Link>
         </p>
-        {email ? <a href={`mailto:${email}`} className="inline-flex min-h-11 items-center hover:text-ink sm:min-h-0">{email}</a> : null}
+        <a href={`mailto:${email}`} className="inline-flex min-h-11 items-center underline underline-offset-4 hover:text-ink sm:min-h-0">{email}</a>
       </div>
     </footer>
   );

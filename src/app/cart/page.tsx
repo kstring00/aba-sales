@@ -66,6 +66,7 @@ export default async function CartPage() {
                 <Button type="submit" variant="primary" size="lg" className="w-full">Checkout</Button>
               </form>
               <p className="mt-3 text-center text-[13px] text-ink-mute">Checkout is handled securely by Shopify. Your files arrive by email within a minute.</p>
+              <p className="mt-3 text-center"><Link href="/shelf" className="inline-flex min-h-11 items-center text-[15px] text-ink underline underline-offset-4">Keep browsing</Link></p>
             </div>
           </>
         )}

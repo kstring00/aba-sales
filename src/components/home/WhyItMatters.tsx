@@ -14,7 +14,7 @@ const POINTS = [
  * Tracker's printed sheet on a desk on the right. The sheet is the product
  * preview; it is a real render of the printable's first page.
  */
-export function WhyItMatters() {
+export function WhyItMatters({ printableHref }: { printableHref?: string | null }) {
   return (
     <section aria-labelledby="why-h" className="grid w-full items-center gap-10 pb-14 pt-6 sm:pb-20 sm:pt-10 lg:grid-cols-[minmax(0,11fr)_minmax(0,10fr)] lg:gap-16">
       <Reveal>
@@ -53,6 +53,11 @@ export function WhyItMatters() {
           <figcaption className="desk-caption">
             <span>
               <b>What your BCBA actually wants to see.</b> The free ABC Tracker exports a sheet like this, one page per week.
+              {printableHref ? (
+                <>
+                  {" "}Prefer paper? <Link href={printableHref} className="text-heading underline underline-offset-4">Home ABC Printable</Link> is the same sheet, free.
+                </>
+              ) : null}
             </span>
             <Link href="/abc" className="sd-btn">Open ABC Tracker <D.arrow /></Link>
           </figcaption>

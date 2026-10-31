@@ -6,7 +6,8 @@ import type { EntryWithBehavior } from "@/lib/abc/types";
 function entry(p: Partial<EntryWithBehavior> & { occurredAt: string; behaviorLabel: string }): EntryWithBehavior {
   return {
     id: crypto.randomUUID(),
-    behaviorId: "b",
+    behaviorIds: ["b"],
+    behaviorLabels: p.behaviorLabel.split("; "),
     antecedentCode: null,
     antecedentNote: null,
     consequenceCode: null,
@@ -91,5 +92,25 @@ describe("csv", () => {
     const lines = csv.trim().split("\r\n");
     expect(lines).toHaveLength(2);
     expect(lines[1]).toContain('"a, b"');
+  });
+});
+
+describe("observations with several behaviors", () => {
+  it("counts one observation, lists its behaviors, and tallies behaviors separately", () => {
+    const entries = [entry({ occurredAt: "2026-03-02T15:00:00Z", behaviorLabel: "Hitting; Screaming", antecedentCode: "instruction_given" })];
+    const r = buildReport({ nickname: "Bean", from: "2026-03-01", to: "2026-03-07", tz: TZ, entries });
+    expect(r.total).toBe(1);
+    expect(r.behaviorsNoticed).toBe(2);
+    expect(r.byAntecedent).toEqual([{ label: "An instruction was given", count: 1 }]);
+    expect(r.byBehavior).toEqual([{ label: "Hitting", count: 1 }, { label: "Screaming", count: 1 }]);
+    expect(r.weeks[0].rows[0].noticed).toBe("Hitting; Screaming");
+  });
+  it("drops the 'Something else' prefix when a note exists and omits a 'Not sure' reflection", () => {
+    const entries = [entry({ occurredAt: "2026-03-02T15:00:00Z", behaviorLabel: "Hitting", antecedentCode: "something_else", antecedentNote: "Blender running", functionCode: "not_sure" })];
+    const r = buildReport({ nickname: "Bean", from: "2026-03-01", to: "2026-03-07", tz: TZ, entries });
+    expect(r.weeks[0].rows[0].before).toBe("Blender running");
+    expect(r.weeks[0].rows[0].beforeNote).toBe("");
+    expect(r.weeks[0].rows[0].mightBe).toBe("");
+    expect(reportToCsv(r)).not.toContain("Something else");
   });
 });

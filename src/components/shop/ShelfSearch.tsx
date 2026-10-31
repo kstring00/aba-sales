@@ -34,7 +34,7 @@ export function ShelfSearch({ catalog }: { catalog: ProductSummary[] }) {
   return (
     <section aria-labelledby="search-h" className="paper-card mt-8 p-6">
       <h2 id="search-h" className="text-[1.3rem]">
-        {hits.length ? `${hits.length} ${hits.length === 1 ? "match" : "matches"} for “${q}”` : `Nothing on the shelf matches “${q}” yet`}
+        {hits.length ? `${hits.length} ${hits.length === 1 ? "match" : "matches"} for “${q}”` : `“${q}” isn't on the shelf yet`}
       </h2>
       {hits.length ? (
         <ul className="mt-4 divide-y divide-line">
@@ -49,7 +49,7 @@ export function ShelfSearch({ catalog }: { catalog: ProductSummary[] }) {
           ))}
         </ul>
       ) : (
-        <p className="mt-3 text-[15px] text-ink-soft">The four shelves below hold everything that exists today. If something&apos;s missing, the Everyday Life shelf takes an email.</p>
+        <p className="mt-3 text-[15px] text-ink-soft">Not on the shelf yet. The four shelves below hold everything that exists today.</p>
       )}
     </section>
   );

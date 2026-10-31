@@ -30,7 +30,6 @@ function productCard(p: ProductSummary, shelf: ShelfDef): DrawerCard {
   const meta = metaFor(p.handle);
   const soon = isComingSoon(p);
   const price = formatMoney(p.price);
-  const shortTitle = p.title.replace(/^The\s+/i, "");
   return {
     key: p.id,
     title: p.title,
@@ -38,13 +37,16 @@ function productCard(p: ProductSummary, shelf: ShelfDef): DrawerCard {
     status: soon ? "soon" : price === "Free" ? "free" : "price",
     priceLabel: soon ? null : price,
     href: soon ? `/shelf#${shelf.id}` : `/products/${p.handle}`,
-    cta: soon ? "Learn more" : `Open ${shortTitle}`,
+    cta: soon ? "Coming soon" : price === "Free" ? "Get it free" : `Buy · ${price}`,
     icon: OBJECT_ICON[meta?.object ?? "folder"] ?? "folder",
     image: p.featuredImage ? { url: p.featuredImage.url, alt: p.featuredImage.altText ?? p.title, width: p.featuredImage.width, height: p.featuredImage.height } : null,
   };
 }
 
-export function buildDrawer(catalog: ProductSummary[], max = 4): DrawerShelf[] {
+/** At most this many coming-soon fillers per shelf (audit F-12). */
+export const COMING_SOON_CAP = 3;
+
+export function buildDrawer(catalog: ProductSummary[]): DrawerShelf[] {
   const { shelves } = assignShelves(catalog);
   return shelves.map((s) => {
     const content = SHELF_CONTENT[s.id];
@@ -57,10 +59,11 @@ export function buildDrawer(catalog: ProductSummary[], max = 4): DrawerShelf[] {
     const known = new Set([...live, ...taggedSoon].map((c) => c.title.toLowerCase().replace(/^the\s+/, "")));
     const fillers: DrawerCard[] = content.comingSoon
       .filter((c) => !known.has(c.title.toLowerCase()))
-      .map((c) => ({ key: `soon-${s.id}-${c.title}`, title: c.title, blurb: c.blurb, status: "soon", priceLabel: null, href: `/shelf#${s.id}`, cta: "Learn more", icon: c.icon, image: null }));
-    const cards = [...live, ...tool, ...taggedSoon, ...fillers].slice(0, max);
+      .map((c): DrawerCard => ({ key: `soon-${s.id}-${c.title}`, title: c.title, blurb: c.blurb, status: "soon", priceLabel: null, href: `/shelf#${s.id}`, cta: "Coming soon", icon: c.icon, image: null }))
+      .slice(0, Math.max(0, COMING_SOON_CAP - taggedSoon.length));
+    const cards = [...live, ...tool, ...taggedSoon, ...fillers];
     const { tool: _tool, empty: _empty, ...def } = s;
-    void _tool; void _empty;
+    void _tool; void _empty; // ShelfDef.tool/empty are superseded by the content file
     return { ...def, ...content, cards, liveCount: live.length + tool.length };
   });
 }

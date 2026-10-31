@@ -37,7 +37,7 @@ export default async function HomePage() {
           panels={drawer.map((s) => <DrawerPanel key={s.id} shelf={s} />)}
           reviewer={publicEnv.bcbaReviewer}
         />
-        <WhyItMatters />
+        <WhyItMatters printableHref={catalog.some((p) => p.handle === "home-abc-printable") ? "/products/home-abc-printable" : null} />
         <ClosingCta />
       </main>
       <SiteFooter />

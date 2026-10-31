@@ -26,7 +26,7 @@ export function CartBadge() {
       href="/cart"
       prefetch={false}
       aria-label={count ? `Cart, ${count} ${count === 1 ? "item" : "items"}` : "Cart, empty"}
-      className="lift relative inline-flex min-h-11 min-w-11 items-center justify-center rounded-pill border border-line-strong bg-paper px-3 text-[15px] text-ink"
+      className="lift relative inline-flex min-h-11 min-w-10 sm:min-w-11 items-center justify-center rounded-pill border border-line-strong bg-paper px-3 text-[15px] text-ink"
     >
       <svg aria-hidden width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
         <path d="M6 7h13l-1.2 8.5a2 2 0 0 1-2 1.7H9.1a2 2 0 0 1-2-1.6L5.4 4.8A1 1 0 0 0 4.4 4H3" />

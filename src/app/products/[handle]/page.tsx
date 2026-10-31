@@ -11,6 +11,7 @@ import { getProduct, getProductHandles, getRelated } from "@/lib/shopify/catalog
 import { formatMoney } from "@/lib/shopify/normalize";
 import { metaFor } from "@/lib/resources";
 import { shelfFor, TINT_BG, TINT_TEXT } from "@/lib/shelves";
+import { publicEnv } from "@/lib/env";
 
 export const revalidate = 300;
 export const dynamicParams = true;
@@ -56,6 +57,22 @@ export default async function ProductPage({ params }: { params: Promise<{ handle
   const price = formatMoney(product.price);
   const formatLine = product.format ?? extractFormat(product.description);
   const included = product.included.length ? product.included : extractIncluded(product.description);
+  const productLd = {
+    "@context": "https://schema.org",
+    "@type": "Product",
+    name: product.title,
+    description: meta?.task ?? product.benefit,
+    image: product.images.map((i) => i.url),
+    url: `${publicEnv.siteUrl}/products/${product.handle}`,
+    brand: { "@type": "Brand", name: "The Support Shelf" },
+    offers: {
+      "@type": "Offer",
+      price: product.price.amount,
+      priceCurrency: product.price.currencyCode,
+      availability: product.availableForSale ? "https://schema.org/InStock" : "https://schema.org/OutOfStock",
+      url: `${publicEnv.siteUrl}/products/${product.handle}`,
+    },
+  };
 
   return (
     <>
@@ -107,6 +124,7 @@ export default async function ProductPage({ params }: { params: Promise<{ handle
             </section>
 
             <p className="mt-6 text-[15px] text-ink">Made by a Registered Behavior Technician. {BOUNDARY_LINE}</p>
+            <p className="mt-2 text-[14px] text-ink-mute">Clinical review: pending.</p>
             <p className="mt-3 text-[14px] text-ink-soft">No client data. You customize everything. If a file is broken or not as described, write to us and we&apos;ll fix it or refund you.</p>
           </div>
         </div>
@@ -150,6 +168,7 @@ export default async function ProductPage({ params }: { params: Promise<{ handle
           <div className="flex-1"><AddToCart variantId={product.variantId} available={product.availableForSale} price={price} compact /></div>
         </div>
       </aside>
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(productLd) }} />
       <SiteFooter />
     </>
   );

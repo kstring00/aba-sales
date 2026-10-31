@@ -4,6 +4,11 @@ import { SiteFooter } from "@/components/site/SiteFooter";
 import { Prose } from "@/components/site/Prose";
 import { LinkButton } from "@/components/ui/Button";
 import { IconLeaf } from "@/components/illustrations/Paper";
+import { FounderPhoto } from "@/components/site/FounderPhoto";
+import { publicEnv } from "@/lib/env";
+
+/** BACB certificant registry search. Operator: confirm this link resolves to the registry before launch. */
+const BACB_REGISTRY = "https://www.bacb.com/services/o.php?page=101135";
 
 export const metadata: Metadata = {
   title: "About",
@@ -21,8 +26,8 @@ export default function AboutPage() {
             <IconLeaf className="absolute right-6 top-6 h-8 w-8 -rotate-12 opacity-80" />
             <blockquote className="space-y-4 text-[1.02rem] leading-relaxed text-ink-body">
               <p>
-                In my first year as a Registered Behavior Technician, one of the things that has impacted me most isn&apos;t just the work I
-                do with children. It&apos;s seeing how much their parents carry.
+                Since becoming a Registered Behavior Technician in 2023, one of the things that has impacted me most isn&apos;t just the
+                work I do with children. It&apos;s seeing how much their parents carry.
               </p>
               <p>
                 I&apos;ve witnessed firsthand the stress, uncertainty, and overwhelming responsibilities that families navigate every day. The
@@ -46,10 +51,16 @@ export default function AboutPage() {
               </p>
               <p>That&apos;s what The Support Shelf means to me.</p>
             </blockquote>
-            <figcaption className="mt-6 border-t border-line pt-4 text-[15px] text-ink-soft">
-              <span className="hand block text-ink">Kyle Stringham</span>
-              <span className="block">Founder, The Support Shelf</span>
-              <span className="block">Registered Behavior Technician</span>
+            <figcaption className="mt-6 flex items-center gap-4 border-t border-line pt-4 text-[15px] text-ink-soft">
+              <FounderPhoto />
+              <span>
+                <span className="hand block text-ink">Kyle Stringham</span>
+                <span className="block">Founder, The Support Shelf</span>
+                <span className="block">
+                  Registered Behavior Technician since 2023 ·{" "}
+                  <a href={BACB_REGISTRY} target="_blank" rel="noopener" className="text-ink underline underline-offset-4">BACB registry</a>
+                </span>
+              </span>
             </figcaption>
           </figure>
         </section>
@@ -60,6 +71,13 @@ export default function AboutPage() {
           <li>Not a clinic or a provider. Your child&apos;s team makes the clinical calls.</li>
           <li>Not a place that collects your child&apos;s information. See the privacy page.</li>
         </ul>
+
+        <h2 id="contact" className="scroll-mt-6">Contact</h2>
+        <p>
+          Email <a href={`mailto:${publicEnv.contactEmail}`} className="text-ink underline underline-offset-4">{publicEnv.contactEmail}</a>.
+          A person answers, usually within a couple of days. No phone line yet.
+        </p>
+        <p className="text-[14px] text-ink-mute">Clinical review: pending. No BCBA has reviewed the tools yet; when one has, their name will appear here and on each tool.</p>
 
         <div className="pt-4">
           <LinkButton href="/shelf" variant="primary" size="lg">Browse the shelves</LinkButton>

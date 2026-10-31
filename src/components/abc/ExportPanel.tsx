@@ -28,7 +28,7 @@ export function ExportActions({ nickname, entries }: Props) {
   const [busy, setBusy] = useState<"pdf" | "csv" | "email" | null>(null);
   const [emailOpen, setEmailOpen] = useState(false);
   const [email, setEmail] = useState("");
-  const [keep, setKeep] = useState(true);
+  const [keep, setKeep] = useState(false); // never pre-ticked (audit F-05)
   const [status, setStatus] = useState<{ ok?: true; error?: string } | null>(null);
   const tz = Intl.DateTimeFormat().resolvedOptions().timeZone;
   const none = entries.length === 0;
@@ -66,6 +66,10 @@ export function ExportActions({ nickname, entries }: Props) {
 
   async function sendEmail(e: React.FormEvent) {
     e.preventDefault();
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email.trim())) {
+      setStatus({ error: "Enter an email like you@example.com." });
+      return;
+    }
     setBusy("email");
     setStatus(null);
     try {
@@ -94,19 +98,20 @@ export function ExportActions({ nickname, entries }: Props) {
       </div>
       {none ? <p className="mt-2 text-[13px] text-ink-mute">Save an entry and the buttons wake up.</p> : null}
       {emailOpen ? (
-        <form onSubmit={(e) => void sendEmail(e)} className="mt-4 space-y-3 rounded-md bg-cream p-4">
+        <form onSubmit={(e) => void sendEmail(e)} noValidate className="mt-4 space-y-3 rounded-md bg-cream p-4">
           <label htmlFor="export-email" className="block text-[15px] text-ink">Email me my export</label>
           <p className="text-[13.5px] text-ink-soft">Pressing send is the one time entries leave your phone: we turn them into the same PDF, email it to you, and discard them. We don&apos;t keep a copy.</p>
           <div className="flex flex-col gap-2 sm:flex-row">
-            <Input id="export-email" type="email" inputMode="email" autoComplete="email" required value={email} onChange={(e) => setEmail(e.target.value)} placeholder="you@example.com" />
+            <Input id="export-email" type="email" inputMode="email" autoComplete="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="you@example.com" aria-describedby="export-status" aria-invalid={status?.error ? true : undefined} />
             <Button type="submit" variant="secondary" disabled={busy !== null}>{busy === "email" ? "Sending…" : "Send"}</Button>
           </div>
-          <label className="flex items-start gap-3 text-[13.5px] text-ink-soft">
-            <input type="checkbox" checked={keep} onChange={(e) => setKeep(e.target.checked)} className="mt-0.5 h-6 w-6 shrink-0 accent-[var(--sage-deep)]" />
-            <span>Also tell me when new downloads reach the shelf. A few emails a year, unsubscribe any time.</span>
-          </label>
-          {status?.ok ? <p role="status" className="text-[14px] text-ink">Sent. Check your inbox (and spam, once).</p> : null}
-          {status?.error ? <p role="alert" className="text-[14px] text-ink">{status.error}</p> : null}
+          <div className="flex items-start gap-3 text-[13.5px] text-ink-soft">
+            <input id="export-keep" type="checkbox" checked={keep} onChange={(e) => setKeep(e.target.checked)} className="mt-0.5 h-6 w-6 shrink-0 accent-[var(--sage-deep)]" />
+            <label htmlFor="export-keep">Also tell me when new downloads reach the shelf. A few emails a year, unsubscribe any time.</label>
+          </div>
+          <p id="export-status" aria-live="polite" role={status?.error ? "alert" : "status"} className={`text-[14px] text-ink ${status ? "" : "sr-only"}`}>
+            {status?.ok ? "Sent — check your inbox (and spam, once)." : status?.error ?? ""}
+          </p>
         </form>
       ) : null}
       <p className="mt-3 text-[13px] text-ink-mute">Clearing your browser data clears these entries. Export first.</p>

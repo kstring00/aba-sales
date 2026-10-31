@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import { Button } from "@/components/ui/Button";
 import { Input } from "@/components/ui/Field";
@@ -19,21 +19,50 @@ type View = "list" | "time" | "before";
  * localStorage store; nothing here talks to a server except the optional
  * "email me my export".
  */
+const NEXT_SEEN_KEY = "support-shelf-abc-next-seen";
+
 export function Tracker({ explainers }: { explainers: React.ReactNode }) {
   const { store, hydrated } = useAbcStore();
   const [view, setView] = useState<View>("list");
   const [settings, setSettings] = useState(false);
+  const [showNext, setShowNext] = useState(false);
   const entries = useMemo(() => withLabels(store), [store]);
   const nickname = store.child?.nickname ?? "";
+
+  // One-time "what to do next" card after the first saved observation.
+  useEffect(() => {
+    if (!hydrated || entries.length === 0) return;
+    try {
+      if (localStorage.getItem(NEXT_SEEN_KEY)) return;
+    } catch { /* storage unavailable: show it this once */ }
+    const id = requestAnimationFrame(() => setShowNext(true));
+    return () => cancelAnimationFrame(id);
+  }, [hydrated, entries.length]);
+  const dismissNext = () => { setShowNext(false); try { localStorage.setItem(NEXT_SEEN_KEY, "1"); } catch { /* ignore */ } };
 
   return (
     <div className="grid gap-8 lg:grid-cols-[minmax(0,7fr)_minmax(0,5fr)] lg:gap-10">
       <div className="min-w-0 space-y-8">
+        <section className="rounded-lg border border-line bg-paper/70 px-5 py-4 text-[14.5px] text-ink-soft" aria-label="What ABC is">
+          <p><strong className="font-medium text-ink">A</strong> is what happened right before. <strong className="font-medium text-ink">B</strong> is the behavior you saw. <strong className="font-medium text-ink">C</strong> is what happened right after.</p>
+          <p className="mt-1">Write what you saw, not what it means. Noticing what happens before and after can help you and your BCBA spot what the behavior might be communicating.</p>
+        </section>
         <TrackerForm key={store.child?.nickname ?? "new"} store={store} />
+        {showNext ? (
+          <section className="rounded-lg bg-sage-tint p-5" role="status" aria-label="What to do next">
+            <p className="font-display text-[1.15rem] text-ink">Saved. What to do next</p>
+            <ul className="mt-2 space-y-1 text-[14.5px] text-ink-soft">
+              <li>Export once a week. The PDF is one page per week with counts at the end.</li>
+              <li>Bring it to your BCBA. The tracker records; it never interprets.</li>
+              <li>Keep going on hard days and easy ones; patterns need both.</li>
+            </ul>
+            <Button type="button" size="sm" variant="secondary" className="mt-3" onClick={dismissNext}>Got it</Button>
+          </section>
+        ) : null}
 
         <section className="paper-card p-5 sm:p-6" aria-labelledby="entries-h">
           <div className="flex flex-wrap items-center justify-between gap-3">
-            <h2 id="entries-h" className="text-[1.25rem]">Entries <span className="tnum text-[15px] text-ink-mute">· {entries.length}</span></h2>
+            <h2 id="entries-h" className="text-[1.25rem]">Observations <span className="tnum text-[15px] text-ink-mute">· {entries.length}</span></h2>
             <div role="tablist" aria-label="View" className="flex gap-1 rounded-pill bg-cream-deep p-1">
               {([["list", "List"], ["time", "Time of day"], ["before", "Right before"]] as const).map(([v, label]) => (
                 <button key={v} role="tab" aria-selected={view === v} onClick={() => setView(v)}
@@ -42,8 +71,8 @@ export function Tracker({ explainers }: { explainers: React.ReactNode }) {
             </div>
           </div>
           <div className="mt-4">
-            {!hydrated ? <p className="text-[15px] text-ink-mute">Loading your entries…</p> : null}
-            {hydrated && view === "list" ? <EntryList entries={entries} behaviors={store.behaviors} emptyText={nickname ? `Nothing logged for ${nickname} yet. That's fine.` : "Nothing logged yet. Your saved entries appear here, and you can tap one to edit it."} /> : null}
+            {!hydrated ? <p className="text-[15px] text-ink-mute">Loading your observations…</p> : null}
+            {hydrated && view === "list" ? <EntryList entries={entries} behaviors={store.behaviors} emptyText={nickname ? `Nothing logged for ${nickname} yet. That's fine.` : "Nothing logged yet. Your saved observations appear here, and you can tap one to edit it."} /> : null}
             {hydrated && view === "time" ? <TimeOfDayView entries={entries} /> : null}
             {hydrated && view === "before" ? <AntecedentView entries={entries} /> : null}
           </div>
@@ -112,7 +141,7 @@ function Settings({ nickname, behaviors, entryCount }: { nickname: string; behav
       </div>
       <div className="space-y-3 border-t border-line pt-5">
         <p className="text-[15px] font-medium">Delete everything</p>
-        <p className="text-[14px] text-ink-soft">Removes the nickname, labels, and all {entryCount} entries from this browser. Export first if you want a copy.</p>
+        <p className="text-[14px] text-ink-soft">Removes the nickname, labels, and all {entryCount} observations from this browser. Export first if you want a copy.</p>
         {confirm === 0 ? <Button type="button" variant="quiet" onClick={() => setConfirm(1)}>Delete everything…</Button> : null}
         {confirm === 1 ? (
           <div className="flex flex-wrap gap-2">

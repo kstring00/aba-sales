@@ -42,10 +42,17 @@ describe("drawer model", () => {
   it("puts live Shopify products first with their live price, then the free tool, then coming-soon fillers", () => {
     const d = buildDrawer([product("care-binder", { title: "The Care Binder", price: { amount: "14.99", currencyCode: "USD" } }), product("home-abc-printable", { title: "Home ABC Printable" })]);
     const s = d.find((x) => x.id === "organized")!;
-    expect(s.cards.map((c) => c.status)).toEqual(["price", "free", "free", "soon"]);
-    expect(s.cards[0]).toMatchObject({ priceLabel: "$14.99", cta: "Open Care Binder", href: "/products/care-binder" });
+    expect(s.cards.map((c) => c.status)).toEqual(["price", "free", "free", "soon", "soon"]);
+    expect(s.cards[0]).toMatchObject({ priceLabel: "$14.99", cta: "Buy · $14.99", href: "/products/care-binder" });
+    expect(s.cards[1]).toMatchObject({ priceLabel: "Free", cta: "Get it free", href: "/products/home-abc-printable" });
     expect(s.cards[2]).toMatchObject({ title: "ABC Tracker", href: "/abc", cta: "Open ABC Tracker" });
-    expect(s.cards[3]).toMatchObject({ status: "soon", cta: "Learn more", href: "/shelf#organized", priceLabel: null });
+    expect(s.cards[3]).toMatchObject({ status: "soon", priceLabel: null });
+  });
+  it("caps coming-soon fillers at three per shelf and keeps the ABC Tracker on Shelf 1 only", async () => {
+    const { COMING_SOON_CAP } = await import("@/lib/drawer");
+    const d = buildDrawer([]);
+    for (const s of d) expect(s.cards.filter((c) => c.status === "soon").length).toBeLessThanOrEqual(COMING_SOON_CAP);
+    expect(d.filter((s) => s.cards.some((c) => c.href === "/abc")).map((s) => s.id)).toEqual(["organized"]);
   });
   it("never shows a price for a coming-soon product and drops a filler that a live product replaces", () => {
     const d = buildDrawer([product("appointment-notes", { title: "Appointment Notes", tags: ["shelf-organized", "coming-soon"], price: { amount: "5.00", currencyCode: "USD" } })]);
