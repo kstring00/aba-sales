@@ -19,9 +19,8 @@ export type ContentPage = FrontMatter & {
 const ROOT = path.join(process.cwd(), "content");
 const cache = new Map<string, ContentPage | null>();
 
-export function isProductionDeploy(): boolean {
-  return process.env.VERCEL_ENV === "production";
-}
+import { isProductionDeploy } from "./deploy";
+export { isProductionDeploy };
 
 export function isPublished(page: Pick<ContentPage, "status"> | null | undefined): boolean {
   return page?.status === "published";

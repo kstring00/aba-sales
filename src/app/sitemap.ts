@@ -12,6 +12,8 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     changeFrequency: p === "/" || p === "/shelf" ? "weekly" : "monthly",
     priority: p === "/" ? 1 : p === "/shelf" ? 0.9 : 0.5,
   }));
+  // The two calming tools are generic and complete; they are listed once For you is published.
+  if (hubSections().some((x) => x.key === "for-you" && x.published)) for (const t of ["breathe", "ground"]) pages.push({ url: `${base}/for-you/${t}`, lastModified: now, changeFrequency: "yearly", priority: 0.5 });
   // Hub sections only once published; pending pages never reach the sitemap.
   for (const s of hubSections().filter((x) => x.published)) pages.push({ url: `${base}${s.href}`, lastModified: now, changeFrequency: "monthly", priority: 0.7 });
   const handles = await getProductHandles();

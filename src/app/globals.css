@@ -630,3 +630,8 @@ h2 em {
 .closing-leaf { position: absolute; bottom: -8%; width: clamp(140px, 22vw, 300px); height: auto; opacity: .7; pointer-events: none; }
 .closing-leaf.l { left: -3%; } .closing-leaf.r { right: -3%; transform: scaleX(-1); }
 @media (max-width: 640px) { .closing-leaf { width: 130px; opacity: .5; } }
+
+/* Calming tools: each step eases in (opacity + transform only); instant under reduced motion. */
+.tool-step { animation: tool-in .45s var(--ease) both; }
+@keyframes tool-in { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: none; } }
+@media (prefers-reduced-motion: reduce) { .tool-step { animation: none; } }

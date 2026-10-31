@@ -35,3 +35,22 @@ Gate: build (scope check first), typecheck, lint · unit 46/46 · pages pass (14
 | `content/glossary.json` | All 39 terms | `full`, `short`, optional `long`, then `status: published` |
 | `content/resources.json` | 5 crisis lines | `lastVerified` date once checked |
 | `content/resources.json` | 5 Find care entries | Every `TODO_VERIFY` field |
+
+## Stage 2 — Right now, For you, calming tools, offline
+
+| Item | What shipped | Files | Verified |
+| --- | --- | --- | --- |
+| `/right-now` | One column, large type, no product mentions. "Is anyone in danger?" with two large answers: **Yes** shows Call 911 and All crisis lines; **No, we're safe** reveals For the next 5 minutes, Tantrum or meltdown? (links the full lesson once it exists), Then, for you (both tools), Afterwards (ABC tracker). Answers start hidden so nothing shifts on load; with JavaScript off a `<noscript>` style shows everything. | `src/app/right-now/page.tsx`, `src/components/hub/RightNowSafety.tsx` | Yes/No paths; no-JS shows all; 0 product links in the page body; Lighthouse mobile 94–96, CLS 0 |
+| `/for-you` | It's okay to feel this · If you're about to lose it (both tools embedded) · Who you can talk to (rendered from `resources.json`: parent-support entries plus the crisis lines except 911, each with "not affiliated") · link to the research page once it exists | `src/app/for-you/page.tsx` | axe 0 |
+| Box breathing `/for-you/breathe` | A dot travels the square, one side per phase (in, hold, out, hold); 4 s default, 3–6 s slider; Start/Stop; rounds; optional vibration (off by default, shown only where supported); phase announced politely. Motion is a `transform` on the dot. Reduced motion: dot stays still and a large countdown carries the timing. | `src/components/tools/BoxBreathing.tsx` | Keyboard-only start/stop; phase changes announced; reduced-motion path; Lighthouse 92 |
+| Grounding `/for-you/ground` | 5-4-3-2-1, one step per screen, optional tap-to-count dots, focus moves to each step heading, Back/Next, Done with Start again; step fades in (opacity/transform), instant under reduced motion | `src/components/tools/Grounding.tsx` | Keyboard-only through all five steps with focus on each heading; Lighthouse 94 |
+| Do it together | Toggle on both tools: bigger visuals, simpler words | `src/components/tools/ToolFrame.tsx`, `content/ui.json` | — |
+| Offline | `public/sw.js` precaches `/right-now`, `/for-you`, both tools and `/crisis`, plus the static files those pages reference; network-first for those five pages, cache-first only for those hashed assets; nothing else is touched. Registered on every page in production builds; `sw.js` served `no-cache`. No CSP change needed (`worker-src` falls back to `script-src 'self'`). Pages that 404 (pending, on production) are never cached. | `public/sw.js`, `src/components/site/OfflineRegister.tsx`, `src/app/layout.tsx`, `next.config.ts` | After one visit to `/`, offline: all five pages load and box breathing runs; an uncached page (`/shelf`) fails as intended |
+
+Tool pages are complete (interface wording only, no pending content), so they are live on production at their URLs; nothing links to them there until For you or Right now is published, and they join the sitemap when For you is published.
+
+Gate: build (scope check first), typecheck, lint · unit 46/46 · pages pass (16 routes × 2 widths) · axe 0 on 16 routes with the tools running · `/abc` journey 8/8.
+
+## Pending content slots (Stage 2)
+
+No new slots: Right now and For you use the sections listed under Stage 1. Interface wording for the tools is in `content/ui.json` → `tools` and `rightNow`; edit freely.

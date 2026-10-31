@@ -1,7 +1,7 @@
 import glossaryJson from "../../../content/glossary.json";
 import resourcesJson from "../../../content/resources.json";
 import uiJson from "../../../content/ui.json";
-import { isProductionDeploy } from "./pages";
+import { isProductionDeploy } from "./deploy";
 
 /** Short structured content (JSON). Bundled at build time; safe on server and client. */
 export const ui = uiJson;
