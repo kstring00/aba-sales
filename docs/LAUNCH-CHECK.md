@@ -8,7 +8,7 @@ Pass/fail against the checklist in the build prompt. "Local" means verified agai
 | Home says what, for whom, and shows one CTA within 5 seconds | Pass | Eyebrow "For parents and caregivers of kids in ABA therapy", H1 "Thoughtfully made tools for the people who care", one clay button "Browse the shelf" above the fold at 375px |
 | One dominant CTA per page | Pass | Clay used once per page: Browse the shelf (home), Add to cart (product), Checkout (cart), Log what happened (/abc), Try the logger (/thanks), Browse the shelf (/about) |
 | Product page answers "what do I get?" | Pass (content pending) | Format + what's included block, "delivered by email in under a minute"; reads metafields or falls back to the description |
-| Product page credential line | Pass (name pending) | "Written by an RBT with three years in-clinic. Reviewed by a BCBA (name to come)" |
+| Product page credential line | Pass | "Made by a Registered Behavior Technician." plus the boundary line; founder note on /about |
 | /abc first line: nothing leaves your phone | Pass | Asserted by `tests/e2e/abc.mjs` |
 | /abc sample export above the fold | Pass (desktop) / Pass-scrolls (mobile) | Sample PDF image in the right column; on phones it follows the logger |
 | /abc "records what happened, never tells you what to do" | Pass | On the page and in the PDF counts caption |
