@@ -43,6 +43,16 @@ Local development: copy `.env.example` to `.env.local` and fill the same names.
 
 Settings changed during the build: the three `TEST —` products created by the connector were deleted by the founder; nothing else was changed through the connector.
 
+### Shelf tags (add in Shopify admin → Products → Tags)
+| Product | Tag |
+| --- | --- |
+| care-binder, home-abc-printable | `shelf-organized` |
+| read-your-childs-treatment-plan, waitlist-playbook | `shelf-plan` |
+| future routine / visual tools | `shelf-everyday` |
+| future home-support items | `shelf-home` |
+
+Until the tags exist the handles above are mapped in `src/lib/shelves.ts`. A new product with no tag and an unknown handle appears under "Also on the shelf" on `/shelf` so it is never hidden.
+
 ## 4. Resend settings
 
 - API key with sending access.
@@ -63,6 +73,10 @@ src/app/                 pages: /, /shelf, /products/[handle], /cart, /thanks, /
 src/app/api/abc/email-export/route.ts   the one server route
 src/app/cart/actions.ts  add / update / remove / checkout (redirects to Shopify)
 src/lib/shopify/         Storefront client, GraphQL, normalizers, catalog, cart cookie
+src/lib/shelves.ts       the four shelves: tag → shelf mapping with handle fallback
+src/lib/resources.ts     one sentence per product, who it may help, which paper object
+src/components/illustrations/Paper.tsx   every illustration (inline SVG, token colors)
+src/components/home/     Hero, ShelfExplorer (tabs), WhyItMatters, ClosingCta
 src/lib/abc/             localStorage store, hook, view aggregations, types
 src/lib/export/          report → PDF (pdf-lib + brand fonts) and CSV
 src/lib/observation.ts   the exact antecedent / consequence wording

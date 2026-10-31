@@ -3,34 +3,27 @@
 **(founder)** = needs you. **(review)** = needs a professional before launch.
 
 ## Global
-- (founder) **Photography.** Seven images are briefed in `docs/ASSETS.md`. Nothing renders until they exist; when they do, add the slots back to Welcome, We see, Shelf header, Support, Founder, and /about. The founder portrait must be a real photograph.
-- (founder) Confirm the founder biography wording on the homepage and /about (years, role). "Stories from the shelf" is hidden behind `NEXT_PUBLIC_SHOW_STORIES` until a real, permissioned story exists.
-- (founder) Directory and finder copy: replacements incoming; current text is held as-is.
-- (founder) Re-verify the six "Find your people" organizations and their URLs by hand before launch (`src/lib/resources.ts` → `ORGS`); this build could not reach external sites.
-- (founder) Product metadata in `src/lib/resources.ts` (task, who it may help, category) was written from the product names and the brief; confirm each against the actual files.
-- (founder) Upload the actual page images to each Shopify product, in page order; the binder preview uses them as tabs. Add `custom.format` and `custom.included` metafields for exact contents.
-- (founder) Install the **Headless** sales channel in Shopify, create a storefront, paste the public Storefront token into env (README "Shopify setup").
-- (founder) For the three `TEST —` products: tick **Headless**, leave **Online Store** unticked, set **Active**. Also publish both shelf collections to Headless. (The connector could create the products but not change their channels; it initially published them to Online Store, so I set them to Draft.)
-- (founder) Vercel project + env vars; first deploy.
+- (founder) **Shelf tags in Shopify:** `care-binder` and `home-abc-printable` → `shelf-organized`; `read-your-childs-treatment-plan` and `waitlist-playbook` → `shelf-plan`. The handle fallback in `src/lib/shelves.ts` covers them until then.
+- (founder) Product sentences and "who it may help" in `src/lib/resources.ts` were written from the product names and the brief; confirm each against the actual files.
+- (founder) Upload the actual page images to each Shopify product, in page order; the product page gallery uses them. Add `custom.format` and `custom.included` metafields for exact contents.
+- (founder) Confirm `SHOPIFY_STOREFRONT_TOKEN` and `SHOPIFY_STORE_DOMAIN` are set for the **Production** environment on Vercel and that the four products and `the-family-shelf` are published to the Headless channel; the production homepage currently shows the empty state.
 - (founder) Resend: API key, Audience, and a **verified sending domain**. Until then export emails only reach your own address.
-- (founder) `NEXT_PUBLIC_CONTACT_EMAIL` and `NEXT_PUBLIC_CONTACT_PHONE` for the footer.
+- (founder) `NEXT_PUBLIC_CONTACT_EMAIL` for the footer and the Contact link.
+- (founder) Testimonials: the Why-it-matters section holds a sample sheet in place of a carousel; add a carousel only when real, permissioned testimonials exist.
 - (review) Legal review of the privacy page.
-- (review) BCBA review of the chip wording, PDF captions, and product copy; supply the "reviewed by" name.
-- Replace the Shopify sample-art placeholder images on TEST products with real page previews.
-- Favicon and social image exist; replace the OG image copy when the homepage copy is final.
+- (review) BCBA review of the chip wording, PDF captions, and product copy.
+- Favicon and social image exist; refresh the OG image to the new palette when the copy is final.
 
 ## Home `/`
-- (founder) Founder photo slot (currently text only).
-- Featured products come from the first three published products; consider a `featured` tag.
+- Shelf tabs remember nothing between visits by design; consider deep-linking `/#shelves` with a shelf id if parents share links.
 
 ## Shelf `/shelf`
-- Interactive shelf stays hidden until it has products.
-- Shelf-level descriptions come from the Shopify collection description.
+- Header search is a plain `?q=` substring match over titles and sentences; fine for four products, revisit past ~20.
+- Everyday Life is empty and takes an email; Support at Home holds the free logger.
 
 ## Product `/products/[handle]`
 - Add `custom.benefit`, `custom.format`, `custom.included` metafields and expose them to the Storefront API; the page falls back to parsing the description.
-- Upload real preview images (the actual pages) in Shopify.
-- "Reviewed by a BCBA (name to come)" placeholder.
+- Upload real preview images (the actual pages) in Shopify; the paper object stands in until then.
 
 ## Cart `/cart` → Shopify checkout → `/thanks`
 - (founder) Set the order-status "continue shopping" link to `/thanks` in Shopify checkout settings.

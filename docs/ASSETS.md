@@ -1,29 +1,24 @@
-# Photography & asset manifest
+# Asset manifest
 
-Briefs for the photography to commission or license. No slots or placeholders ship in the current build; these are re-added when real images exist. Rules: documentary over polish, natural light, no faces of children looking at camera, no fabricated text in frame, no AI-generated person presented as a real family, no staged sadness.
+No photography and no raster images ship on the homepage or shelves. Every illustration is inline SVG in `src/components/illustrations/Paper.tsx`, colored from the tokens in `src/app/globals.css`, so it re-themes with the palette and costs no bytes beyond the HTML.
 
-| ID | Title | Placement | Brief (short) | Desktop / mobile crop | Alt text | Format | Licensing |
-| --- | --- | --- | --- | --- | --- | --- | --- |
-| ordinaryMoment | The Ordinary Moment | Home hero | Dining room, afternoon side light, parent and child mid-activity, negative space at left | 16:10 / 4:5 | A parent and child at a kitchen table in afternoon light, drawing together beside a mug and a printed routine card. | AVIF (+JPG fallback) | pending |
-| thingsWeCarry | The Things We Carry | Home, recognition band | Still life: calendar, folders, pen, notes, tea; window shadow; no legible medical text | 21:9 / 4:3 | A calendar, folders, a pen, and a cup of tea arranged on a wooden table in soft daylight. | AVIF | pending |
-| placeForEverything | A Place for Everything | /shelf header | Real printed product pages fanned on oak, overhead and 30° | 3:2 / 4:5 | Printed worksheets and a tabbed binder arranged on an oak table. | AVIF | pending (needs real pages) |
-| humanSide1 | The Human Side · preparing | Finder (reserved) | Evening kitchen table, hands writing questions | 4:5 / 3:2 | Hands writing a list of questions on a notepad at a kitchen table in the evening. | AVIF | pending |
-| humanSide2 | The Human Side · help arriving | Support section | Doorway, child's shoes, someone arriving with a dish | 4:5 / 3:2 | A doorway with a child's shoes beside it, and someone arriving with a dish. | AVIF | pending |
-| founder | Founder portrait | Founder section, /about | Real portrait, natural light. Never generated. | 4:5 / 1:1 | Portrait of the founder of The Support Shelf. | AVIF | owned (to supply) |
-| theShelf | The Shelf | OG image, /about | Wooden shelf: books, folders, notebook, routine, plant | 16:9 / 4:5 | A wooden shelf holding books, folders, a notebook, and a small plant. | AVIF | pending |
+## Inventory
 
-Delivery: export each at 2400px on the long edge (hero 3200px), AVIF quality ~60 plus a JPG fallback; `next/image` handles the rest. Drop files in `public/photos/` and set `src` in the manifest.
+| Component | Where it appears | Notes |
+| --- | --- | --- |
+| `HeroScene` | Homepage hero | Four tinted upright folders on a wooden shelf, plant, mug ("Small steps, brighter days"), pinned note ("YOU GOT THIS"), leaves. Labelled `img`. |
+| `ShelfIcon` → `IconFolder`, `IconCalendar`, `IconSun`, `IconPeople` | Shelf tabs, panel badges, folders | One per shelf tint. |
+| `PaperObject` (`binder`, `checklist`, `calendar`, `folder`, `booklet`) | Product cards, product page fallback | Chosen per product in `src/lib/resources.ts`. |
+| `PhoneObject` | The free logger card | Three chips and a terracotta save button. |
+| `SampleLogSheet` | Why it matters | The first sheet of the Home ABC Printable with one clearly labelled sample entry. Labelled `img`. |
+| `Wave`, `SunAndLeaves`, `CornerLeaves`, `Sprig` | Section dividers and corners | Decorative, `aria-hidden`. |
+| `IconLeaf`, `IconHeart`, `IconChecklist`, `IconSearch`, `IconArrow` | Trust marks, nav, buttons | |
 
-Product preview images (page thumbnails) live in Shopify, not here. Upload the actual pages at 1600px on the long edge, one per page, in order; the binder preview uses them as tabs.
+## Raster images that are allowed
 
-## Bright shelf (`/shelf`) — additional briefs
+- Shopify product gallery images on `/products/[handle]` (real pages of the download, uploaded in Shopify). When a product has none, the shelf's paper object stands in.
+- `public/og.png` for link previews; `public/icons/*` favicons; `public/screens/*` real screenshots of the logger used in documentation.
 
-The redesigned shelf ships with an original SVG illustration system (waves, sun, binders with colored tabs, notebooks, sheets, folders, sprigs, ribbons) and a real screenshot of the ABC logger with a synthetic nickname. No photography or AI imagery was generated: the image tool available in the build environment bills credits, which the project rules forbid, and AI-generated people must never stand in for real families.
+## If photography is added later
 
-When photography is commissioned, these slots exist in the bright shelf:
-
-| Slot | Brief | Crop | Alt |
-| --- | --- | --- | --- |
-| Hero human element (optional, right column) | A parent's hands arranging printed sheets and a folder on a turquoise table, daylight, no face | 5:4 | Hands arranging printed sheets and a folder on a turquoise table. |
-| Human element section | A caregiver at a bright kitchen table reviewing notes; natural light; dignified, unposed; face soft or turned | 1:1 / 4:5 | A caregiver at a kitchen table reviewing handwritten notes in daylight. |
-| Product photography | Actual product pages printed and arranged overhead on a turquoise or sea-glass surface with coral and sun accents | 4:5 per product | Printed pages of [product] arranged on a turquoise table. |
+Only real, licensed photographs of consenting people; never stock that implies a customer or a family, never generated people. Add a slot deliberately; nothing in the current layout reserves space for one.

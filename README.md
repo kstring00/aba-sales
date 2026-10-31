@@ -14,21 +14,20 @@ One Next.js site on Vercel: a storefront for digital downloads (Shopify as a hea
 - **"Email me my export"** is the one server route (`/api/abc/email-export`): entries arrive in the request, become a PDF, go out through Resend, and are discarded. The email list is a Resend Audience, because tagging a Shopify customer needs the Admin API.
 - **No accounts, no database, no analytics, no service worker.**
 
-## Design system and the redesign
+## Design system
 
-The experience direction, audit, and principles are in `docs/CREATIVE-DIRECTION.md`; the photography plan (briefs, crops, alt text, licensing) in `docs/ASSETS.md`. No photo slots or placeholders ship; the layout is typographic until real photography exists.
+The direction, audit, and principles are in `docs/CREATIVE-DIRECTION.md`; the illustration inventory in `docs/ASSETS.md`. No raster images ship on the homepage or shelves: every illustration is inline SVG drawn from tokens.
 
-- Tokens live in `src/app/globals.css`: Warm Paper, Forest Ink, Deep Charcoal body text, Soft Sage, Powder Blue and Lavender tints (backgrounds only), Terracotta for the one primary action per page. All text pairs pass WCAG AA.
-- Type: Fraunces (headlines, one italic phrase per page), DM Sans (everything a parent reads to act), Caveat (one handwritten line per page, never instructions).
-- Materials: `.grain` (paper), `.linen` (quiet bands), warm forest-tinted shadows, an oak shelf edge under products.
-- Motion: `.reveal` (one 600ms rise), 2px lifts, the bottom sheet's spring, the binder's page turn. `prefers-reduced-motion` removes all of it.
-- The homepage is eight sections keyed off the live catalog: Welcome → We see the work → Finder → Living Shelf → ABC demo → Support beyond files → Founder → Closing. The "Stories from the shelf" block is behind `NEXT_PUBLIC_SHOW_STORIES=1` and stays off until a real story exists. `src/lib/resources.ts` maps needs to real products and carries the "who it may help / which task" framing; it never creates inventory.
+- Tokens live in `src/app/globals.css`: warm cream `#FBF7F0`, deep forest ink `#1F3A3A`, four shelf tints (sky, mint, butter, blush; backgrounds only), sage leaves, a soft sun, pale aqua wave bands, and terracotta for the one primary action per section. Text-bearing buttons use `#B25A3F` so white text passes AA; the brief's `#C96A4E` is kept for rules, arrows and large marks.
+- Type: Fraunces (headlines, the italic word in each headline), Inter (body), Caveat (handwritten notes inside illustrations only). Metric-tuned fallbacks for both text fonts are declared in `globals.css` so headlines keep their line count while fonts load (CLS ≈ 0).
+- Motion: `.reveal` (one 600ms rise, visible by default, armed only with JS), 2px lifts, the bottom sheet's spring, the binder's page turn. `prefers-reduced-motion` removes all of it.
+- The homepage is the shelf: Hero → Explore the shelves (four tabs on a wooden board) → Why it matters (sample log sheet, no testimonial) → Closing. `/shelf` shows the same four shelves in full; `/products/[handle]` uses the shelf's tint and paper object.
+
+## The four shelves
+
+`src/lib/shelves.ts` defines Get Organized (sky), Make a Plan (mint), Everyday Life (butter), Support at Home (blush). A product lands on a shelf by Shopify tag (`shelf-organized`, `shelf-plan`, `shelf-everyday`, `shelf-home`), falling back to its handle when no tag is set, so the mapping works before and after the tags exist. Products that match neither are listed under "Also on the shelf" rather than dropped. Everyday Life is empty and takes an email (Resend audience); Support at Home carries the free logger as a static card. `src/lib/resources.ts` holds the one plain sentence per product; it never creates inventory.
 
 **Local design review without a Storefront token:** set `SHOPIFY_FIXTURES=1` in `.env.local`. The four real products appear by handle and price with no invented contents. Ignored whenever a real token is set and always on Vercel.
-
-## The bright shelf
-
-`/shelf` opts into a second theme ("A Brighter Kind of Support") via `data-theme="bright"`, which remaps the token set to Ocean Blue, Deep Teal, Bright Turquoise, Leaf Green, Sea Glass, Soft Sky, Warm Sunshine, Coral, Warm White, and Dark Ink. The primary action is coral with dark ink text (5.2:1). Illustration lives in `src/components/illustrations/Shapes.tsx` (original SVG); the shelf sections in `src/components/shelf/`. Other pages keep the paper-and-forest system until you decide to extend the bright theme.
 
 ## Pages
 

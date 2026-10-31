@@ -15,9 +15,11 @@ for (const p of PAGES) {
   const res = await page.goto(`${BASE}${p}`, { waitUntil: "networkidle" });
   if (p.startsWith("/products/") && res.status() === 404) { console.log(`– ${p} skipped (no catalog)`); continue; }
   if (p === "/") {
-    // Exercise the finder and the demo too.
-    await page.getByRole("tab", { name: /prepare for an appointment/i }).click();
-    await page.getByRole("button", { name: "Covering ears", exact: true }).click();
+    // Exercise the shelf tabs and the header search too.
+    await page.getByRole("tab", { name: /make a plan/i }).click();
+    await page.getByRole("button", { name: "Next shelf" }).click();
+    await page.getByRole("button", { name: "Next shelf" }).click();
+    await page.locator("summary[aria-label='Search the shelves']").click();
   }
   if (p === "/abc") {
     // Exercise the logger too: set up a child and open the sheet.

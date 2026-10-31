@@ -13,7 +13,7 @@ export default function AboutPage() {
   return (
     <>
       <SiteHeader />
-      <Prose title="About the shelf" lede="Thoughtfully made tools for the people who care.">
+      <Prose title="About the shelf" lede="Practical tools. Kinder days. Brighter tomorrows.">
         <p>
           <strong>I&apos;m a Registered Behavior Technician.</strong> I&apos;ve spent three years on the floor with kids in ABA
           therapy and in the hallway with their parents. Most of what families and small clinics need isn&apos;t complicated:
@@ -36,6 +36,13 @@ export default function AboutPage() {
           <li>Not a place that collects your child&apos;s information. See the privacy page.</li>
         </ul>
 
+        <h2 id="how-it-works">How it works</h2>
+        <ol>
+          <li>Pick a shelf: Get Organized, Make a Plan, Everyday Life, or Support at Home.</li>
+          <li>Open a tool. Free ones download right away; paid ones check out through Shopify and arrive by email within a minute.</li>
+          <li>Print it, fill it in, and bring it to your next meeting. The free ABC logger works on your phone and keeps everything on your device.</li>
+        </ol>
+
         <h2>Credentials</h2>
         <p>
           Written by a Registered Behavior Technician (RBT) with three years in-clinic. An RBT works under the supervision of a
@@ -43,7 +50,7 @@ export default function AboutPage() {
         </p>
 
         <div className="pt-4">
-          <LinkButton href="/shelf" variant="primary" size="lg">Browse the shelf</LinkButton>
+          <LinkButton href="/shelf" variant="primary" size="lg">Browse the shelves</LinkButton>
         </div>
       </Prose>
       <SiteFooter />
