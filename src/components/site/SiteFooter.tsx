@@ -1,49 +1,41 @@
 import Link from "next/link";
 import { publicEnv } from "@/lib/env";
+import { Wordmark } from "@/components/ui/Logo";
+
+/** The boundary line appears on every page, verbatim. */
+export const BOUNDARY_LINE = "These tools record and organize. Your BCBA writes the plan.";
 
 export function SiteFooter() {
   const year = new Date().getFullYear();
   const email = publicEnv.contactEmail;
-  const phone = publicEnv.contactPhone;
+  const links = [
+    { href: "/about", label: "About" },
+    { href: "/shelf", label: "Shelves" },
+    { href: email ? `mailto:${email}` : "/about", label: "Contact" },
+    { href: "/privacy", label: "Privacy" },
+  ];
   return (
     <footer className="mt-auto border-t border-line bg-cream">
-      <div className="mx-auto grid w-full max-w-6xl gap-10 px-5 py-14 sm:px-8 md:grid-cols-[1.4fr_1fr_1fr]">
-        <div className="space-y-3">
-          <p className="font-display text-[1.25rem] tracking-tight">The Support Shelf</p>
-          <p className="text-[15px] text-ink-soft">Thoughtfully made tools for the people who care.</p>
-          <p className="max-w-[44ch] text-[14px] leading-relaxed text-ink-mute">
-            The free ABC logger stores nothing on our servers. Entries live in your browser only.
-          </p>
+      <div className="mx-auto flex w-full max-w-7xl flex-col gap-8 px-5 py-12 sm:px-8 md:flex-row md:items-start md:justify-between">
+        <div className="space-y-2">
+          <Wordmark />
+          <p className="text-[15px] text-ink-soft">Practical tools. Kinder days. Brighter tomorrows.</p>
+          <p className="pt-2 text-[15px] text-ink">{BOUNDARY_LINE}</p>
         </div>
-        <nav aria-label="Footer" className="space-y-2 text-[15px]">
-          <p className="text-[13px] uppercase tracking-wider text-ink-mute">Site</p>
-          <ul className="space-y-0">
-            <li><Link href="/shelf" className="inline-flex min-h-11 items-center text-ink-soft hover:text-ink">The shelf</Link></li>
-            <li><Link href="/abc" className="inline-flex min-h-11 items-center text-ink-soft hover:text-ink">Free ABC logger</Link></li>
-            <li><Link href="/about" className="inline-flex min-h-11 items-center text-ink-soft hover:text-ink">About</Link></li>
-            <li><Link href="/privacy" className="inline-flex min-h-11 items-center text-ink-soft hover:text-ink">Privacy</Link></li>
-            <li><Link href="/crisis" className="inline-flex min-h-11 items-center text-ink-soft hover:text-ink">Crisis resources</Link></li>
-          </ul>
+        <nav aria-label="Footer" className="flex flex-wrap gap-x-2 gap-y-0 text-[15px] md:justify-end">
+          {links.map((l) => (
+            <Link key={l.label} href={l.href} className="inline-flex min-h-11 items-center rounded-pill px-3 text-ink-soft hover:bg-cream-deep hover:text-ink">
+              {l.label}
+            </Link>
+          ))}
         </nav>
-        <div className="space-y-2 text-[15px]">
-          <p className="text-[13px] uppercase tracking-wider text-ink-mute">Reach a person</p>
-          <ul className="space-y-0">
-            {email ? (
-              <li><a href={`mailto:${email}`} className="inline-flex min-h-11 items-center text-ink-soft hover:text-ink">{email}</a></li>
-            ) : (
-              <li className="text-ink-mute">Email coming soon</li>
-            )}
-            {phone ? (
-              <li><a href={`tel:${phone.replace(/[^\d+]/g, "")}`} className="inline-flex min-h-11 items-center text-ink-soft hover:text-ink">{phone}</a></li>
-            ) : null}
-          </ul>
-        </div>
       </div>
-      <div className="mx-auto w-full max-w-6xl px-5 pb-8 text-[13px] text-ink-mute sm:px-8">
+      <div className="mx-auto flex w-full max-w-7xl flex-col gap-2 px-5 pb-8 text-[13px] text-ink-mute sm:flex-row sm:items-center sm:justify-between sm:px-8">
         <p>
-          © {year} The Support Shelf. Tools and templates, not treatment. Nothing here diagnoses or tells you what to do.
-          If someone is in immediate danger, call 911 (US).
+          © {year} The Support Shelf. The free ABC logger stores nothing on our servers.{" "}
+          <Link href="/crisis" className="underline underline-offset-4 hover:text-ink">Crisis resources</Link>
         </p>
+        {email ? <a href={`mailto:${email}`} className="inline-flex min-h-11 items-center hover:text-ink sm:min-h-0">{email}</a> : null}
       </div>
     </footer>
   );

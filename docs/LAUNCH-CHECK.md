@@ -87,3 +87,18 @@ Legal review of /privacy · BCBA review of wording and the "reviewed by" name ·
 | Hover/focus lifts, hero float, reveals disabled under `prefers-reduced-motion` | pass (CSS) |
 | Products shown only from the Storefront API; upcoming items listed without dates or purchase paths | pass |
 | Real tool screenshot (synthetic nickname) in the logger section; no stock or generated people | pass |
+
+## Homepage & shelf rebuild QA (mockup build)
+
+| Check | Result |
+| --- | --- |
+| Five-second test on the hero at 375px: kicker, audience line, one terracotta CTA above the fold | pass (screenshot `tests/e2e/shots/rebuild/375-home-fold.png`) |
+| One H1 per page, titles, no overflow at 375px and 1280px, every internal link resolves | pass (`pages.mjs`, 10 routes × 2 widths) |
+| One dominant CTA per section: Find my shelf (hero), Explore this shelf (active panel), Find my shelf (closing); product cards use outlined pills | pass |
+| `grep -ri lorem` and placeholder text/images | 0 results; no raster images on `/` or `/shelf` |
+| axe-core WCAG 2.1 AA, every page, with shelf tabs changed, search opened, and the logging sheet open | 0 violations |
+| Lighthouse mobile `/` · `/shelf` · `/products/care-binder` | 93 · 94 · 95 performance; 100 accessibility, best practices, SEO (CLS 0.02 / 0 / 0 after metric-tuned font fallbacks) |
+| Unit tests (shelf mapping by tag and handle, unshelved products kept, copy guardrails) | 25 of 25 |
+| `/abc` journey unchanged | 7 of 7 |
+| No invented products, testimonials, sign-in, or counts; prices from Shopify ($0 shows as Free) | pass |
+| Boundary line on every page: "These tools record and organize. Your BCBA writes the plan." | footer + product page |

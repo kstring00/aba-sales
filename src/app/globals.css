@@ -3,59 +3,75 @@
 /* ─────────────────────────────────────────────────────────────────────────────
    The Support Shelf — design tokens
    Single source of truth. Nothing else in the codebase hard-codes a color,
-   radius, shadow, or duration. 90% of every screen is cream and ink.
+   radius, shadow, or duration. Warm cream walls, deep forest ink, four
+   pastel shelf tints, one terracotta action per section.
    ───────────────────────────────────────────────────────────────────────── */
 :root {
-  /* Surfaces — warm paper, the room's walls */
-  --cream: #f7f3eb;        /* Warm Paper */
-  --cream-deep: #efe9dd;
-  --paper: #fffdf8;        /* the page itself */
-  --wood: #b98f6a;         /* oak shelf edge */
-  --wood-deep: #8f6a48;
+  /* Surfaces */
+  --cream: #fbf7f0;        /* warm cream, the room */
+  --cream-deep: #f3ecdf;
+  --paper: #ffffff;        /* a sheet of paper */
+  --aqua: #e4f2f6;         /* pale aqua wave bands */
+  --wood: #d9b48a;         /* the shelf board */
+  --wood-deep: #b8906a;
+  --wood-edge: #a07a56;
 
-  /* Ink — forest green reads as grounded; charcoal for long body text */
-  --ink: #283e35;          /* Forest Ink, 10.4:1 on paper */
-  --ink-body: #252a27;     /* Deep Charcoal */
-  --ink-soft: #3f4f47;
-  --ink-mute: #55625a;     /* 5.8:1 on paper */
-  --ink-faint: #9aa59e;
+  /* Ink — deep forest/teal for headings and body */
+  --ink: #1f3a3a;          /* 11.4:1 on cream */
+  --ink-body: #2a4343;
+  --ink-soft: #3b5556;
+  --ink-mute: #4d6164;     /* 6.1:1 on cream, ≥4.9 on every tint */
+  --ink-faint: #93a3a4;
 
   /* Lines */
-  --line: #e4ddd0;
-  --line-strong: #cfc6b6;
+  --line: #e8e1d5;
+  --line-strong: #d3c9b8;
 
-  /* Sage — secondary, selected states */
-  --sage: #a5b7a1;         /* Soft Sage */
-  --sage-deep: #4f6a52;    /* 5.4:1 text on paper */
-  --sage-tint: #e3eadf;
+  /* Shelf tints — backgrounds only, never text */
+  --sky: #d9ebf5;
+  --mint: #d7eedc;
+  --butter: #fbedc8;
+  --blush: #f9dad3;
+  /* Deep partners for icons, badges and small labels on white or cream */
+  --sky-deep: #2b6a99;     /* 5.8:1 on white */
+  --mint-deep: #2f7a4a;
+  --butter-deep: #8a5a12;
+  --blush-deep: #a9452f;
 
-  /* Category tints — backgrounds only, never text */
-  --blue-tint: #dce8ec;    /* Powder Blue, softened */
-  --lavender-tint: #e6e0ec;/* Lavender Mist */
+  /* Sage — leaves, the wordmark, selected states */
+  --sage: #8fb59e;
+  --sage-deep: #4f6a52;    /* 5.6:1 on cream */
+  --sage-tint: #e6efe6;
 
-  /* Terracotta — the single primary action per page. Deepened for AA text. */
-  --clay: #9e5234;         /* 5.1:1 for paper text on it */
-  --clay-deep: #86442a;
-  --clay-warm: #c87555;    /* decorative only: rules, underlines, large marks */
-  --clay-tint: #f3e3da;
+  /* Sun — the one warm accent besides terracotta */
+  --sun: #f6c667;
+  --sun-tint: #fdf1d2;
+
+  /* Terracotta — the single primary action per section. The brief's #C96A4E
+     is kept for rules, arrows and large marks; text-bearing buttons use the
+     one-step-deeper shade so white text passes AA (4.7:1). */
+  --clay: #b25a3f;
+  --clay-deep: #9c4c33;
+  --clay-bright: #c96a4e;
+  --clay-text: #a9523a;    /* 5.0:1 on cream */
+  --clay-tint: #f6e4dc;
 
   /* Shadows are warm ink, never gray */
-  --shadow-soft: 0 10px 30px -10px rgb(40 62 53 / 0.10),
-    0 2px 6px -2px rgb(40 62 53 / 0.06);
-  --shadow-lift: 0 18px 40px -14px rgb(40 62 53 / 0.16),
-    0 4px 10px -4px rgb(40 62 53 / 0.08);
-  --shadow-shelf: 0 14px 24px -14px rgb(40 62 53 / 0.24);
-  --shadow-sheet: 0 -16px 48px -12px rgb(40 62 53 / 0.18);
+  --shadow-soft: 0 10px 30px -10px rgb(31 58 58 / 0.10), 0 2px 6px -2px rgb(31 58 58 / 0.06);
+  --shadow-lift: 0 18px 40px -14px rgb(31 58 58 / 0.18), 0 4px 10px -4px rgb(31 58 58 / 0.08);
+  --shadow-shelf: 0 14px 24px -14px rgb(31 58 58 / 0.24);
+  --shadow-sheet: 0 -16px 48px -12px rgb(31 58 58 / 0.18);
 
   /* Radii */
   --r-sm: 8px;
   --r-md: 14px;
   --r-lg: 22px;
+  --r-xl: 30px;
   --r-pill: 999px;
 
   /* Rhythm (8px grid) */
-  --section-y: 56px;
-  --measure: 68ch;
+  --section-y: 64px;
+  --measure: 66ch;
 
   /* Motion */
   --t-fast: 200ms;
@@ -68,8 +84,29 @@
 
 @media (min-width: 768px) {
   :root {
-    --section-y: 96px;
+    --section-y: 104px;
   }
+}
+
+/* Metric-matched fallbacks, so text keeps its line count while the web fonts
+   load (no layout shift). Next's automatic fallbacks size Fraunces for text
+   optical sizes; headlines run at opsz 144, which is 0.93× the width of Times.
+   Liberation faces are listed so Linux (and Lighthouse) match real devices. */
+@font-face {
+  font-family: "Fraunces Fallback Tuned";
+  src: local("Times New Roman"), local("TimesNewRomanPSMT"), local("Liberation Serif"), local("Georgia");
+  size-adjust: 93%;
+  ascent-override: 105.2%;
+  descent-override: 27.4%;
+  line-gap-override: 0%;
+}
+@font-face {
+  font-family: "Inter Fallback Tuned";
+  src: local("Arial"), local("ArialMT"), local("Liberation Sans"), local("Helvetica");
+  size-adjust: 107.1%;
+  ascent-override: 90.5%;
+  descent-override: 22.6%;
+  line-gap-override: 0%;
 }
 
 /* Expose tokens to Tailwind utilities (bg-cream, text-ink, shadow-soft …) */
@@ -77,27 +114,38 @@
   --color-cream: var(--cream);
   --color-cream-deep: var(--cream-deep);
   --color-paper: var(--paper);
+  --color-aqua: var(--aqua);
+  --color-wood: var(--wood);
+  --color-wood-deep: var(--wood-deep);
+  --color-wood-edge: var(--wood-edge);
   --color-ink: var(--ink);
+  --color-ink-body: var(--ink-body);
   --color-ink-soft: var(--ink-soft);
   --color-ink-mute: var(--ink-mute);
   --color-ink-faint: var(--ink-faint);
   --color-line: var(--line);
   --color-line-strong: var(--line-strong);
+  --color-sky: var(--sky);
+  --color-mint: var(--mint);
+  --color-butter: var(--butter);
+  --color-blush: var(--blush);
+  --color-sky-deep: var(--sky-deep);
+  --color-mint-deep: var(--mint-deep);
+  --color-butter-deep: var(--butter-deep);
+  --color-blush-deep: var(--blush-deep);
   --color-sage: var(--sage);
   --color-sage-deep: var(--sage-deep);
   --color-sage-tint: var(--sage-tint);
-  --color-blue-tint: var(--blue-tint);
-  --color-lavender-tint: var(--lavender-tint);
+  --color-sun: var(--sun);
+  --color-sun-tint: var(--sun-tint);
   --color-clay: var(--clay);
   --color-clay-deep: var(--clay-deep);
-  --color-clay-warm: var(--clay-warm);
+  --color-clay-bright: var(--clay-bright);
+  --color-clay-text: var(--clay-text);
   --color-clay-tint: var(--clay-tint);
-  --color-wood: var(--wood);
-  --color-wood-deep: var(--wood-deep);
-  --color-ink-body: var(--ink-body);
 
-  --font-display: var(--font-fraunces), Georgia, serif;
-  --font-sans: var(--font-dm-sans), system-ui, sans-serif;
+  --font-display: var(--font-fraunces), "Fraunces Fallback Tuned", Georgia, serif;
+  --font-sans: var(--font-inter), "Inter Fallback Tuned", system-ui, sans-serif;
   --font-hand: var(--font-caveat), cursive;
 
   --shadow-soft: var(--shadow-soft);
@@ -108,6 +156,7 @@
   --radius-sm: var(--r-sm);
   --radius-md: var(--r-md);
   --radius-lg: var(--r-lg);
+  --radius-xl: var(--r-xl);
   --radius-pill: var(--r-pill);
 }
 
@@ -147,7 +196,7 @@ h2,
 h3,
 h4 {
   font-family: var(--font-display);
-  font-variation-settings: "opsz" 144, "SOFT" 30;
+  font-variation-settings: "opsz" 144;
   letter-spacing: -0.015em;
   line-height: 1.08;
   text-wrap: balance;
@@ -156,7 +205,7 @@ h4 {
 }
 
 h1 {
-  font-size: clamp(2.5rem, 2rem + 2.6vw, 5.5rem);
+  font-size: clamp(2.5rem, 2rem + 2.6vw, 5.25rem);
   letter-spacing: -0.025em;
 }
 
@@ -165,11 +214,14 @@ h2 {
 }
 
 h3 {
-  font-size: clamp(1.35rem, 1.2rem + 0.6vw, 1.8rem);
+  font-size: clamp(1.3rem, 1.15rem + 0.6vw, 1.7rem);
   line-height: 1.2;
 }
 
-.display-italic {
+/* The emphasized word in every headline. */
+.display-italic,
+h1 em,
+h2 em {
   font-family: var(--font-display);
   font-style: italic;
   font-weight: 400;
@@ -193,18 +245,10 @@ h3 {
   position: absolute;
   inset: 0;
   pointer-events: none;
-  opacity: 0.35;
+  opacity: 0.3;
   mix-blend-mode: multiply;
   background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0.55 0 0 0 0 0.50 0 0 0 0 0.42 0 0 0 0.08 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
   border-radius: inherit;
-}
-
-/* Linen: a faint weave for large quiet surfaces. */
-.linen {
-  background-color: var(--cream-deep);
-  background-image:
-    repeating-linear-gradient(0deg, rgb(40 62 53 / 0.025) 0 1px, transparent 1px 3px),
-    repeating-linear-gradient(90deg, rgb(40 62 53 / 0.025) 0 1px, transparent 1px 3px);
 }
 
 /* Reveal on scroll: visible by default (no JS, print, screenshots). The
@@ -225,9 +269,9 @@ h3 {
   }
 }
 
-/* Accessible focus. Sage, never red. */
+/* Accessible focus: deep teal ink, 3px, never red. */
 :focus-visible {
-  outline: 3px solid var(--sage);
+  outline: 3px solid var(--sage-deep);
   outline-offset: 3px;
   border-radius: var(--r-sm);
 }
@@ -238,24 +282,57 @@ h3 {
 }
 
 @layer components {
-/* The shelf: a thin horizontal rule objects sit on. */
-.shelf-edge {
-  position: relative;
-  border-bottom: 1px solid var(--line-strong);
+/* Section label above a headline: small caps tracking. */
+.kicker {
+  font-size: 12px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--ink-mute);
 }
 
-.shelf-edge::after {
+/* The wooden shelf board the tabs and objects stand on. */
+.board {
+  position: relative;
+  height: 18px;
+  border-radius: 4px 4px 6px 6px;
+  background: linear-gradient(to bottom, var(--wood) 0%, var(--wood-deep) 100%);
+  box-shadow: 0 10px 18px -10px rgb(31 58 58 / 0.35);
+}
+.board::after {
   content: "";
   position: absolute;
-  inset-inline: 0;
-  bottom: -9px;
-  height: 8px;
-  background: linear-gradient(
-    to bottom,
-    rgb(34 31 26 / 0.08),
-    rgb(34 31 26 / 0)
-  );
+  inset-inline: 2%;
+  top: 100%;
+  height: 10px;
+  background: linear-gradient(to bottom, rgb(31 58 58 / 0.12), transparent);
   pointer-events: none;
+}
+
+/* Hero folders: links that tip off the board on hover and focus. */
+.hero-folder-link {
+  cursor: pointer;
+  outline: none;
+}
+.hero-folder {
+  transform-box: fill-box;
+  transform-origin: 50% 100%;
+  transition: transform 260ms var(--ease-out), filter 260ms var(--ease-out);
+}
+.hero-folder-link:hover .hero-folder,
+.hero-folder-link:focus-visible .hero-folder {
+  transform: translateY(-14px) rotate(-4deg);
+  filter: drop-shadow(0 10px 10px rgb(31 58 58 / 0.18));
+}
+.hero-folder-link:focus-visible .hero-folder > rect:nth-of-type(2) {
+  stroke: var(--sage-deep);
+  stroke-width: 3;
+}
+
+/* A paper card: white, soft radius, warm shadow. */
+.paper-card {
+  background: var(--paper);
+  border-radius: var(--r-lg);
+  box-shadow: var(--shadow-soft);
 }
 
 /* Motion utilities. The bottom sheet is the single signature movement. */
@@ -313,7 +390,7 @@ h3 {
   }
 }
 
-/* Hide scrollbar on horizontal chip rows while keeping them scrollable. */
+/* Hide scrollbar on horizontal rows while keeping them scrollable. */
 .scroll-quiet {
   scrollbar-width: none;
 }
@@ -329,99 +406,4 @@ h3 {
 /* 24 equal columns for the hour-of-day heat strip. */
 @utility grid-cols-24 {
   grid-template-columns: repeat(24, minmax(0, 1fr));
-}
-
-/* ─────────────────────────────────────────────────────────────────────────────
-   Bright theme — "A Brighter Kind of Support". Scoped to pages that opt in
-   with data-theme="bright" (the shelf). Overrides the base tokens so every
-   existing component picks up the new world without rewrites, and adds the
-   palette's own names. Text pairs below pass WCAG AA:
-     white on ocean 5.4, white on teal 5.9, ink on turquoise 5.0,
-     ink on coral 5.2, ink on sea glass 9.6, leaf-deep on white 4.8.
-   ───────────────────────────────────────────────────────────────────────── */
-[data-theme="bright"] {
-  --ocean: #2869ac;
-  --teal: #086c73;
-  --teal-deep: #06565c;
-  --turq: #19b8b0;
-  --turq-deep: #0f8f89;
-  --leaf: #57ac76;
-  --leaf-deep: #2f7d4e;
-  --leaf-text: #256a40;    /* small labels on pale green: 6.2:1 */
-  --glass: #bcede5;
-  --sky: #d9f0fa;
-  --sun: #ffe5a1;
-  --coral: #f58d75;
-  --coral-deep: #e27a60;
-  --coral-text: #b14a30;   /* small labels on white: 5.0:1 */
-  --white: #fcfaf5;
-
-  /* Remap the base system */
-  --cream: var(--white);
-  --cream-deep: var(--sky);
-  --paper: #ffffff;
-  --ink: #153a42;
-  --ink-body: #1b3b43;
-  --ink-soft: #2f525b;
-  --ink-mute: #4b6b72;      /* 5.4:1 on white */
-  --ink-faint: #8aa3a8;
-  --line: #d6e6ea;
-  --line-strong: #b9d3d9;
-  --sage: var(--turq);
-  --sage-deep: var(--teal);
-  --sage-tint: var(--glass);
-  --clay: var(--coral);     /* primary action: coral with ink text */
-  --clay-deep: var(--coral-deep);
-  --clay-warm: var(--sun);
-  --clay-tint: #ffeedd;
-  --shadow-soft: 0 10px 30px -10px rgb(21 58 66 / 0.14), 0 2px 6px -2px rgb(21 58 66 / 0.08);
-  --shadow-lift: 0 24px 50px -16px rgb(21 58 66 / 0.26), 0 6px 14px -6px rgb(21 58 66 / 0.12);
-  --shadow-shelf: 0 18px 30px -16px rgb(8 108 115 / 0.35);
-  background: var(--white);
-  color: var(--ink-body);
-}
-
-@theme inline {
-  --color-ocean: var(--ocean);
-  --color-teal: var(--teal);
-  --color-teal-deep: var(--teal-deep);
-  --color-turq: var(--turq);
-  --color-turq-deep: var(--turq-deep);
-  --color-leaf: var(--leaf);
-  --color-leaf-deep: var(--leaf-deep);
-  --color-leaf-text: var(--leaf-text);
-  --color-coral-text: var(--coral-text);
-  --color-glass: var(--glass);
-  --color-sky: var(--sky);
-  --color-sun: var(--sun);
-  --color-coral: var(--coral);
-  --color-coral-deep: var(--coral-deep);
-  --color-white: var(--white);
-}
-
-/* Primary button in the bright theme: coral with ink text (5.2:1), not white.
-   Unlayered on purpose so it wins over the text-paper utility. */
-[data-theme="bright"] .bg-clay.text-paper,
-[data-theme="bright"] .bg-ink.text-paper {
-  color: var(--ink);
-}
-[data-theme="bright"] .bg-ink.text-paper {
-  background: var(--sun);
-}
-
-@layer components {
-  /* Gentle float for hero objects. Off under reduced motion. */
-  .float-slow {
-    animation: float-slow 7s ease-in-out infinite;
-  }
-  .float-slower {
-    animation: float-slow 9s ease-in-out infinite reverse;
-  }
-  @keyframes float-slow {
-    0%, 100% { transform: translateY(0); }
-    50% { transform: translateY(-8px); }
-  }
-  @media (prefers-reduced-motion: reduce) {
-    .float-slow, .float-slower { animation: none; }
-  }
 }

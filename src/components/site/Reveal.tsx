@@ -28,7 +28,10 @@ export function Reveal({ as: Tag = "div", children, className = "", delay = 0 }:
       { rootMargin: "0px 0px -10% 0px", threshold: 0.1 },
     );
     io.observe(el);
-    return () => io.disconnect();
+    // Safety net: if the observer never fires (print, full-page captures, odd
+    // embedders), show the content anyway after a moment.
+    const t = setTimeout(() => el.classList.add("is-in"), 2500);
+    return () => { io.disconnect(); clearTimeout(t); };
   }, []);
   return (
     <Tag ref={ref} className={`reveal ${className}`} style={delay ? { transitionDelay: `${delay}ms` } : undefined}>

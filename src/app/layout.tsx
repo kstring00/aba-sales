@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from "next";
-import { Caveat, DM_Sans, Fraunces } from "next/font/google";
+import { Caveat, Fraunces, Inter } from "next/font/google";
 import "./globals.css";
 import { publicEnv } from "@/lib/env";
 import { ToastProvider } from "@/components/ui/Toast";
@@ -7,24 +7,29 @@ import { ToastProvider } from "@/components/ui/Toast";
 const fraunces = Fraunces({
   subsets: ["latin"],
   variable: "--font-fraunces",
-  axes: ["opsz", "SOFT"],
+  axes: ["opsz"],
   style: ["normal", "italic"],
   weight: "variable",
   display: "swap",
+  // The tuned fallback lives in globals.css: Next's automatic one is sized for
+  // text optical sizes, and our headlines run at opsz 144, 7% narrower.
+  adjustFontFallback: false,
 });
 
-const dmSans = DM_Sans({
+const inter = Inter({
   subsets: ["latin"],
-  variable: "--font-dm-sans",
+  variable: "--font-inter",
   display: "swap",
+  adjustFontFallback: false, // tuned fallback in globals.css
 });
 
 // One handwritten line per page, at most. Swap display so it never blocks text.
 const caveat = Caveat({
   subsets: ["latin"],
   variable: "--font-caveat",
-  weight: ["400", "500"],
+  weight: ["500"],
   display: "swap",
+  preload: false,
 });
 
 export const metadata: Metadata = {
@@ -34,13 +39,13 @@ export const metadata: Metadata = {
     template: "%s · The Support Shelf",
   },
   description:
-    "Thoughtfully made tools for the people who care. Printable and editable downloads for ABA families and clinics, plus a free ABC observation logger.",
+    "Practical, printable tools for parents and caregivers of kids in ABA therapy, plus a free ABC observation logger that stays on your phone.",
   applicationName: "The Support Shelf",
   openGraph: {
     type: "website",
     siteName: "The Support Shelf",
     title: "The Support Shelf",
-    description: "Thoughtfully made tools for the people who care.",
+    description: "Practical tools. Kinder days. Brighter tomorrows.",
     images: [{ url: "/og.png", width: 1200, height: 630, alt: "The Support Shelf" }],
   },
   icons: {
@@ -50,7 +55,7 @@ export const metadata: Metadata = {
 };
 
 export const viewport: Viewport = {
-  themeColor: "#f7f3eb",
+  themeColor: "#fbf7f0",
   width: "device-width",
   initialScale: 1,
   viewportFit: "cover",
@@ -58,7 +63,7 @@ export const viewport: Viewport = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en" className={`${fraunces.variable} ${dmSans.variable} ${caveat.variable}`}>
+    <html lang="en" className={`${fraunces.variable} ${inter.variable} ${caveat.variable}`}>
       <body className="flex min-h-dvh flex-col">
         <a
           href="#main"

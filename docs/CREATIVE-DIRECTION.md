@@ -1,48 +1,36 @@
 # Creative direction — The Support Shelf
 
-## Audit (what exists, what to keep, where it fell short)
+This supersedes the earlier "Warmest Room" and "Brighter Kind of Support" directions. The target is the homepage mockup supplied with the rebuild brief; this document records what was built and why.
 
-**Stack.** Next.js 16 App Router, TypeScript, Tailwind v4, one token file (`src/app/globals.css`), `next/font`. Shopify Storefront API for the shelf (read + cart), Shopify-hosted checkout, `/thanks`. The ABC logger is localStorage-only with browser-built PDF/CSV; one server route emails an export via Resend. No accounts, database, analytics, or service worker. Tests: 19 unit, Playwright journeys for `/abc` and all pages, axe pass, Lighthouse 98–100.
+## The idea
 
-**Must be preserved.** The logger's privacy model and exports; the exact antecedent/consequence wording; Storefront-only commerce; honest availability (only published products appear); the crisis page as resources only; AA contrast; no fabricated proof.
+The shelf does the heavy lifting. A parent arrives, reads one honest headline, and picks the shelf that matches today: Get Organized, Make a Plan, Everyday Life, or Support at Home. Each shelf is a tinted panel holding a few paper objects, one sentence each, price shown plainly. Nothing is invented: the four shelves hold the four products that exist in Shopify and the free ABC logger; the empty shelf says so and takes an email.
 
-**What worked.** Calm, one action per page, typographic restraint, the logger's three-tap flow, the export as the pitch.
+## Conversion
 
-**Where it failed the brief.** The homepage read as a competent product page, not a place: no recognition before the pitch, a flat three-card pattern, a sample-export image as the only "photo," no way to arrive by need rather than by catalog. Product cards said what, not who-for or which task. The shelf metaphor was a thin rule, not a room. Nothing acknowledged that support also comes from people.
+- Primary: open a shelf → click through to a product or the free logger.
+- Secondary: on an empty shelf, leave an email.
+- Objections answered where they arise: "Is this for me?" (kicker and audience line in the hero), "What is this actually?" (one sentence and price on each card), "Who made this?" (RBT line in Why it matters, no clinical claims), "Is this telling me how to parent?" (boundary line in the footer and on every product page).
 
-**Inventory reality.** Four real products, all on the Family shelf: `home-abc-printable` (free), `waitlist-playbook` (free), `care-binder` ($14.99), `read-your-childs-treatment-plan` ($9.99). Clinic shelf is empty. Everything on the site keys off what the Storefront API returns; concept products are never rendered as purchasable.
+## Palette and type
 
-## Three directions, evaluated
+Warm cream `#FBF7F0` walls; deep forest ink `#1F3A3A` for headings and body; shelf tints sky `#D9EBF5`, mint `#D7EEDC`, butter `#FBEDC8`, blush `#F9DAD3` (backgrounds only, each with a deep partner for icons and small labels on white); sage leaves; a soft sun; pale aqua wave dividers. Terracotta is the single primary action per section: `#B25A3F` on text-bearing buttons (white text 4.7:1), the brief's `#C96A4E` for rules, arrows and large marks. Secondary actions are outlined ink.
 
-| | A · The Warmest Room | B · The Everyday Archive | C · A Light Left On |
-| --- | --- | --- | --- |
-| Emotional connection | Highest | Medium | High |
-| Distinctiveness | High (needs real photography) | High (works with paper objects alone) | Medium |
-| Product discoverability | Medium | Highest | Medium |
-| Trust | High | High | High |
-| Mobile performance | Needs careful image art direction | Light | Light |
-| Cost / maintenance | Photography budget | Low | Low |
+Fraunces for headlines (opsz 144), the emphasized word in italic; Inter for everything a parent reads to act; Caveat only for handwriting inside illustrations (the pinned note, the mug, the sample entry).
 
-**Chosen: one direction, "The Warmest Room," built from "The Everyday Archive."** The emotional register of A, the tactile product handling of B, and the lighting and pace of C. In practice: warm paper and forest ink; photography slots art-directed for documentary home moments; products handled as paper objects on a wooden shelf; a handwritten line, once per page; motion limited to a soft reveal and the lifting of a paper object.
+## Illustration
 
-Because no licensed photography exists yet, every photo slot is a designed placeholder with its brief, crop, and alt-text strategy attached (see `docs/ASSETS.md`). Nothing waits on photography to function.
+Everything is inline SVG in `src/components/illustrations/Paper.tsx`, colored from tokens: paper folders, a ring binder, a checklist, a calendar, a sun, people, leaves, a mug, a pinned note, the hero shelf scene, the sample log sheet, and the wave dividers. Soft shading is a second, darker shape; no outline heavier than 1px. No stock, no AI people, no raster images.
 
-## Principles
+## Sections, in order
 
-1. Recognition before the pitch. The first screen names the load without claiming to know it.
-2. Honest inventory. Available, free, planned, and "not yet" are visually distinct and never blurred.
-3. The child is a person. No deficit framing, no "fix," no before/after.
-4. One action per page in terracotta. Everything else is paper and ink.
-5. Paper, not cards. Objects sit on a shelf; sections have their own shape.
-6. Motion is physical and optional: a reveal, a lift, a page turn. Reduced motion removes all of it.
-7. Beauty is the absence of friction: 17–18px text, 44px targets, visible focus, no hover-only paths.
+1. Nav: leaf wordmark · About · How it works · Shelves · search · cart. No sign-in (there are no accounts).
+2. Hero: "Real support for real family life" · "You don't have to find everything *all at once*." · audience line · Find my shelf (scrolls to the shelves) · Browse all support (`/shelf`) · three trust marks · the shelf scene.
+3. Explore the shelves: "What kind of support do you need *today*?" Four tabs on a wooden board, swipeable with a "Shelf 1 of 4" counter; the active tab opens its tinted panel.
+4. Why it matters: "Small, useful things, *within reach*." Two sentences, the RBT line, three marks, and a framed sample page from the Home ABC Printable captioned "What your BCBA actually wants to see." A testimonial carousel is added only when real testimonials exist.
+5. Closing: "You don't have to figure everything *out alone*." One terracotta Find my shelf.
+6. Footer: wordmark, tagline, About · Shelves · Contact · Privacy, the boundary line, year, email.
 
-## Tokens (final)
+## Principles kept from earlier phases
 
-Paper `#F7F3EB` · page `#FFFDF8` · Forest Ink `#283E35` (headings, UI) · Deep Charcoal `#252A27` (body) · muted `#55625A` · Soft Sage `#A5B7A1` (selected states; tint `#E3EADF`) · Powder Blue tint `#DCE8EC` and Lavender tint `#E6E0EC` (category backgrounds only) · Terracotta action `#9E5234` (5.1:1 with paper text; `#C87555` decorative only) · oak `#B98F6A`.
-
-Type: Fraunces (opsz 144, SOFT 30) for headlines and one italic phrase per page; DM Sans 17/18px, 1.6 line-height, 68ch measure, for everything a parent reads to act; Caveat for at most one handwritten line per page, never for instructions or data.
-
-Materials: paper grain (SVG noise, 35% multiply) on large paper surfaces; linen weave on quiet bands; warm forest-tinted shadows; a wooden shelf edge under products.
-
-Interaction standards: 200ms fades; 2px lifts; a 600ms reveal once per element; the bottom sheet's spring; `prefers-reduced-motion` removes all transforms and animations; nothing autoplays, loops, or hijacks scroll.
+Honest inventory (available, free, being made are visually distinct); the child is a person; one action per section; motion is a reveal and a lift, removed under reduced motion; 17–18px text, 44px targets, visible focus; AA contrast on every text pair.

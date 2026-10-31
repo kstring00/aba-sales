@@ -2,13 +2,15 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { SiteHeader } from "@/components/site/SiteHeader";
-import { SiteFooter } from "@/components/site/SiteFooter";
-import { ProductCard } from "@/components/shop/ProductCard";
+import { SiteFooter, BOUNDARY_LINE } from "@/components/site/SiteFooter";
+import { ProductShelfCard } from "@/components/shop/ShelfCard";
 import { AddToCart } from "@/components/shop/AddToCart";
 import { BinderPreview } from "@/components/shop/BinderPreview";
+import { PaperObject } from "@/components/illustrations/Paper";
 import { getProduct, getProductHandles, getRelated } from "@/lib/shopify/catalog";
 import { formatMoney } from "@/lib/shopify/normalize";
-import { metaFor, TONE_BG } from "@/lib/resources";
+import { metaFor } from "@/lib/resources";
+import { shelfFor, TINT_BG, TINT_TEXT } from "@/lib/shelves";
 
 export const revalidate = 300;
 export const dynamicParams = true;
@@ -31,16 +33,17 @@ export async function generateMetadata({ params }: { params: Promise<{ handle: s
 
 const FAQ = [
   { q: "How do I get the files?", a: "Shopify emails a download link within a minute of checkout. The link stays in that email, so keep it. If it doesn't arrive, check spam, then write to us using the footer." },
-  { q: "Can I edit it?", a: "Printable PDFs print as-is. Editable items open in Canva or Google Docs, as listed under Format." },
+  { q: "Can I edit it?", a: "Printable PDFs print as-is. Editable items open in Canva or Google Docs, as listed under what you receive." },
   { q: "Is this treatment advice?", a: "No. Everything on the shelf is a template or educational material. Your child's team decides what fits your child." },
   { q: "Is it right for my situation?", a: "Read 'who it may help' and the page previews. If it isn't a fit, don't buy it; the free ABC logger is here either way." },
   { q: "Refunds?", a: "Downloads can't be returned, but if something is broken or not as described, write to us and we'll make it right." },
 ];
 
 /**
- * Every product page answers: what task, what exactly you get, what it looks
- * like, who it's for, the format, the price, and how to get help. Important
- * details sit next to the purchase decision, never behind an animation.
+ * Every product page answers: what it is, what exactly you get, what it looks
+ * like, who it's for, the price, and how to get help. The gallery shows the
+ * real images from Shopify; when there are none yet, the shelf's paper object
+ * stands in. "Get it" adds the item and hands off to Shopify-hosted checkout.
  */
 export default async function ProductPage({ params }: { params: Promise<{ handle: string }> }) {
   const { handle } = await params;
@@ -48,6 +51,8 @@ export default async function ProductPage({ params }: { params: Promise<{ handle
   if (!product) notFound();
   const related = await getRelated(handle, product.collectionHandles);
   const meta = metaFor(handle);
+  const shelf = shelfFor(product);
+  const tint = shelf?.tint ?? "sky";
   const price = formatMoney(product.price);
   const formatLine = product.format ?? extractFormat(product.description);
   const included = product.included.length ? product.included : extractIncluded(product.description);
@@ -55,29 +60,43 @@ export default async function ProductPage({ params }: { params: Promise<{ handle
   return (
     <>
       <SiteHeader />
-      <main id="main" className="mx-auto w-full max-w-7xl flex-1 px-5 pb-32 pt-6 sm:px-8 sm:pt-10 md:pb-24">
+      <main id="main" className="mx-auto w-full max-w-7xl flex-1 px-5 pb-32 pt-4 sm:px-8 sm:pt-8 md:pb-24">
         <nav aria-label="Breadcrumb" className="text-[14px] text-ink-mute">
-          <Link href="/shelf" className="hover:text-ink">The shelf</Link>
-          {meta ? <> <span aria-hidden>/</span> <Link href={`/shelf#${meta.category.toLowerCase().replace(/[^a-z0-9]+/g, "-")}`} className="hover:text-ink">{meta.category}</Link></> : null}
+          <Link href="/shelf" className="hover:text-ink">Shelves</Link>
+          {shelf ? <> <span aria-hidden>/</span> <Link href={`/shelf#${shelf.id}`} className="hover:text-ink">{shelf.title}</Link></> : null}
         </nav>
 
         <div className="mt-6 grid gap-10 md:grid-cols-[minmax(0,7fr)_minmax(0,5fr)] md:gap-14">
-          <div className={`rounded-[28px] p-4 sm:p-8 ${TONE_BG[meta?.tone ?? "paper"]}`}>
-            <BinderPreview images={product.images} title={product.title} format={formatLine} />
+          <div className={`${TINT_BG[tint]} grain rounded-xl p-4 sm:p-8`}>
+            {product.images.length ? (
+              <BinderPreview images={product.images} title={product.title} format={formatLine} />
+            ) : (
+              <div className="flex aspect-[4/5] flex-col items-center justify-center text-center">
+                <PaperObject kind={meta?.object ?? "folder"} tint={tint} className="h-56 w-64" />
+                <p className="mt-4 max-w-[36ch] text-[14px] text-ink-mute">Page previews are on their way. What you receive is listed on the right.</p>
+              </div>
+            )}
           </div>
 
           <div>
-            <p className="text-[13px] uppercase tracking-[0.18em] text-ink-mute">{meta?.category ?? "Download"} · {price === "Free" ? "Free" : "Digital download"}</p>
+            <p className={`text-[12px] font-medium uppercase tracking-[0.16em] ${TINT_TEXT[tint]}`}>
+              {shelf ? `Shelf ${shelf.number} · ${shelf.title}` : "Download"}
+            </p>
             <h1 className="mt-3 text-[clamp(2rem,1.5rem+1.8vw,3rem)]">{product.title}</h1>
             <p className="mt-4 text-[1.1rem] text-ink-soft">{meta?.task ?? product.benefit}</p>
             {meta ? <p className="mt-2 text-[15px] text-ink-mute">Who it may help: {meta.who}</p> : null}
             <p className="tnum mt-6 text-[1.6rem] text-ink">
               {price}
               {product.compareAtPrice ? <span className="ml-3 text-[1rem] text-ink-mute line-through">{formatMoney(product.compareAtPrice)}</span> : null}
+              <span className="ml-3 text-[14px] text-ink-mute">{price === "Free" ? "Digital download" : "Digital download · one-time"}</span>
             </p>
 
-            <section className="mt-6 rounded-lg bg-paper p-5 shadow-soft" aria-labelledby="format-h">
-              <h2 id="format-h" className="font-sans text-[13px] font-medium uppercase tracking-wider text-ink-mute">What you receive</h2>
+            <div className="mt-6 hidden md:block">
+              <AddToCart variantId={product.variantId} available={product.availableForSale} price={price} />
+            </div>
+
+            <section className="paper-card mt-6 p-5" aria-labelledby="format-h">
+              <h2 id="format-h" className="font-sans text-[12px] font-medium uppercase tracking-[0.16em] text-ink-mute">What you receive</h2>
               <p className="mt-2 text-[16px] text-ink">{formatLine ?? "Format details are being added. The description below says what's inside."}</p>
               {included.length ? (
                 <ul className="mt-3 space-y-1 text-[15px] text-ink-soft">
@@ -87,12 +106,8 @@ export default async function ProductPage({ params }: { params: Promise<{ handle
               <p className="mt-3 text-[14px] text-ink-mute">Delivered by email in under a minute, from Shopify. Use it right away.</p>
             </section>
 
-            <div className="mt-6 hidden md:block">
-              <AddToCart variantId={product.variantId} available={product.availableForSale} price={price} />
-            </div>
-
-            <p className="mt-6 rounded-md bg-sage-tint px-4 py-3 text-[14px] text-ink">Made by a Registered Behavior Technician.</p>
-            <p className="mt-4 text-[14px] text-ink-soft">No client data. No treatment recommendations. You customize everything. If a file is broken or not as described, write to us and we&apos;ll fix it or refund you.</p>
+            <p className="mt-6 text-[15px] text-ink">Made by a Registered Behavior Technician. {BOUNDARY_LINE}</p>
+            <p className="mt-3 text-[14px] text-ink-soft">No client data. You customize everything. If a file is broken or not as described, write to us and we&apos;ll fix it or refund you.</p>
           </div>
         </div>
 
@@ -105,7 +120,7 @@ export default async function ProductPage({ params }: { params: Promise<{ handle
 
         <section className="mt-16 max-w-3xl" aria-labelledby="faq-h">
           <h2 id="faq-h">Before you buy</h2>
-          <div className="mt-6 divide-y divide-line rounded-lg bg-paper shadow-soft">
+          <div className="paper-card mt-6 divide-y divide-line">
             {FAQ.map((f) => (
               <details key={f.q} className="group px-5 py-4">
                 <summary className="flex min-h-11 cursor-pointer list-none items-center justify-between gap-4 text-[16px] text-ink">
@@ -122,14 +137,14 @@ export default async function ProductPage({ params }: { params: Promise<{ handle
           <section className="mt-20" aria-labelledby="related-h">
             <h2 id="related-h">Often used together</h2>
             <p className="mt-2 text-[15px] text-ink-mute">Because the tasks go together, not because of a sales target.</p>
-            <div className="shelf-edge mt-6 pb-12">
-              <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3"><ProductCard product={related} /></div>
+            <div className="mt-6 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+              <ProductShelfCard product={related} tint={shelfFor(related)?.tint ?? tint} />
             </div>
           </section>
         ) : null}
       </main>
 
-      <aside aria-label="Add to cart" className="fixed inset-x-0 bottom-0 z-40 border-t border-line bg-cream/95 p-4 pb-[calc(env(safe-area-inset-bottom)+16px)] backdrop-blur md:hidden">
+      <aside aria-label="Get this download" className="fixed inset-x-0 bottom-0 z-40 border-t border-line bg-cream/95 p-4 pb-[calc(env(safe-area-inset-bottom)+16px)] backdrop-blur md:hidden">
         <div className="mx-auto flex max-w-lg items-center gap-4">
           <span className="tnum text-[1.1rem]">{price}</span>
           <div className="flex-1"><AddToCart variantId={product.variantId} available={product.availableForSale} price={price} compact /></div>
