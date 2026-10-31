@@ -1,5 +1,10 @@
 # Creative direction — The Support Shelf
 
+## Current direction: a botanical library (this build)
+
+Warm ivory walls, deep botanical green used sparingly for headings and emphasis, sage and eucalyptus for accents, coral/terracotta for the one warm action, honey for highlights. The homepage hero is a CSS-3D bookshelf: four hardcover books (cover, spine, page block, top edge) on a crafted wooden plank with cheeks and contact shadows. Hover or focus slides a book forward; click pulls it out and unfolds a drawer beneath. Books: dusty blue, botanical sage, golden ochre, muted terracotta. Three.js was considered and declined: CSS 3D gives the depth and lighting without a WebGL bundle, text stays crisp, and there is nothing to fall back from. Dark mode was removed; the site is always light. Fallback fonts are metric-matched (roman and italic separately) so headlines keep their line count while fonts load.
+
+
 This supersedes the earlier "Warmest Room" and "Brighter Kind of Support" directions. The target is the homepage mockup supplied with the rebuild brief; this document records what was built and why.
 
 ## The idea

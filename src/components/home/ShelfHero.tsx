@@ -4,14 +4,15 @@ import Link from "next/link";
 import { useCallback, useEffect, useRef, useState, type ReactNode } from "react";
 import type { ShelfId, Tint } from "@/lib/shelves";
 import { D, DrawerGlyph, SHELF_GLYPH } from "@/components/home/drawer-icons";
+import { Sprig } from "@/components/illustrations/Paper";
 
 export type HeroShelf = { id: ShelfId; number: number; title: string; blurb: string; tint: Tint };
 
-const BINDER: Record<Tint, { c: string; ink: string }> = {
-  sky: { c: "var(--b1)", ink: "var(--b1-ink)" },
-  mint: { c: "var(--b2)", ink: "var(--b2-ink)" },
-  butter: { c: "var(--b3)", ink: "var(--b3-ink)" },
-  blush: { c: "var(--b4)", ink: "var(--b4-ink)" },
+const BINDER: Record<Tint, { c: string; deep: string; ink: string; tint: string }> = {
+  sky: { c: "var(--b1)", deep: "var(--b1-deep)", ink: "var(--b1-ink)", tint: "var(--b1-tint)" },
+  mint: { c: "var(--b2)", deep: "var(--b2-deep)", ink: "var(--b2-ink)", tint: "var(--b2-tint)" },
+  butter: { c: "var(--b3)", deep: "var(--b3-deep)", ink: "var(--b3-ink)", tint: "var(--b3-tint)" },
+  blush: { c: "var(--b4)", deep: "var(--b4-deep)", ink: "var(--b4-ink)", tint: "var(--b4-tint)" },
 };
 
 /**
@@ -86,7 +87,7 @@ export function ShelfHero({ shelves, panels, reviewer }: { shelves: HeroShelf[];
       const r = stage.getBoundingClientRect();
       const x = (e.clientX - r.left) / r.width - 0.5;
       const y = (e.clientY - r.top) / r.height - 0.5;
-      books.style.transform = `rotateY(${x * 7}deg) rotateX(${-y * 4}deg)`;
+      books.style.transform = `rotateY(${x * 5}deg) rotateX(${-y * 3}deg)`;
     };
     const leave = () => { books.style.transform = ""; };
     stage.addEventListener("pointermove", move);
@@ -95,6 +96,7 @@ export function ShelfHero({ shelves, panels, reviewer }: { shelves: HeroShelf[];
   }, []);
 
   const tint = current ? BINDER[current.tint] : BINDER.sky;
+  // Parallax: books only (the room stays still), a gentler sweep than the demo's.
 
   return (
     <>
@@ -117,30 +119,49 @@ export function ShelfHero({ shelves, panels, reviewer }: { shelves: HeroShelf[];
           {reviewer ? <p className="sd-reviewed">Reviewed by {reviewer}, BCBA.</p> : null}
         </div>
 
-        <div className="sd-stage" ref={stageRef}>
-          <div className="sd-wall" aria-hidden />
-          <div ref={booksRef} className={`sd-books${open ? " has-active" : ""}`} role="group" aria-label="Choose a shelf">
-            {shelves.map((s, i) => (
-              <button
-                key={s.id}
-                ref={(el) => { bookRefs.current[i] = el; }}
-                type="button"
-                className="sd-book"
-                style={{ "--c": BINDER[s.tint].c, "--ink": BINDER[s.tint].ink, "--i": i } as React.CSSProperties}
-                aria-pressed={i === active}
-                aria-controls="shelf-drawer"
-                onClick={() => (i === active ? setActive(-1) : openShelf(i))}
-              >
-                <span className="in">
-                  <span className="ic"><DrawerGlyph name={SHELF_GLYPH[s.id]} /></span>
-                  <span className="t">{s.title}</span>
-                  <span className="d">{s.blurb}</span>
-                </span>
-                <span className="tab" aria-hidden />
-              </button>
-            ))}
+        <div className="lib" ref={stageRef}>
+          <div className="lib-room" aria-hidden />
+          <Sprig className="lib-sprig" />
+          <div className="lib-stage">
+            <div ref={booksRef} className={`lib-row${open ? " has-active" : ""}`} role="group" aria-label="Choose a shelf">
+              {shelves.map((s, i) => {
+                const b = BINDER[s.tint];
+                return (
+                  <button
+                    key={s.id}
+                    ref={(el) => { bookRefs.current[i] = el; }}
+                    type="button"
+                    className="bk"
+                    style={{ "--c": b.c, "--c-deep": b.deep, "--ink": b.ink, "--i": i } as React.CSSProperties}
+                    aria-pressed={i === active}
+                    aria-controls="shelf-drawer"
+                    onClick={() => (i === active ? setActive(-1) : openShelf(i))}
+                  >
+                    <span className="bk-body">
+                      <span className="bk-face bk-shadow" aria-hidden />
+                      <span className="bk-face bk-back" aria-hidden />
+                      <span className="bk-face bk-pages" aria-hidden />
+                      <span className="bk-face bk-top" aria-hidden />
+                      <span className="bk-face bk-spine" aria-hidden><span>{s.title}</span></span>
+                      <span className="bk-face bk-cover">
+                        <span className="bk-ic" aria-hidden><DrawerGlyph name={SHELF_GLYPH[s.id]} /></span>
+                        <span className="bk-t">{s.title}</span>
+                        <span className="bk-rule" aria-hidden />
+                        <span className="bk-d">{s.blurb}</span>
+                        <span className="bk-imprint" aria-hidden>The Support Shelf</span>
+                      </span>
+                    </span>
+                  </button>
+                );
+              })}
+            </div>
           </div>
-          <div className="sd-plank" aria-hidden />
+          <div className="lib-shelf" aria-hidden>
+            <div className="lib-cheek l" />
+            <div className="lib-cheek r" />
+            <div className="lib-top" />
+            <div className="lib-front" />
+          </div>
           <div className={`sd-hint${open ? " away" : ""}`} aria-hidden>
             <svg viewBox="0 0 52 38" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M46 4C40 6 30 8 22 14c-6 4-10 9-10 16" /><path d="M6 24l6 7 7-5" /></svg>
             <span>Choose a shelf<br />to see what&apos;s inside.</span>
@@ -152,7 +173,7 @@ export function ShelfHero({ shelves, panels, reviewer }: { shelves: HeroShelf[];
         id="shelf-drawer"
         ref={drawerRef}
         className={`sd-drawer${open ? " open" : ""}`}
-        style={{ "--shelf": tint.c, "--ink": tint.ink } as React.CSSProperties}
+        style={{ "--shelf": tint.tint, "--ink": tint.ink } as React.CSSProperties}
         aria-label="Shelf contents"
       >
         <div className="sd-drawer-inner">
