@@ -354,67 +354,6 @@ h2 em {
   pointer-events: none;
 }
 
-/* Hero folders: links that tip off the board on hover and focus. */
-.hero-folder-link {
-  cursor: pointer;
-  outline: none;
-}
-.hero-folder {
-  transform-box: fill-box;
-  transform-origin: 50% 100%;
-  transition: transform 260ms var(--ease-out), filter 260ms var(--ease-out);
-}
-.hero-folder-link:hover .hero-folder,
-.hero-folder-link:focus-visible .hero-folder {
-  transform: translateY(-14px) rotate(-4deg);
-  filter: drop-shadow(0 10px 10px rgb(31 58 58 / 0.18));
-}
-.hero-folder-link:focus-visible .hero-folder > rect:nth-of-type(2) {
-  stroke: var(--sage-deep);
-  stroke-width: 3;
-}
-
-.board-thick {
-  height: 26px;
-  border-radius: 5px 5px 8px 8px;
-  background:
-    repeating-linear-gradient(90deg, rgb(255 255 255 / 0.06) 0 2px, transparent 2px 23px),
-    linear-gradient(to bottom, var(--wood) 0%, var(--wood) 55%, var(--wood-deep) 100%);
-  box-shadow: 0 14px 22px -12px rgb(31 58 58 / 0.4), inset 0 1px 0 rgb(255 255 255 / 0.35);
-}
-.board-thick::before,
-.board-thick::after {
-  content: "";
-  position: absolute;
-  inset-inline: auto;
-  top: 100%;
-  width: 14px;
-  height: 18px;
-  background: var(--wood-deep);
-  border-radius: 0 0 4px 4px;
-  opacity: 0.9;
-}
-.board-thick::before { left: 6%; right: auto; }
-.board-thick::after { left: auto; right: 6%; }
-
-/* A shelf panel: soft top-light and a shaded floor for depth. */
-.panel {
-  position: relative;
-  overflow: hidden;
-  box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.6), var(--shadow-soft);
-}
-.panel::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  pointer-events: none;
-  border-radius: inherit;
-  background:
-    radial-gradient(120% 70% at 0% 0%, rgb(255 255 255 / 0.55), transparent 55%),
-    linear-gradient(to top, rgb(31 58 58 / 0.06), transparent 35%);
-}
-.panel > * { position: relative; z-index: 1; }
-
 /* A paper card: white, soft radius, warm shadow. */
 .paper-card {
   background: var(--paper);
@@ -538,21 +477,25 @@ h2 em {
 .lib-room::after { content: ""; position: absolute; inset: 0; opacity: .5; mix-blend-mode: multiply;
   background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='200' height='200'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.8' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 .6 0 0 0 0 .55 0 0 0 0 .45 0 0 0 .05 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>"); }
 .lib-sprig { position: absolute; right: -2%; top: -6%; width: clamp(90px, 14vw, 170px); height: auto; opacity: .55; z-index: 1; pointer-events: none; transform: rotate(16deg); }
-.lib-stage { position: relative; z-index: 2; perspective: 1400px; perspective-origin: 42% 28%; }
+.lib-stage { position: relative; z-index: 2; perspective: 1600px; perspective-origin: 50% 30%; }
 .lib-row { display: flex; justify-content: center; align-items: flex-end; gap: var(--gap); padding: 0 clamp(14px, 3vw, 36px); transform-style: preserve-3d; transition: transform .6s var(--ease); }
 
 /* a book */
+/* The button itself stays flat and carries its own perspective, so the 3D
+   faces never depend on a <button> being a preserve-3d container (unreliable
+   in WebKit) and never sit under a filtered ancestor (faces drop out in
+   GPU-composited Chrome). */
 .bk { position: relative; width: var(--bw); height: var(--bh); flex: none; border: 0; padding: 0; background: transparent; color: var(--ink-on-book); cursor: pointer; font: inherit; text-align: center;
-  transform-style: preserve-3d; perspective: inherit; animation: lib-settle .9s var(--ease) both; animation-delay: calc(var(--i) * 90ms); outline-offset: 10px; }
+  perspective: 1100px; perspective-origin: 45% 32%; animation: lib-settle .9s var(--ease) both; animation-delay: calc(var(--i) * 90ms); outline-offset: 10px; }
 .bk:focus-visible { outline: 3px solid var(--accent-text); border-radius: 6px; }
 @keyframes lib-settle { from { opacity: 0; transform: translateY(-16px); } to { opacity: 1; transform: none; } }
-.bk-body { position: absolute; inset: 0; transform-style: preserve-3d; transform: rotateY(-21deg); transition: transform .65s var(--ease), filter .45s, opacity .45s; }
+.bk-body { position: absolute; inset: 0; transform-style: preserve-3d; transform: rotateY(-21deg); transition: transform .65s var(--ease), opacity .45s; }
 .bk:hover .bk-body, .bk:focus-visible .bk-body { transform: rotateY(-18deg) translateZ(28px) rotateX(-3deg) translateY(-4px); }
 .bk[aria-pressed="true"] .bk-body { transform: rotateY(-10deg) translateZ(70px) translateY(-12px) rotateX(-7deg); }
-.lib-row.has-active .bk:not([aria-pressed="true"]) .bk-body { transform: rotateY(-21deg) translateZ(-14px); filter: saturate(.85) brightness(.97); }
-.lib-row.has-active .bk:not([aria-pressed="true"]):hover .bk-body, .lib-row.has-active .bk:not([aria-pressed="true"]):focus-visible .bk-body { transform: rotateY(-18deg) translateZ(12px) translateY(-3px); filter: none; }
+.lib-row.has-active .bk:not([aria-pressed="true"]) .bk-body { transform: rotateY(-21deg) translateZ(-14px); opacity: .78; }
+.lib-row.has-active .bk:not([aria-pressed="true"]):hover .bk-body, .lib-row.has-active .bk:not([aria-pressed="true"]):focus-visible .bk-body { transform: rotateY(-18deg) translateZ(12px) translateY(-3px); opacity: 1; }
 
-.bk-face { position: absolute; left: 50%; top: 50%; width: var(--bw); height: var(--bh); backface-visibility: hidden; }
+.bk-face { position: absolute; left: 50%; top: 50%; width: var(--bw); height: var(--bh); }
 .bk-cover { transform: translate(-50%, -50%) translateZ(calc(var(--bd) / 2)); border-radius: 3px 7px 7px 3px; background: var(--c); color: var(--ink);
   background-image:
     linear-gradient(100deg, rgba(255, 255, 255, .18), transparent 40%, rgba(0, 0, 0, .06)),
@@ -580,7 +523,7 @@ h2 em {
 .bk-top { height: calc(var(--bd) - 3px); width: calc(var(--bw) - 6px); transform: translate(-50%, -50%) rotateX(90deg) translateZ(calc(var(--bh) / 2)); background: #F6F1E6;
   background-image: repeating-linear-gradient(90deg, rgba(0, 0, 0, .07) 0 1px, transparent 1px 3px); }
 .bk-shadow { width: calc(var(--bw) * 1.15); height: calc(var(--bd) * 2.2); transform: translate(-50%, -50%) rotateX(90deg) translateZ(calc(var(--bh) / -2 - 1px)); border-radius: 50%;
-  background: radial-gradient(ellipse at center, rgba(60, 44, 20, .42), rgba(60, 44, 20, .18) 45%, transparent 72%); filter: blur(2px); transition: transform .65s var(--ease), opacity .45s; }
+  background: radial-gradient(ellipse at center, rgba(60, 44, 20, .40), rgba(60, 44, 20, .16) 45%, transparent 72%); transition: transform .65s var(--ease), opacity .45s; }
 .bk[aria-pressed="true"] .bk-shadow { opacity: .75; }
 
 /* the shelf board, a real plank with a lit top face and a thick front */
@@ -655,7 +598,7 @@ h2 em {
 .sd-seeall svg { width: 18px; height: 18px; flex: none; }
 
 @media (prefers-reduced-motion: reduce) {
-  .lib-row, .bk, .bk-body, .bk[aria-pressed="true"] .bk-body, .lib-row.has-active .bk:not([aria-pressed="true"]) .bk-body, .sd-card, .sd-btn { transform: none !important; filter: none !important; }
+  .lib-row, .bk, .bk-body, .bk[aria-pressed="true"] .bk-body, .lib-row.has-active .bk:not([aria-pressed="true"]) .bk-body, .sd-card, .sd-btn { transform: none !important; opacity: 1 !important; }
   .bk-body { transform: rotateY(-21deg) !important; }
   .bk[aria-pressed="true"] .bk-cover { outline: 3px solid var(--accent-text); outline-offset: 4px; }
 }
