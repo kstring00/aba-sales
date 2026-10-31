@@ -128,3 +128,31 @@ Gate: build (scope check: 21 files clean), typecheck, lint · unit 56/56 · page
 | `content/find-care/blocks.md` | All ten sections; then set `status: published` |
 | `content/resources.json` | The five `find-care` entries: every `TODO_VERIFY` field, then a `lastVerified` date |
 | `content/pages/for-you-research.md` | Each finding, its "What this means for you" line, and every citation in `sources` |
+
+## Stage 6 — Launch-checklist pass and handoff
+
+| Check | Result |
+| --- | --- |
+| Message | Every new page opens with an H1 and a one-line description saying what it is and who it's for; one primary action per page (Right now: the safety answer; tools: Start / Next; Decode: the box; Find care: the questions; lessons: the soft next step). The Right now pill is in the header and the contact mailbox in the footer on every page, once Right now is published. |
+| Mobile | `scripts/route-shots.mjs` → `tests/e2e/shots/launch/{375,768}-*.png` for 21 routes: no horizontal overflow, no tappable element under 44px (the lesson breadcrumb was enlarged in this stage). |
+| Speed (Lighthouse mobile, local production build) | `/right-now` 92 · `/for-you/breathe` 95 · `/abc` 90 · `/learn/decode` 94 · `/find-care` 94 performance; 100 accessibility and best practices on all five. SEO reads 66 on `/right-now` and `/find-care` only because pending pages are deliberately `noindex`; it returns to 100 when they are published. |
+| Credibility | Published lessons render sources and "Last reviewed" from front matter; grep for lorem / placeholder / localhost finds nothing user-facing; `TODO_VERIFY` exists only in `content/resources.json` and is hidden on production; pending markers (`[pending: …]`) render only on preview; scope check clean (21 files). |
+| Search | Titles and descriptions come from each file's front matter in parents' words ("Tantrum or meltdown?", "What does BCBA mean? …"); one H1 per page (`tests/e2e/pages.mjs`); canonical from the root layout; the sitemap lists only published hub pages (verified empty in a production-mode build). |
+| Plumbing | `scripts/link-check.mjs`: all 27 internal links resolve (externals can't be fetched from this environment: 988lifeline.org, childhelphotline.org, bacb.com). Offline: after one visit, `/right-now`, `/for-you`, both tools and `/crisis` load with no network and box breathing runs; uncached pages fail as intended. 404 page unchanged. |
+
+## Suggested writing order
+
+1. `content/pages/right-now.md` — all five sections.
+2. `content/tracker.json → safetyCard` — title and body.
+3. `content/glossary.json` — definitions (start with BCBA, RBT, ABA, IEP, FBA, BIP, prior authorization, treatment plan), plus aliases such as expansions.
+4. `content/learn/tantrum-or-meltdown.md`.
+5. `content/learn/what-aba-is-and-isnt.md`.
+6. `content/find-care/blocks.md` and the `find-care` entries in `content/resources.json`.
+7. `content/pages/for-you-research.md`.
+
+Then, in any order: `content/pages/for-you.md`, `learn.md`, `find-care.md`, `glossary.md`, the other four lessons, and the rest of `content/tracker.json` (early signs, label nudge, Did you know, walkthrough, questions to bring). Set `status: published` on each file when it's ready; nothing else needs to change.
+
+## Still open
+
+- **Markdown renderer.** Sections render as plain paragraphs (no bold, lists or links inside the text) until you pick: `marked` (14.5 KB gzipped, server-only), `snarkdown` (1 KB), or a small in-repo renderer. Glossary auto-linking and the scope check already work on the files either way.
+- `lastVerified` dates for the five crisis lines (the build warns until they're set).

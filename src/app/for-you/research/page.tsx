@@ -21,7 +21,7 @@ export default function ResearchPage() {
       <SiteHeader />
       <main id="main" className="mx-auto w-full max-w-3xl flex-1 px-5 pb-24 pt-8 sm:px-8 sm:pt-12">
         <PendingBanner status={page.status} />
-        <nav aria-label="Breadcrumb" className="text-[14px] text-ink-mute"><Link href="/for-you" className="hover:text-ink">{ui.nav.forYou}</Link></nav>
+        <nav aria-label="Breadcrumb" className="text-[14px] text-ink-mute"><Link href="/for-you" className="inline-flex min-h-11 items-center hover:text-ink">{ui.nav.forYou}</Link></nav>
         <h1 className="mt-2 text-[clamp(2.2rem,1.6rem+2vw,3.4rem)]">{page.title}</h1>
         {page.description ? <p className="mt-4 text-[1.15rem] text-ink-soft">{page.description}</p> : null}
         <p className="mt-3 text-[14px] text-ink-mute">{page.lastReviewed ? fill(ui.learn.lastReviewed, { date: page.lastReviewed }) : null}</p>
