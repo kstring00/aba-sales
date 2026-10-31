@@ -139,3 +139,17 @@ Legal review of /privacy · BCBA review of wording and the "reviewed by" name ·
 | Unique title + description; favicon + social image; computed year; privacy link in footer | pass |
 | `grep -ri lorem`; placeholder text in rendered output | none |
 | Dark mode token set | pass (`1280-hero-dark-open.png`) |
+
+## Premium visual redesign (botanical library)
+
+| Check | Result |
+| --- | --- |
+| Lint, typecheck, build | clean |
+| Each book opens its shelf; click again closes; keyboard Tab + Enter works; aria-pressed updates | pass (`scratchpad/interact.mjs`) |
+| Find my shelf, Browse all support, ABC Tracker, product and shelf links | pass |
+| Reduced motion: drawer opens instantly, active book has no transform | pass |
+| No console errors, warnings, or hydration errors on load and interaction | pass |
+| Headline line count identical with fallback and web font at 34 widths (320–1920) | pass |
+| Pages 375/390/1280/1440 open and closed, no horizontal scroll | pass |
+| axe, all pages | 0 violations |
+| Unit tests · `/abc` journey | 32/32 · 8/8 |

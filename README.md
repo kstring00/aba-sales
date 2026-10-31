@@ -18,10 +18,10 @@ One Next.js site on Vercel: a storefront for digital downloads (Shopify as a hea
 
 The direction, audit, and principles are in `docs/CREATIVE-DIRECTION.md`; the illustration inventory in `docs/ASSETS.md`. No raster images ship on the homepage or shelves: every illustration is inline SVG drawn from tokens.
 
-- Tokens live in `src/app/globals.css`: warm cream `#FBF7F0`, deep forest ink `#1F3A3A`, four shelf tints (sky, mint, butter, blush; backgrounds only), sage leaves, a soft sun, pale aqua wave bands, and terracotta for the one primary action per section. Text-bearing buttons use `#B25A3F` so white text passes AA; the brief's `#C96A4E` is kept for rules, arrows and large marks.
-- Type: Fraunces (headlines, the italic word in each headline), Inter (body), Caveat (handwritten notes inside illustrations only). Metric-tuned fallbacks for both text fonts are declared in `globals.css` so headlines keep their line count while fonts load (CLS ≈ 0).
+- Tokens live in `src/app/globals.css`: warm ivory `#F8F5EE`, soft charcoal body text, deep botanical green `#24473E` for headings only, sage `#719987` accents (deepened to `#45705E` for text), coral `#E98B6D` highlights with terracotta `#B5573D` on text-bearing buttons (AA), honey `#D9A84E`, and four book colors (dusty blue, botanical sage, golden ochre, muted terracotta) with light tints for panels. Always light; no dark mode.
+- Type: Fraunces (headlines, the italic word in each headline), Figtree (body), Caveat (the one handwritten hint). Metric-tuned fallbacks (roman and italic separately) are declared in `globals.css` so headlines keep their line count while fonts load.
 - Motion: `.reveal` (one 600ms rise, visible by default, armed only with JS), 2px lifts, the bottom sheet's spring, the binder's page turn. `prefers-reduced-motion` removes all of it.
-- The homepage is the shelf: Hero → Explore the shelves (four tabs on a wooden board) → Why it matters (sample log sheet, no testimonial) → Closing. `/shelf` shows the same four shelves in full; `/products/[handle]` uses the shelf's tint and paper object.
+- The homepage is the library: a CSS-3D bookshelf in the hero (four hardcover books on a wooden plank; hover slides a book forward, click opens a drawer beneath with that shelf's tools) → Why it matters (the ABC Tracker's printed sheet on a desk) → a closing plate. `/shelf` shows the four shelves in full; `/products/[handle]` uses the shelf's tint.
 
 ## Adding a product to a shelf (Shopify)
 
