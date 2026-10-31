@@ -308,6 +308,26 @@ h2 em {
   pointer-events: none;
 }
 
+/* Hero folders: links that tip off the board on hover and focus. */
+.hero-folder-link {
+  cursor: pointer;
+  outline: none;
+}
+.hero-folder {
+  transform-box: fill-box;
+  transform-origin: 50% 100%;
+  transition: transform 260ms var(--ease-out), filter 260ms var(--ease-out);
+}
+.hero-folder-link:hover .hero-folder,
+.hero-folder-link:focus-visible .hero-folder {
+  transform: translateY(-14px) rotate(-4deg);
+  filter: drop-shadow(0 10px 10px rgb(31 58 58 / 0.18));
+}
+.hero-folder-link:focus-visible .hero-folder > rect:nth-of-type(2) {
+  stroke: var(--sage-deep);
+  stroke-width: 3;
+}
+
 /* A paper card: white, soft radius, warm shadow. */
 .paper-card {
   background: var(--paper);

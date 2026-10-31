@@ -42,7 +42,8 @@ export function Hero() {
           </ul>
         </div>
         <div className="relative -mx-2 sm:mx-0">
-          <HeroScene label="Four tinted paper folders standing on a wooden shelf beside a plant and a mug that reads small steps, brighter days" className="h-auto w-full" />
+          <HeroScene className="h-auto w-full" />
+          <p className="mt-2 text-center text-[13px] text-ink-mute lg:text-right">Tap a folder to open that shelf.</p>
         </div>
       </div>
     </section>

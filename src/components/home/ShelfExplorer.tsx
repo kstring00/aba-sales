@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useId, useRef, useState } from "react";
+import { useEffect, useId, useRef, useState } from "react";
 import type { ShelfView } from "@/lib/shelves";
 import { TINT_BG, TINT_TEXT } from "@/lib/shelves";
 import { buttonClass } from "@/components/ui/Button";
@@ -37,11 +37,28 @@ export function ShelfExplorer({ shelves }: { shelves: ShelfView[] }) {
     if (e.key === "End") { e.preventDefault(); select(count - 1, true); }
   }
 
+  // Deep links from the hero folders (and anywhere else): #shelf-<id>.
+  useEffect(() => {
+    const apply = () => {
+      const id = window.location.hash.replace(/^#shelf-/, "");
+      const i = shelves.findIndex((s) => s.id === id);
+      if (i >= 0 && window.location.hash.startsWith("#shelf-")) {
+        setActive(i);
+        tabRefs.current[i]?.scrollIntoView({ inline: "center", block: "nearest" });
+      }
+    };
+    apply();
+    window.addEventListener("hashchange", apply);
+    return () => window.removeEventListener("hashchange", apply);
+  }, [shelves]);
+
   const current = shelves[active];
   const next = shelves[(active + 1) % count];
 
   return (
     <section id="shelves" aria-labelledby={`${id}-h`} className="relative scroll-mt-4">
+      {/* Anchor targets for #shelf-<id> links; the browser scrolls here and the effect above picks the tab. */}
+      {shelves.map((s) => <span key={s.id} id={`shelf-${s.id}`} aria-hidden className="absolute top-0" />)}
       <Wave flip color="var(--cream)" className="absolute inset-x-0 top-0 z-10" />
       <div className="bg-aqua pb-24 pt-14 sm:pb-28 sm:pt-24">
         <div className="mx-auto max-w-3xl px-5 text-center sm:px-8">

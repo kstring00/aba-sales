@@ -164,33 +164,37 @@ function Plant({ x, y, scale = 1 }: { x: number; y: number; scale?: number }) {
 
 /* ── Upright folders (hero) ──────────────────────────────────────────────── */
 
-function StandingFolder({ x, y, tint, lines, icon, w = 76, h = 176 }: { x: number; y: number; tint: Tint; lines: string[]; icon: Tint; w?: number; h?: number }) {
+function StandingFolder({ x, y, tint, lines, icon, href, label, w = 76, h = 176 }: { x: number; y: number; tint: Tint; lines: string[]; icon: Tint; href: string; label: string; w?: number; h?: number }) {
   const t = TINT[tint];
   return (
-    <g transform={`translate(${x} ${y})`}>
-      {/* back spine shadow */}
-      <rect x="3" y="4" width={w} height={h} rx="7" fill="var(--ink)" opacity=".06" />
-      <rect x="0" y="0" width={w} height={h} rx="7" fill={t.fill} />
-      {/* folder tab */}
-      <path d={`M10 0h${w * 0.45}a6 6 0 0 1 6 6v6H4V6a6 6 0 0 1 6-6z`} fill={t.deep} />
-      {/* soft gradient edge */}
-      <rect x={w - 10} y="0" width="10" height={h} rx="7" fill={t.deep} opacity=".55" />
-      {/* label */}
-      <text x={w / 2} y={h * 0.44} textAnchor="middle" fill="var(--ink)" fontFamily="var(--font-display)" fontSize="15.5" fontWeight="500" letterSpacing="-0.2">
-        {lines.map((l, i) => (
-          <tspan key={l} x={w / 2} dy={i === 0 ? 0 : 19}>{l}</tspan>
-        ))}
-      </text>
-      <g transform={`translate(${w / 2 - 17} ${h * 0.64})`}>
-        <ShelfIcon tint={icon} width="34" height="34" />
+    <a href={href} aria-label={label} className="hero-folder-link">
+      <g transform={`translate(${x} ${y})`}>
+        <g className="hero-folder">
+          {/* back spine shadow */}
+          <rect x="3" y="4" width={w} height={h} rx="7" fill="var(--ink)" opacity=".06" />
+          <rect x="0" y="0" width={w} height={h} rx="7" fill={t.fill} />
+          {/* folder tab */}
+          <path d={`M10 0h${w * 0.45}a6 6 0 0 1 6 6v6H4V6a6 6 0 0 1 6-6z`} fill={t.deep} />
+          {/* soft gradient edge */}
+          <rect x={w - 10} y="0" width="10" height={h} rx="7" fill={t.deep} opacity=".55" />
+          {/* label */}
+          <text aria-hidden x={w / 2} y={h * 0.44} textAnchor="middle" fill="var(--ink)" fontFamily="var(--font-display)" fontSize="15.5" fontWeight="500" letterSpacing="-0.2">
+            {lines.map((l, i) => (
+              <tspan key={l} x={w / 2} dy={i === 0 ? 0 : 19}>{l}</tspan>
+            ))}
+          </text>
+          <g transform={`translate(${w / 2 - 17} ${h * 0.64})`}>
+            <ShelfIcon tint={icon} width="34" height="34" />
+          </g>
+        </g>
       </g>
-    </g>
+    </a>
   );
 }
 
 function Mug({ x, y }: { x: number; y: number }) {
   return (
-    <g transform={`translate(${x} ${y})`}>
+    <g transform={`translate(${x} ${y})`} aria-hidden>
       <path d="M78 22a14 14 0 0 1 0 28h-6V22z" fill="none" stroke="var(--line-strong)" strokeWidth="6" />
       <path d="M0 0h74v70a16 16 0 0 1-16 16H16A16 16 0 0 1 0 70z" fill="var(--paper)" />
       <path d="M0 0h74v10H0z" fill="var(--cream-deep)" />
@@ -206,7 +210,7 @@ function Mug({ x, y }: { x: number; y: number }) {
 
 function PinnedNote({ x, y }: { x: number; y: number }) {
   return (
-    <g transform={`translate(${x} ${y}) rotate(4)`}>
+    <g transform={`translate(${x} ${y}) rotate(4)`} aria-hidden>
       <rect x="4" y="6" width="76" height="80" rx="4" fill="var(--ink)" opacity=".07" />
       <rect x="0" y="0" width="76" height="80" rx="4" fill="var(--sun-tint)" />
       <circle cx="38" cy="6" r="4.5" fill="var(--clay-bright)" />
@@ -222,11 +226,13 @@ function PinnedNote({ x, y }: { x: number; y: number }) {
 
 /**
  * Hero: four tinted paper folders standing on a wooden shelf, a plant to the
- * left, a mug to the right, a pinned note above.
+ * left, a mug to the right, a pinned note above. Each folder is a link to
+ * its shelf and tilts off the board on hover and focus.
  */
-export function HeroScene(p: Props) {
+export function HeroScene(p: SVGProps<SVGSVGElement>) {
   return (
-    <Svg viewBox="0 0 680 540" {...p}>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 680 540" {...p}>
+      <title>Four shelves: Get Organized, Make a Plan, Everyday Life, Support at Home</title>
       {/* wall glow */}
       <ellipse cx="350" cy="310" rx="330" ry="230" fill="var(--paper)" opacity=".55" />
       {/* trailing leaves top right, behind the note */}
@@ -241,10 +247,10 @@ export function HeroScene(p: Props) {
         <rect x="40" y="448" width="600" height="14" fill="var(--ink)" opacity=".06" />
       </g>
       <Plant x={128} y={372} scale={1.15} />
-      <StandingFolder x={206} y={212} tint="sky" lines={["Get", "Organized"]} icon="sky" w={88} h={210} />
-      <StandingFolder x={302} y={204} tint="mint" lines={["Make", "a Plan"]} icon="mint" w={88} h={218} />
-      <StandingFolder x={398} y={212} tint="butter" lines={["Everyday", "Life"]} icon="butter" w={88} h={210} />
-      <StandingFolder x={494} y={218} tint="blush" lines={["Support", "at Home"]} icon="blush" w={88} h={204} />
+      <StandingFolder x={206} y={212} tint="sky" lines={["Get", "Organized"]} icon="sky" w={88} h={210} href="#shelf-organized" label="Shelf 1, Get Organized" />
+      <StandingFolder x={302} y={204} tint="mint" lines={["Make", "a Plan"]} icon="mint" w={88} h={218} href="#shelf-plan" label="Shelf 2, Make a Plan" />
+      <StandingFolder x={398} y={212} tint="butter" lines={["Everyday", "Life"]} icon="butter" w={88} h={210} href="#shelf-everyday" label="Shelf 3, Everyday Life" />
+      <StandingFolder x={494} y={218} tint="blush" lines={["Support", "at Home"]} icon="blush" w={88} h={204} href="#shelf-home" label="Shelf 4, Support at Home" />
       <g transform="translate(570 338) scale(.95)">
         <Mug x={0} y={0} />
       </g>
@@ -252,7 +258,7 @@ export function HeroScene(p: Props) {
       <g transform="translate(36 320) rotate(-14)">
         <Sprig width="76" height="110" />
       </g>
-    </Svg>
+    </svg>
   );
 }
 
