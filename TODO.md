@@ -3,10 +3,9 @@
 **(founder)** = needs you. **(review)** = needs a professional before launch.
 
 ## Global
-- (founder) **Shelf tags in Shopify:** `care-binder` and `home-abc-printable` → `shelf-organized`; `read-your-childs-treatment-plan` and `waitlist-playbook` → `shelf-plan`. The handle fallback in `src/lib/shelves.ts` covers them until then.
 - (founder) Product sentences and "who it may help" in `src/lib/resources.ts` were written from the product names and the brief; confirm each against the actual files.
 - (founder) Upload the actual page images to each Shopify product, in page order; the product page gallery uses them. Add `custom.format` and `custom.included` metafields for exact contents.
-- (founder) Confirm `SHOPIFY_STOREFRONT_TOKEN` and `SHOPIFY_STORE_DOMAIN` are set for the **Production** environment on Vercel and that the four products and `the-family-shelf` are published to the Headless channel; the production homepage currently shows the empty state.
+- (founder) Production shelves are empty while Shopify itself is correct (four products Active on Headless, tagged, collection published). Open `/api/health/shopify` on the deployment: it says whether the token/domain are set for Production and whether Shopify accepts the token. Fix the variable in Vercel and redeploy.
 - (founder) Resend: API key, Audience, and a **verified sending domain**. Until then export emails only reach your own address.
 - (founder) `NEXT_PUBLIC_CONTACT_EMAIL` for the footer and the Contact link.
 - (founder) Testimonials: the Why-it-matters section holds a sample sheet in place of a carousel; add a carousel only when real, permissioned testimonials exist.
