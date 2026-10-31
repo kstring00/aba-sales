@@ -11,7 +11,9 @@ export type ReportRow = {
   occurredAt: Date;
   date: string; // yyyy-mm-dd in tz
   time: string; // h:mm am/pm in tz
+  /** Behaviors noticed in this observation, "; "-joined. */
   noticed: string;
+  noticedList: string[];
   before: string;
   beforeNote: string;
   after: string;
@@ -34,7 +36,10 @@ export type Report = {
   to: string;
   tz: string;
   generatedAt: Date;
+  /** Observations in range. */
   total: number;
+  /** Behaviors noticed across those observations (one observation can hold several). */
+  behaviorsNoticed: number;
   weeks: ReportWeek[];
   byBehavior: Count[];
   byAntecedent: Count[];
@@ -45,32 +50,39 @@ export type Report = {
 export function toRow(e: EntryWithBehavior, tz: string): ReportRow {
   const d = new Date(e.occurredAt);
   const time = new Intl.DateTimeFormat("en-US", { timeZone: tz, hour: "numeric", minute: "2-digit" }).format(d);
-  const beforeBase = e.antecedentCode === "something_else" ? "Something else" : antecedentLabel(e.antecedentCode);
-  const afterBase = e.consequenceCode === "something_else" ? "Something else" : consequenceLabel(e.consequenceCode);
+  // A free-text "something else" stands on its own, without a prefix (audit F-18).
+  const beforeElse = e.antecedentCode === "something_else";
+  const afterElse = e.consequenceCode === "something_else";
+  const before = beforeElse ? e.antecedentNote?.trim() || "Something else" : antecedentLabel(e.antecedentCode);
+  const after = afterElse ? e.consequenceNote?.trim() || "Something else" : consequenceLabel(e.consequenceCode);
+  const labels = e.behaviorLabels ?? (e.behaviorLabel ? [e.behaviorLabel] : []);
   return {
     id: e.id,
     occurredAt: d,
     date: toDateStr(d, tz),
     time,
-    noticed: e.behaviorLabel,
-    before: beforeBase,
-    beforeNote: e.antecedentNote ?? "",
-    after: afterBase,
-    afterNote: e.consequenceNote ?? "",
+    noticed: labels.join("; "),
+    noticedList: labels,
+    before,
+    beforeNote: beforeElse ? "" : (e.antecedentNote ?? ""),
+    after,
+    afterNote: afterElse ? "" : (e.consequenceNote ?? ""),
     duration: formatDuration(e.durationSeconds),
     durationSeconds: e.durationSeconds,
     intensity: intensityLabel(e.intensity),
     intensityValue: e.intensity,
     note: e.note ?? "",
-    mightBe: functionLabel(e.functionCode),
+    // "Not sure" is not a reflection worth printing (audit F-18).
+    mightBe: e.functionCode && e.functionCode !== "not_sure" ? functionLabel(e.functionCode) : "",
   };
 }
 
-function tally(rows: ReportRow[], pick: (r: ReportRow) => string): Count[] {
+function tally(rows: ReportRow[], pick: (r: ReportRow) => string | string[]): Count[] {
   const m = new Map<string, number>();
   for (const r of rows) {
-    const k = pick(r) || "Not recorded";
-    m.set(k, (m.get(k) ?? 0) + 1);
+    const v = pick(r);
+    const keys = Array.isArray(v) ? (v.length ? v : ["Not recorded"]) : [v || "Not recorded"];
+    for (const k of keys) m.set(k, (m.get(k) ?? 0) + 1);
   }
   return [...m.entries()]
     .map(([label, count]) => ({ label, count }))
@@ -102,8 +114,9 @@ export function buildReport(input: {
     tz: input.tz,
     generatedAt: input.generatedAt ?? new Date(),
     total: rows.length,
+    behaviorsNoticed: rows.reduce((n, r) => n + r.noticedList.length, 0),
     weeks,
-    byBehavior: tally(rows, (r) => r.noticed),
+    byBehavior: tally(rows, (r) => r.noticedList),
     byAntecedent: tally(rows, (r) => r.before),
     byConsequence: tally(rows, (r) => r.after),
     byIntensity: tally(rows, (r) => r.intensity),

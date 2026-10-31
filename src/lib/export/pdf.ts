@@ -45,22 +45,35 @@ async function loadFonts(doc: PDFDocument, bytes: FontBytes): Promise<Fonts> {
   };
 }
 
-/** Drop characters the font can't shape (emoji, unusual symbols) rather than fail. */
+/**
+ * Characters the font can't shape (emoji, unusual symbols) become a visible
+ * marker instead of silently vanishing or rendering as tofu (audit F-20).
+ */
+const EMOJI = /\p{Extended_Pictographic}/u;
 function safe(font: PDFFont, text: string): string {
   try {
     font.widthOfTextAtSize(text, 10);
     return text;
   } catch {
-    return Array.from(text)
-      .filter((ch) => {
-        try {
-          font.widthOfTextAtSize(ch, 10);
-          return true;
-        } catch {
-          return false;
-        }
-      })
-      .join("");
+    let out = "";
+    let lastMarker = "";
+    for (const ch of Array.from(text)) {
+      let ok = true;
+      try {
+        font.widthOfTextAtSize(ch, 10);
+      } catch {
+        ok = false;
+      }
+      if (ok) {
+        out += ch;
+        lastMarker = "";
+      } else {
+        const marker = EMOJI.test(ch) ? "[emoji]" : "[symbol]";
+        if (marker !== lastMarker) out += marker;
+        lastMarker = marker;
+      }
+    }
+    return out;
   }
 }
 
@@ -170,7 +183,7 @@ class Painter {
 
   drawWeek(week: Report["weeks"][number], index: number) {
     const title = `Week ${index + 1}`;
-    const sub = `${fmtRangeLabel(week.start, week.end)} · ${week.rows.length} ${week.rows.length === 1 ? "entry" : "entries"} · ${this.report.nickname}`;
+    const sub = `${fmtRangeLabel(week.start, week.end)} · ${week.rows.length} ${week.rows.length === 1 ? "observation" : "observations"} · ${this.report.nickname}`;
     let { page, y } = this.newPage(title, sub);
     y = this.tableHeader(page, y);
 
@@ -209,11 +222,11 @@ class Painter {
     const r = this.report;
     let { page, y } = this.newPage(
       "Counts",
-      `${fmtRangeLabel(r.from, r.to)} · ${r.total} ${r.total === 1 ? "entry" : "entries"} in total · ${r.nickname}`,
+      `${fmtRangeLabel(r.from, r.to)} · ${r.total} ${r.total === 1 ? "observation" : "observations"} · ${r.behaviorsNoticed} ${r.behaviorsNoticed === 1 ? "behavior" : "behaviors"} noticed · ${r.nickname}`,
     );
 
     const note =
-      "These counts describe what was recorded during this period. They do not explain why anything happened, and they are not an assessment.";
+      "These counts describe what was recorded during this period. One observation can include more than one behavior, so behavior counts can add up to more than the number of observations. They do not explain why anything happened, and they are not an assessment.";
     for (const ln of wrap(this.fonts.body, note, 9.5, CONTENT_W)) {
       page.drawText(ln, { x: M.l, y: y - 10, size: 9.5, font: this.fonts.body, color: INK_SOFT });
       y -= 13;
@@ -257,6 +270,7 @@ export async function renderReportPdf(report: Report, fontBytes: FontBytes, opti
   doc.setAuthor("The Support Shelf (recorded by a parent or caregiver)");
   doc.setProducer("The Support Shelf");
   doc.setCreationDate(report.generatedAt);
+  doc.setLanguage("en-US");
   const fonts = await loadFonts(doc, fontBytes);
   const p = new Painter(doc, fonts, report, options);
   report.weeks.forEach((w, i) => p.drawWeek(w, i));

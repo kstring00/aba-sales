@@ -6,7 +6,7 @@ import { Chip } from "@/components/ui/Chip";
 import { Button } from "@/components/ui/Button";
 import { Input, Textarea } from "@/components/ui/Field";
 import { useToast } from "@/components/ui/Toast";
-import { ANTECEDENTS, CONSEQUENCES, INTENSITY_LABELS, antecedentLabel, consequenceLabel, formatDuration } from "@/lib/observation";
+import { ANTECEDENTS, CONSEQUENCES, DURATION_PRESETS, INTENSITY_LABELS, antecedentLabel, consequenceLabel, formatDuration } from "@/lib/observation";
 import type { AntecedentCode, Behavior, ConsequenceCode, Entry } from "@/lib/abc/types";
 import { addBehavior, addEntry, deleteEntry, updateEntry, type EntryInput } from "@/lib/abc/store";
 import { fromLocalInputValue, toLocalInputValue } from "@/lib/time/format";
@@ -23,16 +23,9 @@ const TITLES: Record<Step, string> = {
   review: "Ready to save",
 };
 
-const DURATION_PRESETS = [
-  { label: "Under a minute", seconds: 30 },
-  { label: "About 5 min", seconds: 300 },
-  { label: "About 15 min", seconds: 900 },
-  { label: "30 min or more", seconds: 1800 },
-];
-
 function emptyDraft(): EntryInput {
   return {
-    behaviorId: "",
+    behaviorIds: [],
     occurredAt: new Date().toISOString(),
     antecedentCode: null,
     antecedentNote: null,
@@ -61,8 +54,8 @@ function LogSheetInner({ onClose, behaviors, mode }: Props) {
   const [newLabel, setNewLabel] = useState("");
   const [elseNote, setElseNote] = useState("");
 
-  const activeBehaviors = useMemo(() => behaviors.filter((b) => b.isActive || b.id === draft.behaviorId), [behaviors, draft.behaviorId]);
-  const behaviorLabel = behaviors.find((b) => b.id === draft.behaviorId)?.label ?? "";
+  const activeBehaviors = useMemo(() => behaviors.filter((b) => b.isActive || draft.behaviorIds.includes(b.id)), [behaviors, draft.behaviorIds]);
+  const behaviorLabel = draft.behaviorIds.map((id) => behaviors.find((b) => b.id === id)?.label ?? "").filter(Boolean).join("; ");
   const patch = (p: Partial<EntryInput>) => setDraft((d) => ({ ...d, ...p }));
 
   function next(from: Step) {
@@ -75,9 +68,9 @@ function LogSheetInner({ onClose, behaviors, mode }: Props) {
     else if (step === "review" && !isEdit) setStep("after");
   }
 
-  function pickBehavior(id: string) {
-    patch({ behaviorId: id });
-    next("behavior");
+  /** Several behaviors can share one observation; tap toggles, Next confirms. */
+  function toggleBehavior(id: string) {
+    patch({ behaviorIds: draft.behaviorIds.includes(id) ? draft.behaviorIds.filter((x) => x !== id) : [...draft.behaviorIds, id] });
   }
   function pickBefore(code: AntecedentCode) {
     if (code === "something_else") {
@@ -110,11 +103,11 @@ function LogSheetInner({ onClose, behaviors, mode }: Props) {
     const b = addBehavior(label);
     setNewLabel("");
     setAddingBehavior(false);
-    pickBehavior(b.id);
+    if (!draft.behaviorIds.includes(b.id)) patch({ behaviorIds: [...draft.behaviorIds, b.id] });
   }
 
   function save() {
-    if (!draft.behaviorId) return setStep("behavior");
+    if (draft.behaviorIds.length === 0) return setStep("behavior");
     if (isEdit) {
       updateEntry(mode.entry.id, draft);
       toast("Saved.");
@@ -134,7 +127,7 @@ function LogSheetInner({ onClose, behaviors, mode }: Props) {
   const stepIndex = ["behavior", "before", "after", "review"].indexOf(step);
 
   return (
-    <Sheet open onClose={onClose} title={TITLES[step]}>
+    <Sheet open onClose={onClose} title={isEdit && step === "review" ? "Edit observation" : TITLES[step]}>
       {!isEdit ? (
         <ol className="mb-4 flex gap-1.5" aria-label={`Step ${stepIndex + 1} of 4`}>
           {[0, 1, 2, 3].map((i) => (
@@ -147,7 +140,7 @@ function LogSheetInner({ onClose, behaviors, mode }: Props) {
         <div className="space-y-4">
           <div className="flex flex-wrap gap-2">
             {activeBehaviors.map((b) => (
-              <Chip key={b.id} selected={b.id === draft.behaviorId} onClick={() => pickBehavior(b.id)}>{b.label}</Chip>
+              <Chip key={b.id} selected={draft.behaviorIds.includes(b.id)} onClick={() => toggleBehavior(b.id)}>{b.label}</Chip>
             ))}
             {!addingBehavior ? <Chip onClick={() => setAddingBehavior(true)} aria-label="Add a new label">+ Add</Chip> : null}
           </div>
@@ -158,7 +151,10 @@ function LogSheetInner({ onClose, behaviors, mode }: Props) {
               <Button type="button" onClick={addLabelInline}>Add</Button>
             </div>
           ) : null}
-          <p className="text-[14px] text-ink-mute">Just what you saw. No need to be precise.</p>
+          <p className="text-[14px] text-ink-mute">Just what you saw. Pick more than one if they happened together.</p>
+          <div className="flex justify-end pt-2">
+            <Button type="button" variant="primary" onClick={() => next("behavior")} disabled={draft.behaviorIds.length === 0}>Next</Button>
+          </div>
         </div>
       ) : null}
 
@@ -223,7 +219,7 @@ function LogSheetInner({ onClose, behaviors, mode }: Props) {
                   ))}
                 </div>
                 <div className="flex items-center gap-3">
-                  <Input type="number" inputMode="numeric" min={0} max={1440} aria-label="Minutes" className="max-w-28"
+                  <Input type="number" inputMode="numeric" min={0} max={1440} aria-label="Exact minutes" className="max-w-28"
                     value={draft.durationSeconds != null && !DURATION_PRESETS.some((p) => p.seconds === draft.durationSeconds) ? Math.round(draft.durationSeconds / 60) : ""}
                     onChange={(e) => patch({ durationSeconds: e.target.value === "" ? null : Math.max(0, Math.min(1440, Number(e.target.value))) * 60 })} placeholder="min" />
                   <span className="text-[15px] text-ink-mute">minutes, if you want to be exact</span>

@@ -59,7 +59,7 @@ describe("local store", () => {
   it("adds, edits, deletes entries and joins labels", () => {
     setChild("Bean", ["Hitting"]);
     const b = readStore().behaviors[0];
-    const e = addEntry({ behaviorId: b.id, occurredAt: "2026-03-02T15:00:00Z", antecedentCode: "instruction_given", antecedentNote: null, consequenceCode: null, consequenceNote: null, durationSeconds: null, intensity: null, note: null });
+    const e = addEntry({ behaviorIds: [b.id], occurredAt: "2026-03-02T15:00:00Z", antecedentCode: "instruction_given", antecedentNote: null, consequenceCode: null, consequenceNote: null, durationSeconds: null, intensity: null, note: null });
     expect(withLabels(readStore())[0].behaviorLabel).toBe("Hitting");
     updateEntry(e.id, { intensity: 2 });
     expect(readStore().entries[0].intensity).toBe(2);
@@ -71,7 +71,7 @@ describe("local store", () => {
     setChild("Bean", ["Hitting"]);
     const b = readStore().behaviors[0];
     expect(addBehavior("hitting").id).toBe(b.id);
-    addEntry({ behaviorId: b.id, occurredAt: new Date().toISOString(), antecedentCode: null, antecedentNote: null, consequenceCode: null, consequenceNote: null, durationSeconds: null, intensity: null, note: null });
+    addEntry({ behaviorIds: [b.id], occurredAt: new Date().toISOString(), antecedentCode: null, antecedentNote: null, consequenceCode: null, consequenceNote: null, durationSeconds: null, intensity: null, note: null });
     expect(deleteBehavior(b.id)).toBe(false);
     setBehaviorActive(b.id, false);
     expect(readStore().behaviors[0].isActive).toBe(false);
@@ -90,9 +90,9 @@ describe("views", () => {
     setChild("Bean", ["A"]);
     const b = readStore().behaviors[0];
     const at = (h: number) => { const d = new Date(); d.setHours(h, 0, 0, 0); return d.toISOString(); };
-    addEntry({ behaviorId: b.id, occurredAt: at(16), antecedentCode: "child_alone", antecedentNote: null, consequenceCode: null, consequenceNote: null, durationSeconds: null, intensity: null, note: null });
-    addEntry({ behaviorId: b.id, occurredAt: at(17), antecedentCode: "child_alone", antecedentNote: null, consequenceCode: null, consequenceNote: null, durationSeconds: null, intensity: null, note: null });
-    addEntry({ behaviorId: b.id, occurredAt: at(9), antecedentCode: null, antecedentNote: null, consequenceCode: null, consequenceNote: null, durationSeconds: null, intensity: null, note: null });
+    addEntry({ behaviorIds: [b.id], occurredAt: at(16), antecedentCode: "child_alone", antecedentNote: null, consequenceCode: null, consequenceNote: null, durationSeconds: null, intensity: null, note: null });
+    addEntry({ behaviorIds: [b.id], occurredAt: at(17), antecedentCode: "child_alone", antecedentNote: null, consequenceCode: null, consequenceNote: null, durationSeconds: null, intensity: null, note: null });
+    addEntry({ behaviorIds: [b.id], occurredAt: at(9), antecedentCode: null, antecedentNote: null, consequenceCode: null, consequenceNote: null, durationSeconds: null, intensity: null, note: null });
     const entries = withLabels(readStore());
     const hours = byHour(entries);
     expect(hours[16] + hours[17]).toBe(2);
@@ -101,5 +101,32 @@ describe("views", () => {
     expect(counts[0]).toEqual({ label: "The child was alone", count: 2 });
     expect(antecedentCaption(counts, 3)).toBe("Most often recorded right before: The child was alone (2 of 3)");
     for (const banned of ["because", "trigger", "function", "likely"]) expect(JSON.stringify(counts).toLowerCase()).not.toContain(banned);
+  });
+});
+
+describe("v1 → v2 migration (one observation, many behaviors)", () => {
+  it("merges v1 rows that share the same moment and details into one observation", async () => {
+    const { migrateV1 } = await import("@/lib/abc/store");
+    const row = (id: string, behaviorId: string, extra: Record<string, unknown> = {}) => ({
+      id, behaviorId, occurredAt: "2026-03-02T15:00:00Z", antecedentCode: "instruction_given", antecedentNote: null, consequenceCode: "comfort_offered", consequenceNote: null,
+      durationSeconds: 180, intensity: 2, note: null, createdAt: "2026-03-02T15:00:05Z", updatedAt: "2026-03-02T15:00:05Z", ...extra,
+    });
+    const v1 = { version: 1, child: { nickname: "Bean", createdAt: "x" }, behaviors: [], entries: [row("a", "b1"), row("b", "b2"), row("c", "b1", { occurredAt: "2026-03-03T15:00:00Z", createdAt: "2026-03-03T15:00:05Z" })] };
+    const { store, merged } = migrateV1(v1);
+    expect(store.version).toBe(2);
+    expect(merged).toEqual({ before: 3, after: 2 });
+    expect(store.entries[0].behaviorIds).toEqual(["b1", "b2"]);
+    expect(store.entries[1].behaviorIds).toEqual(["b1"]);
+  });
+
+  it("reads a legacy v1 key once, writes v2, and removes v1", () => {
+    clearAll();
+    mem.clear();
+    mem.set("support-shelf-abc-v1", JSON.stringify({ version: 1, child: { nickname: "Bean", createdAt: "x" }, behaviors: [{ id: "b1", label: "Hitting", isActive: true, createdAt: "x" }], entries: [{ id: "a", behaviorId: "b1", occurredAt: "2026-03-02T15:00:00Z", antecedentCode: null, antecedentNote: null, consequenceCode: null, consequenceNote: null, durationSeconds: null, intensity: null, note: null, createdAt: "y", updatedAt: "y" }] }));
+    const s = readStore();
+    expect(s.entries[0].behaviorIds).toEqual(["b1"]);
+    expect(mem.has("support-shelf-abc-v1")).toBe(false);
+    expect(mem.has(STORAGE_KEY)).toBe(true);
+    expect(withLabels(s)[0].behaviorLabel).toBe("Hitting");
   });
 });

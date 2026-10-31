@@ -39,8 +39,8 @@ export function ToastProvider({ children }: { children: React.ReactNode }) {
 function ToastItem({ toast, onDone }: { toast: Toast; onDone: () => void }) {
   const [leaving, setLeaving] = useState(false);
   useEffect(() => {
-    const a = setTimeout(() => setLeaving(true), 1800);
-    const b = setTimeout(onDone, 2100);
+    const a = setTimeout(() => setLeaving(true), 4700);
+    const b = setTimeout(onDone, 5000);
     return () => {
       clearTimeout(a);
       clearTimeout(b);

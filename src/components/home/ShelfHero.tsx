@@ -45,7 +45,10 @@ export function ShelfHero({ shelves, panels, reviewer }: { shelves: HeroShelf[];
   const openShelf = useCallback((i: number, scroll = true) => {
     setActive((prev) => {
       if (scroll && prev < 0) {
-        window.setTimeout(() => drawerRef.current?.scrollIntoView({ block: "nearest", behavior: "smooth" }), 350);
+        const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+        const phone = window.matchMedia("(max-width: 767px)").matches;
+        // Phones: bring the drawer heading up under the shelf so something visibly opened (audit F-15).
+        window.setTimeout(() => drawerRef.current?.scrollIntoView({ block: phone ? "start" : "nearest", behavior: reduced ? "auto" : "smooth" }), reduced ? 0 : 350);
       }
       return i;
     });
@@ -73,7 +76,8 @@ export function ShelfHero({ shelves, panels, reviewer }: { shelves: HeroShelf[];
       if (i < 0) return;
       e.preventDefault();
       history.replaceState(null, "", `#shelf-${id}`);
-      booksRef.current?.scrollIntoView({ block: "center", behavior: "smooth" });
+      const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+      booksRef.current?.scrollIntoView({ block: "center", behavior: reduced ? "auto" : "smooth" });
       openShelf(i);
     };
     window.addEventListener("hashchange", fromHash);
@@ -110,7 +114,7 @@ export function ShelfHero({ shelves, panels, reviewer }: { shelves: HeroShelf[];
           <h1 id="hero-h">Practical support for <em>every step</em> of <em>the autism journey.</em></h1>
           <p className="sd-lede">Tools, guides, and resources to help you feel more organized, prepared, and supported at home, at school, and along the way.</p>
           <div className="sd-ctas">
-            <button type="button" className="sd-btn primary" onClick={() => { booksRef.current?.scrollIntoView({ block: "center", behavior: "smooth" }); openShelf(0); }}>
+            <button type="button" className="sd-btn primary" onClick={() => { booksRef.current?.scrollIntoView({ block: "center", behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth" }); openShelf(0); }}>
               Find my shelf <D.arrow />
             </button>
             <Link href="/shelf" className="sd-btn">Browse all support</Link>
@@ -138,6 +142,7 @@ export function ShelfHero({ shelves, panels, reviewer }: { shelves: HeroShelf[];
                     className="bk"
                     style={{ "--c": b.c, "--c-deep": b.deep, "--ink": b.ink, "--i": i } as React.CSSProperties}
                     aria-pressed={i === active}
+                    aria-expanded={i === active}
                     aria-controls="shelf-drawer"
                     onClick={() => (i === active ? setActive(-1) : openShelf(i))}
                   >
@@ -176,7 +181,7 @@ export function ShelfHero({ shelves, panels, reviewer }: { shelves: HeroShelf[];
       <section
         id="shelf-drawer"
         ref={drawerRef}
-        className={`sd-drawer${open ? " open" : ""}`}
+        className={`sd-drawer scroll-mt-2${open ? " open" : ""}`}
         style={{ "--shelf": tint.tint, "--ink": tint.ink } as React.CSSProperties}
         aria-label="Shelf contents"
       >

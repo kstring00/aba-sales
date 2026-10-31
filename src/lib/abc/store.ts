@@ -5,12 +5,14 @@
  * Decision: no backend at all, so "nothing leaves your phone" is literally
  * true and there is nothing on our side to protect or breach.
  */
-import type { AbcStore, Behavior, Entry } from "./types";
+import type { AbcStore, Behavior, Entry, EntryWithBehavior } from "./types";
 import { SEED_BEHAVIORS } from "@/lib/observation";
 
-export const STORAGE_KEY = "support-shelf-abc-v1";
+export const STORAGE_KEY = "support-shelf-abc-v2";
+/** The pre-F-04 key: one row per behavior. Migrated once, then removed. */
+export const LEGACY_KEY = "support-shelf-abc-v1";
 
-export const EMPTY: AbcStore = { version: 1, child: null, behaviors: [], entries: [] };
+export const EMPTY: AbcStore = { version: 2, child: null, behaviors: [], entries: [] };
 
 type Listener = () => void;
 const listeners = new Set<Listener>();
@@ -29,21 +31,71 @@ export function readStore(): AbcStore {
   if (!canStore()) return EMPTY;
   try {
     const raw = window.localStorage.getItem(STORAGE_KEY);
-    memory = raw ? migrate(JSON.parse(raw)) : EMPTY;
+    if (raw) {
+      memory = migrate(JSON.parse(raw));
+    } else {
+      const legacy = window.localStorage.getItem(LEGACY_KEY);
+      if (legacy) {
+        const { store, merged } = migrateV1(JSON.parse(legacy));
+        memory = store;
+        window.localStorage.setItem(STORAGE_KEY, JSON.stringify(store));
+        window.localStorage.removeItem(LEGACY_KEY);
+        console.info(`[abc] migrated ${merged.before} entries into ${merged.after} observations (v1 → v2)`);
+      } else {
+        memory = EMPTY;
+      }
+    }
   } catch {
     memory = EMPTY;
   }
   return memory;
 }
 
+type LegacyEntry = Omit<Entry, "behaviorIds"> & { behaviorId?: string; behaviorIds?: string[] };
+
+/** Accepts a v2 blob (or a v1 blob that somehow sits under the v2 key). */
 function migrate(data: unknown): AbcStore {
   if (!data || typeof data !== "object") return EMPTY;
-  const d = data as Partial<AbcStore>;
+  const d = data as Partial<AbcStore> & { version?: number; entries?: LegacyEntry[] };
+  if (d.version !== 2) return migrateV1(d).store;
   return {
-    version: 1,
+    version: 2,
     child: d.child ?? null,
     behaviors: Array.isArray(d.behaviors) ? d.behaviors : [],
-    entries: Array.isArray(d.entries) ? d.entries : [],
+    entries: Array.isArray(d.entries) ? d.entries.map(normalizeEntry) : [],
+  };
+}
+
+function normalizeEntry(e: LegacyEntry): Entry {
+  const { behaviorId, behaviorIds, ...rest } = e;
+  const ids = Array.isArray(behaviorIds) ? behaviorIds : behaviorId ? [behaviorId] : [];
+  return { ...rest, behaviorIds: [...new Set(ids)] };
+}
+
+/**
+ * v1 saved one row per behavior. Rows that share the same moment and the
+ * same before/after details (and were created in the same save) are one
+ * observation; merge their behaviors (audit F-04).
+ */
+export function migrateV1(data: unknown): { store: AbcStore; merged: { before: number; after: number } } {
+  if (!data || typeof data !== "object") return { store: EMPTY, merged: { before: 0, after: 0 } };
+  const d = data as Partial<AbcStore> & { entries?: LegacyEntry[] };
+  const rows = Array.isArray(d.entries) ? d.entries.map(normalizeEntry) : [];
+  const byKey = new Map<string, Entry>();
+  for (const e of rows) {
+    const key = [e.occurredAt, e.antecedentCode, e.antecedentNote, e.consequenceCode, e.consequenceNote, e.createdAt].join("|");
+    const existing = byKey.get(key);
+    if (existing) {
+      existing.behaviorIds = [...new Set([...existing.behaviorIds, ...e.behaviorIds])];
+      if (e.updatedAt > existing.updatedAt) existing.updatedAt = e.updatedAt;
+    } else {
+      byKey.set(key, { ...e });
+    }
+  }
+  const entries = [...byKey.values()];
+  return {
+    store: { version: 2, child: d.child ?? null, behaviors: Array.isArray(d.behaviors) ? d.behaviors : [], entries },
+    merged: { before: rows.length, after: entries.length },
   };
 }
 
@@ -114,10 +166,10 @@ export function setBehaviorActive(id: string, isActive: boolean) {
   write({ ...s, behaviors: s.behaviors.map((b) => (b.id === id ? { ...b, isActive } : b)) });
 }
 
-/** Deleting a label is allowed only when no entry uses it; otherwise hide it. */
+/** Deleting a label is allowed only when no observation uses it; otherwise hide it. */
 export function deleteBehavior(id: string): boolean {
   const s = readStore();
-  if (s.entries.some((e) => e.behaviorId === id)) return false;
+  if (s.entries.some((e) => e.behaviorIds.includes(id))) return false;
   write({ ...s, behaviors: s.behaviors.filter((b) => b.id !== id) });
   return true;
 }
@@ -128,7 +180,7 @@ export type EntryInput = Omit<Entry, "id" | "createdAt" | "updatedAt"> & { id?: 
 export function addEntry(input: EntryInput): Entry {
   const s = readStore();
   const t = now();
-  const e: Entry = { ...input, id: input.id ?? uid(), createdAt: t, updatedAt: t };
+  const e: Entry = { ...input, behaviorIds: [...new Set(input.behaviorIds)], id: input.id ?? uid(), createdAt: t, updatedAt: t };
   write({ ...s, entries: [e, ...s.entries.filter((x) => x.id !== e.id)] });
   return e;
 }
@@ -152,10 +204,12 @@ export function deleteEntry(id: string) {
 
 /** Everything. Used by "Delete everything" after two confirmations. */
 export function clearAll() {
-  memory = EMPTY;
+  // Forget the cache too, so the next read goes back to storage (which is now empty).
+  memory = null;
   if (canStore()) {
     try {
       window.localStorage.removeItem(STORAGE_KEY);
+      window.localStorage.removeItem(LEGACY_KEY);
     } catch {
       /* ignore */
     }
@@ -163,10 +217,13 @@ export function clearAll() {
   for (const l of listeners) l();
 }
 
-/** Join entries with labels for views and exports. */
-export function withLabels(s: AbcStore) {
+/** Join observations with their labels for views and exports. */
+export function withLabels(s: AbcStore): EntryWithBehavior[] {
   const byId = new Map(s.behaviors.map((b) => [b.id, b.label]));
-  return s.entries.map((e) => ({ ...e, behaviorLabel: byId.get(e.behaviorId) ?? "" }));
+  return s.entries.map((e) => {
+    const behaviorLabels = e.behaviorIds.map((id) => byId.get(id) ?? "").filter(Boolean);
+    return { ...e, behaviorLabels, behaviorLabel: behaviorLabels.join("; ") };
+  });
 }
 
 /** Estimated size of what's stored, for the "export first" nudge. */

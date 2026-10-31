@@ -34,9 +34,13 @@ export type Behavior = {
   createdAt: string;
 };
 
+/**
+ * One observation. Several behaviors can be noticed in the same moment, so
+ * an observation carries a list; counts are per observation (audit F-04).
+ */
 export type Entry = {
   id: string;
-  behaviorId: string;
+  behaviorIds: string[];
   /** ISO 8601 */
   occurredAt: string;
   antecedentCode: AntecedentCode | null;
@@ -61,11 +65,11 @@ export type Child = {
 };
 
 export type AbcStore = {
-  version: 1;
+  version: 2;
   child: Child | null;
   behaviors: Behavior[];
   entries: Entry[];
 };
 
-/** A row ready for export: entry plus its behavior label. */
-export type EntryWithBehavior = Entry & { behaviorLabel: string };
+/** A row ready for export: the observation plus its behavior labels ("; "-joined in behaviorLabel). */
+export type EntryWithBehavior = Entry & { behaviorLabels: string[]; behaviorLabel: string };

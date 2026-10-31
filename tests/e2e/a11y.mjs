@@ -26,7 +26,7 @@ for (const p of PAGES) {
     await page.getByLabel("Child nickname").fill("Bean");
     await page.getByRole("button", { name: "Hitting", exact: true }).click();
     await page.getByRole("button", { name: "Save entry" }).click();
-    await page.getByText(/Entries · 1/).waitFor();
+    await page.getByText(/Observations · 1/).waitFor();
     await page.getByRole("button", { name: /edit entry: hitting/i }).first().click();
     await page.getByRole("dialog").waitFor();
   }

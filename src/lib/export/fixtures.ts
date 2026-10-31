@@ -1,56 +1,38 @@
 /**
- * Synthetic sample data for the public sample export and tests.
- * No real child. "Bean" is a nickname invented for demos.
+ * Synthetic sample data for the public sample export, the on-page preview
+ * and tests. No real child. "Bean" is a nickname invented for demos.
+ * Six observations in the week of Mar 2–8, 2026; one holds two behaviors,
+ * so the sample teaches the real model (audit F-04).
  */
-import type { AntecedentCode, ConsequenceCode, EntryWithBehavior } from "@/lib/abc/types";
+import type { EntryWithBehavior } from "@/lib/abc/types";
 
-const A: AntecedentCode[] = ["instruction_given", "item_unavailable", "activity_changed", "someone_approached", "child_alone", "not_sure"];
-const C: ConsequenceCode[] = ["item_provided", "activity_stopped", "someone_interacted", "comfort_offered", "no_response_observed", "not_sure"];
-const B = ["Dropping to floor", "Screaming", "Covering ears", "Running off"];
+type Seed = Partial<EntryWithBehavior> & { at: string; behaviors: string[] };
 
-// Deterministic pseudo-random so the sample is stable across builds.
-function rng(seed: number) {
-  let s = seed;
-  return () => {
-    s = (s * 1664525 + 1013904223) % 4294967296;
-    return s / 4294967296;
-  };
-}
+const SEEDS: Seed[] = [
+  { at: "2026-03-02T15:12:00Z", behaviors: ["Hitting"], antecedentCode: "instruction_given", consequenceCode: "activity_stopped", intensity: 2, durationSeconds: 180 },
+  { at: "2026-03-03T20:47:00Z", behaviors: ["Screaming", "Dropping to floor"], antecedentCode: "activity_changed", antecedentNote: "Transition from tablet to dinner.", consequenceCode: "comfort_offered", intensity: 3, durationSeconds: 600 },
+  { at: "2026-03-04T16:15:00Z", behaviors: ["Dropping to floor"], antecedentCode: "item_unavailable", consequenceCode: "item_provided", intensity: 2, durationSeconds: 180 },
+  { at: "2026-03-05T22:22:00Z", behaviors: ["Refusing"], antecedentCode: "instruction_given", consequenceCode: "someone_interacted", intensity: 1, durationSeconds: 30 },
+  { at: "2026-03-06T17:03:00Z", behaviors: ["Covering ears"], antecedentCode: "something_else", antecedentNote: "Loud blender running in the kitchen.", consequenceCode: "no_response_observed", intensity: null, durationSeconds: 30 },
+  { at: "2026-03-07T14:38:00Z", behaviors: ["Screaming"], antecedentCode: "someone_approached", consequenceCode: "comfort_offered", intensity: 2, durationSeconds: 180, note: "Settled after a few minutes in the hallway." },
+];
 
-export function sampleEntries(fromIso = "2026-03-02T06:00:00Z", days = 14): EntryWithBehavior[] {
-  const rand = rng(7);
-  const out: EntryWithBehavior[] = [];
-  const start = new Date(fromIso).getTime();
-  for (let d = 0; d < days; d++) {
-    const n = Math.floor(rand() * 3); // 0–2 per day
-    for (let i = 0; i < n; i++) {
-      const hour = 7 + Math.floor(rand() * 13);
-      const minute = Math.floor(rand() * 60);
-      const t = new Date(start + d * 86400000 + hour * 3600000 + minute * 60000);
-      const notes = [
-        null,
-        null,
-        "Transition from tablet to dinner.",
-        "Loud blender running in the kitchen.",
-        "Older sibling came home from practice.",
-        "Settled after a few minutes in the hallway.",
-      ];
-      out.push({
-        id: `sample-${d}-${i}`,
-        behaviorId: "sample",
-        behaviorLabel: B[Math.floor(rand() * B.length)],
-        occurredAt: t.toISOString(),
-        antecedentCode: A[Math.floor(rand() * A.length)],
-        antecedentNote: null,
-        consequenceCode: C[Math.floor(rand() * C.length)],
-        consequenceNote: null,
-        durationSeconds: rand() < 0.5 ? [30, 300, 900][Math.floor(rand() * 3)] : null,
-        intensity: rand() < 0.6 ? ((1 + Math.floor(rand() * 3)) as 1 | 2 | 3) : null,
-        note: notes[Math.floor(rand() * notes.length)],
-        createdAt: t.toISOString(),
-        updatedAt: t.toISOString(),
-      });
-    }
-  }
-  return out;
+export function sampleEntries(): EntryWithBehavior[] {
+  return SEEDS.map((s, i) => ({
+    id: `sample-${i}`,
+    behaviorIds: s.behaviors.map((b) => `sample-${b.toLowerCase().replace(/\s+/g, "-")}`),
+    behaviorLabels: s.behaviors,
+    behaviorLabel: s.behaviors.join("; "),
+    occurredAt: s.at,
+    antecedentCode: s.antecedentCode ?? null,
+    antecedentNote: s.antecedentNote ?? null,
+    consequenceCode: s.consequenceCode ?? null,
+    consequenceNote: s.consequenceNote ?? null,
+    durationSeconds: s.durationSeconds ?? null,
+    intensity: s.intensity ?? null,
+    note: s.note ?? null,
+    functionCode: null,
+    createdAt: s.at,
+    updatedAt: s.at,
+  }));
 }

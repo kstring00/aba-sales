@@ -39,6 +39,7 @@ export function TrackerForm({ store }: { store: AbcStore }) {
   const [cText, setCText] = useState("");
   const [intensity, setIntensity] = useState<1 | 2 | 3 | null>(null);
   const [duration, setDuration] = useState<number | null>(null);
+  const [exactMinutes, setExactMinutes] = useState("");
   const [error, setError] = useState<string | null>(null);
   const nickRef = useRef<HTMLInputElement>(null);
 
@@ -66,7 +67,7 @@ export function TrackerForm({ store }: { store: AbcStore }) {
     setACode(null); setAText("");
     setBText("");
     setCCode(null); setCText("");
-    setIntensity(null); setDuration(null);
+    setIntensity(null); setDuration(null); setExactMinutes("");
     setWhen(toLocalInputValue(new Date().toISOString()));
     setError(null);
   }
@@ -79,22 +80,22 @@ export function TrackerForm({ store }: { store: AbcStore }) {
     const occurredAt = fromLocalInputValue(when) ?? new Date().toISOString();
     // First save creates the child and seeds the labels; later saves just keep the nickname current.
     setChild(nick, store.behaviors.length ? undefined : [...SEED_BEHAVIORS, ...extra]);
-    for (const label of selected) {
-      const b = addBehavior(label);
-      addEntry({
-        behaviorId: b.id,
-        occurredAt,
-        antecedentCode: aCode ?? (aText.trim() ? "something_else" : null),
-        antecedentNote: aText.trim() || null,
-        consequenceCode: cCode ?? (cText.trim() ? "something_else" : null),
-        consequenceNote: cText.trim() || null,
-        durationSeconds: duration,
-        intensity,
-        note: bText.trim() || null,
-        functionCode: fn,
-      });
-    }
-    toast(selected.length === 1 ? `Saved 1 entry for ${nick}.` : `Saved ${selected.length} entries for ${nick}.`);
+    // One observation, however many behaviors were noticed together (audit F-04).
+    const behaviorIds = selected.map((label) => addBehavior(label).id);
+    addEntry({
+      behaviorIds,
+      occurredAt,
+      antecedentCode: aCode ?? (aText.trim() ? "something_else" : null),
+      antecedentNote: aText.trim() || null,
+      consequenceCode: cCode ?? (cText.trim() ? "something_else" : null),
+      consequenceNote: cText.trim() || null,
+      durationSeconds: duration,
+      intensity,
+      note: bText.trim() || null,
+      functionCode: fn,
+    });
+    const who = nick.replace(/[\s.,;:!]+$/, "");
+    toast(behaviorIds.length === 1 ? `Saved 1 observation for ${who}.` : `Saved 1 observation (${behaviorIds.length} behaviors) for ${who}.`);
     setExtra([]);
     reset();
   }
@@ -120,6 +121,7 @@ export function TrackerForm({ store }: { store: AbcStore }) {
         </label>
       </div>
       <Input ref={nickRef} id={`${id}-nick`} value={nickname} onChange={(e) => setNickname(e.target.value)} maxLength={40} autoComplete="off" placeholder="Bean, Little A, my kiddo…" className="mt-3" aria-label="Child nickname" />
+      <p className="mt-2 text-[13px] text-ink-mute">One child per browser for now. For a second child, use a different browser or profile.</p>
 
       {/* 2. behaviors */}
       <fieldset className="mt-8">
@@ -195,10 +197,16 @@ export function TrackerForm({ store }: { store: AbcStore }) {
           <legend><StepTitle n={6}>Duration <span className="ml-1 text-[13px] font-normal text-ink-mute">(optional)</span></StepTitle></legend>
           <div className="mt-3 flex overflow-hidden rounded-pill border border-line-strong bg-cream-deep p-1" role="group" aria-label="Duration">
             {DURATION_PRESETS.map((d) => (
-              <button key={d.seconds} type="button" aria-pressed={duration === d.seconds} onClick={() => setDuration(duration === d.seconds ? null : d.seconds)} className={`${seg(duration === d.seconds)} tnum rounded-pill`}>
+              <button key={d.seconds} type="button" aria-pressed={duration === d.seconds} onClick={() => { setExactMinutes(""); setDuration(duration === d.seconds ? null : d.seconds); }} className={`${seg(duration === d.seconds)} tnum rounded-pill`}>
                 {d.label}
               </button>
             ))}
+          </div>
+          <div className="mt-2 flex items-center gap-2 text-[13.5px] text-ink-mute">
+            <label htmlFor={`${id}-mins`} className="sr-only">Exact minutes</label>
+            <Input id={`${id}-mins`} type="number" inputMode="numeric" min={0} max={1440} value={exactMinutes} placeholder="min" className="!min-h-10 !w-24 !text-[14px]"
+              onChange={(e) => { const v = e.target.value; setExactMinutes(v); setDuration(v === "" ? null : Math.max(0, Math.min(1440, Number(v))) * 60); }} />
+            <span>minutes, if you want to be exact</span>
           </div>
         </fieldset>
       </div>
