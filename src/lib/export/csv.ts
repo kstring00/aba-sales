@@ -24,6 +24,7 @@ export const CSV_HEADERS = [
   "intensity",
   "note",
   "parent_reflection_might_be",
+  "early_signs",
 ] as const;
 
 export function reportToCsv(report: Report): string {
@@ -43,6 +44,7 @@ export function reportToCsv(report: Report): string {
           r.intensity,
           r.note,
           r.mightBe,
+          r.earlySigns,
         ]
           .map(csvCell)
           .join(","),

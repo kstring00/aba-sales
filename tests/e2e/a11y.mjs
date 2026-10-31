@@ -6,7 +6,7 @@ const require = createRequire(import.meta.url);
 const { chromium } = require("playwright");
 const axeSource = fs.readFileSync(require.resolve("axe-core/axe.min.js"), "utf8");
 const BASE = process.env.BASE ?? "http://localhost:3100";
-const PAGES = ["/", "/shelf", "/products/care-binder", "/abc", "/cart", "/thanks", "/about", "/privacy", "/crisis", "/does-not-exist"];
+const PAGES = ["/", "/shelf", "/products/care-binder", "/abc", "/cart", "/thanks", "/about", "/privacy", "/crisis", "/right-now", "/for-you", "/for-you/breathe", "/for-you/ground", "/learn", "/learn/glossary", "/learn/decode", "/learn/tantrum-or-meltdown", "/find-care", "/find-care?age=under-3&coverage=medicaid&state=TX", "/for-you/research", "/does-not-exist"];
 const browser = await chromium.launch();
 const ctx = await browser.newContext({ viewport: { width: 375, height: 812 }, isMobile: true, hasTouch: true });
 const page = await ctx.newPage();
@@ -21,11 +21,27 @@ for (const p of PAGES) {
     const search = page.locator("summary[aria-label='Search the shelves']");
     if (await search.count()) await search.click(); // header search is gated until the catalog has 8+ items
   }
+  if (p === "/for-you/breathe") {
+    await page.getByRole("button", { name: "Start" }).click();
+    await page.waitForTimeout(600);
+  }
+  if (p === "/for-you/ground") {
+    await page.getByRole("button", { name: "Found one 1" }).click();
+    await page.getByLabel("Do it together").check();
+  }
+  if (p === "/learn/decode") {
+    await page.getByLabel(/Paste a sentence/).fill("The BCBA and the RBT will update the treatment plan before the IEP and the VB-MAPP.");
+  }
+  if (p === "/learn/glossary") {
+    await page.getByLabel("Search the glossary").fill("b");
+  }
+  if (p === "/right-now") {
+    await page.getByRole("button", { name: /No, we're safe/ }).click();
+  }
   if (p === "/abc") {
     // Exercise the tracker too: save an entry, then open the edit sheet.
-    await page.getByLabel("Child nickname").fill("Bean");
     await page.getByRole("button", { name: "Hitting", exact: true }).click();
-    await page.getByRole("button", { name: "Save entry" }).click();
+    await page.getByRole("button", { name: "Save", exact: true }).click();
     await page.getByText(/Observations · 1/).waitFor();
     await page.getByRole("button", { name: /edit entry: hitting/i }).first().click();
     await page.getByRole("dialog").waitFor();

@@ -1,0 +1,109 @@
+{
+  "_readme": "Wording for the ABC tracker. Items with a status only appear on the live site when status is published; pending and draft items show on preview builds so you can read them in place. Interface labels (questions, buttons) have no status and are always shown.",
+  "labels": {
+    "heading": "Log a moment",
+    "now": "Now",
+    "changeTime": "Change time",
+    "timeLabel": "When it happened",
+    "what": "What did they do?",
+    "before": "What happened right before?",
+    "after": "What happened right after?",
+    "early": "Did you notice anything before it got big?",
+    "optional": "optional",
+    "ownWords": "+ my own words",
+    "ownWordsPlaceholder": "In your own words",
+    "add": "Add",
+    "addDetail": "+ Add detail",
+    "hideDetail": "Hide detail",
+    "lookedLike": "What it looked like",
+    "lookedLikePlaceholder": "What did you see or hear?",
+    "intensity": "Intensity",
+    "duration": "How long",
+    "exactMinutes": "minutes, if you want to be exact",
+    "save": "Save",
+    "pickOne": "Pick what they did first.",
+    "saved": "Saved.",
+    "savedMany": "Saved: {n} behaviors in one moment."
+  },
+  "earlySigns": {
+    "status": "pending",
+    "chips": [
+      "Covering ears",
+      "Pacing",
+      "Getting quiet",
+      "Repeating a phrase"
+    ],
+    "_note": "Example chips from the brief. Finalize the list, then set status to published."
+  },
+  "labelNudge": {
+    "status": "pending",
+    "behaviors": [
+      "Tantrum",
+      "Refusing",
+      "Property destruction"
+    ],
+    "text": "",
+    "_note": "One line shown under the chips when a label-type behavior is picked, inviting a description of what it looked like."
+  },
+  "safetyCard": {
+    "status": "pending",
+    "behaviors": [
+      "Self-injury",
+      "Hitting",
+      "Biting",
+      "Running off"
+    ],
+    "title": "",
+    "body": "",
+    "crisisLink": "Crisis resources",
+    "talkLine": "Talk to your child's doctor or BCBA.",
+    "_note": "Shown after saving a moment that includes one of these behaviors. The crisis link and the doctor/BCBA line always show; title and body appear once published.",
+    "dismiss": "Close"
+  },
+  "didYouKnow": {
+    "status": "pending",
+    "lines": [],
+    "_note": "Short general facts, one shown after each save, rotating."
+  },
+  "walkthrough": {
+    "status": "pending",
+    "title": "",
+    "steps": [],
+    "dismiss": "Got it",
+    "_note": "A 30-second first-visit walkthrough using the asked-to-put-shoes-on example. Three or four short steps."
+  },
+  "whatNext": {
+    "status": "published",
+    "title": "Saved. What happens next",
+    "items": [
+      "Export once a week. The PDF is one page per week with counts at the end.",
+      "Bring it to your BCBA. The tracker records; it never interprets.",
+      "Keep going on hard days and easy ones; patterns need both."
+    ],
+    "dismiss": "Got it"
+  },
+  "insights": {
+    "tab": "What you're noticing",
+    "listTab": "List",
+    "tooFew": "Log a few more moments and patterns will show up here.",
+    "countNote": "Counts of what you recorded. They don't say why anything happened.",
+    "lessonLink": "Why behavior happens, in general",
+    "cards": {
+      "before": "Most often right before: {label}",
+      "after": "Most often right after: {label}",
+      "time": "Most moments between {from} and {to}",
+      "early": "Most common early sign: {label}",
+      "earlyShare": "Moments with an early sign"
+    },
+    "of": "{n} of {total}"
+  },
+  "questionsToBring": {
+    "status": "draft",
+    "heading": "Questions you could bring to a BCBA, your pediatrician, or your child's teacher",
+    "before": "Most moments came right after this: “{label}”. What could help at those times?",
+    "after": "Afterwards, “{label}” was recorded most often. Is that worth talking through?",
+    "time": "Most moments happened between {from} and {to}. What usually happens around then?",
+    "early": "“{label}” often came first. What could we do when we notice it?",
+    "_note": "Draft wording written from the brief's example; review, then set status to published."
+  }
+}

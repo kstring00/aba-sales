@@ -1,0 +1,273 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`Find care > renders a sensible card for all 18 combinations 1`] = `
+{
+  "3-5 · medicaid · TX": {
+    "blocks": [
+      "Where to search: school-age",
+      "Where to search: Medicaid or CHIP",
+      "Questions to ask a provider",
+      "A short call script",
+      "Red flags",
+      "What a waitlist usually involves",
+    ],
+    "resources": [
+      "texas-medicaid-chip",
+      "school-evaluation",
+      "bacb-registry",
+    ],
+  },
+  "3-5 · medicaid · other": {
+    "blocks": [
+      "Where to search: school-age",
+      "Where to search: Medicaid or CHIP",
+      "Outside Texas",
+      "Questions to ask a provider",
+      "A short call script",
+      "Red flags",
+      "What a waitlist usually involves",
+    ],
+    "resources": [
+      "school-evaluation",
+      "bacb-registry",
+    ],
+  },
+  "3-5 · none · TX": {
+    "blocks": [
+      "Where to search: school-age",
+      "Where to search: no coverage or not sure",
+      "Questions to ask a provider",
+      "A short call script",
+      "Red flags",
+      "What a waitlist usually involves",
+    ],
+    "resources": [
+      "school-evaluation",
+      "bacb-registry",
+    ],
+  },
+  "3-5 · none · other": {
+    "blocks": [
+      "Where to search: school-age",
+      "Where to search: no coverage or not sure",
+      "Outside Texas",
+      "Questions to ask a provider",
+      "A short call script",
+      "Red flags",
+      "What a waitlist usually involves",
+    ],
+    "resources": [
+      "school-evaluation",
+      "bacb-registry",
+    ],
+  },
+  "3-5 · private · TX": {
+    "blocks": [
+      "Where to search: school-age",
+      "Where to search: private insurance",
+      "Questions to ask a provider",
+      "A short call script",
+      "Red flags",
+      "What a waitlist usually involves",
+    ],
+    "resources": [
+      "insurer-directory",
+      "school-evaluation",
+      "bacb-registry",
+    ],
+  },
+  "3-5 · private · other": {
+    "blocks": [
+      "Where to search: school-age",
+      "Where to search: private insurance",
+      "Outside Texas",
+      "Questions to ask a provider",
+      "A short call script",
+      "Red flags",
+      "What a waitlist usually involves",
+    ],
+    "resources": [
+      "insurer-directory",
+      "school-evaluation",
+      "bacb-registry",
+    ],
+  },
+  "6-plus · medicaid · TX": {
+    "blocks": [
+      "Where to search: school-age",
+      "Where to search: Medicaid or CHIP",
+      "Questions to ask a provider",
+      "A short call script",
+      "Red flags",
+      "What a waitlist usually involves",
+    ],
+    "resources": [
+      "texas-medicaid-chip",
+      "school-evaluation",
+      "bacb-registry",
+    ],
+  },
+  "6-plus · medicaid · other": {
+    "blocks": [
+      "Where to search: school-age",
+      "Where to search: Medicaid or CHIP",
+      "Outside Texas",
+      "Questions to ask a provider",
+      "A short call script",
+      "Red flags",
+      "What a waitlist usually involves",
+    ],
+    "resources": [
+      "school-evaluation",
+      "bacb-registry",
+    ],
+  },
+  "6-plus · none · TX": {
+    "blocks": [
+      "Where to search: school-age",
+      "Where to search: no coverage or not sure",
+      "Questions to ask a provider",
+      "A short call script",
+      "Red flags",
+      "What a waitlist usually involves",
+    ],
+    "resources": [
+      "school-evaluation",
+      "bacb-registry",
+    ],
+  },
+  "6-plus · none · other": {
+    "blocks": [
+      "Where to search: school-age",
+      "Where to search: no coverage or not sure",
+      "Outside Texas",
+      "Questions to ask a provider",
+      "A short call script",
+      "Red flags",
+      "What a waitlist usually involves",
+    ],
+    "resources": [
+      "school-evaluation",
+      "bacb-registry",
+    ],
+  },
+  "6-plus · private · TX": {
+    "blocks": [
+      "Where to search: school-age",
+      "Where to search: private insurance",
+      "Questions to ask a provider",
+      "A short call script",
+      "Red flags",
+      "What a waitlist usually involves",
+    ],
+    "resources": [
+      "insurer-directory",
+      "school-evaluation",
+      "bacb-registry",
+    ],
+  },
+  "6-plus · private · other": {
+    "blocks": [
+      "Where to search: school-age",
+      "Where to search: private insurance",
+      "Outside Texas",
+      "Questions to ask a provider",
+      "A short call script",
+      "Red flags",
+      "What a waitlist usually involves",
+    ],
+    "resources": [
+      "insurer-directory",
+      "school-evaluation",
+      "bacb-registry",
+    ],
+  },
+  "under-3 · medicaid · TX": {
+    "blocks": [
+      "Where to search: under 3",
+      "Where to search: Medicaid or CHIP",
+      "Questions to ask a provider",
+      "A short call script",
+      "Red flags",
+      "What a waitlist usually involves",
+    ],
+    "resources": [
+      "texas-medicaid-chip",
+      "texas-eci",
+      "bacb-registry",
+    ],
+  },
+  "under-3 · medicaid · other": {
+    "blocks": [
+      "Where to search: under 3",
+      "Where to search: Medicaid or CHIP",
+      "Outside Texas",
+      "Questions to ask a provider",
+      "A short call script",
+      "Red flags",
+      "What a waitlist usually involves",
+    ],
+    "resources": [
+      "bacb-registry",
+    ],
+  },
+  "under-3 · none · TX": {
+    "blocks": [
+      "Where to search: under 3",
+      "Where to search: no coverage or not sure",
+      "Questions to ask a provider",
+      "A short call script",
+      "Red flags",
+      "What a waitlist usually involves",
+    ],
+    "resources": [
+      "texas-eci",
+      "bacb-registry",
+    ],
+  },
+  "under-3 · none · other": {
+    "blocks": [
+      "Where to search: under 3",
+      "Where to search: no coverage or not sure",
+      "Outside Texas",
+      "Questions to ask a provider",
+      "A short call script",
+      "Red flags",
+      "What a waitlist usually involves",
+    ],
+    "resources": [
+      "bacb-registry",
+    ],
+  },
+  "under-3 · private · TX": {
+    "blocks": [
+      "Where to search: under 3",
+      "Where to search: private insurance",
+      "Questions to ask a provider",
+      "A short call script",
+      "Red flags",
+      "What a waitlist usually involves",
+    ],
+    "resources": [
+      "insurer-directory",
+      "texas-eci",
+      "bacb-registry",
+    ],
+  },
+  "under-3 · private · other": {
+    "blocks": [
+      "Where to search: under 3",
+      "Where to search: private insurance",
+      "Outside Texas",
+      "Questions to ask a provider",
+      "A short call script",
+      "Red flags",
+      "What a waitlist usually involves",
+    ],
+    "resources": [
+      "insurer-directory",
+      "bacb-registry",
+    ],
+  },
+}
+`;

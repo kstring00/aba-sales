@@ -7,7 +7,7 @@ const { chromium } = require("playwright");
 const BASE = process.env.BASE ?? "http://localhost:3100";
 const OUT = "tests/e2e/shots/launch";
 fs.mkdirSync(OUT, { recursive: true });
-const ROUTES = ["/", "/shelf", "/abc", "/about", "/privacy", "/crisis", "/cart", "/thanks", "/products/care-binder", "/does-not-exist"];
+const ROUTES = ["/", "/shelf", "/abc", "/about", "/privacy", "/crisis", "/cart", "/thanks", "/products/care-binder", "/right-now", "/for-you", "/for-you/breathe", "/for-you/ground", "/for-you/research", "/learn", "/learn/glossary", "/learn/decode", "/learn/tantrum-or-meltdown", "/find-care", "/find-care?age=3-5&coverage=private&state=TX", "/does-not-exist"];
 const browser = await chromium.launch();
 for (const w of [375, 768]) {
   const ctx = await browser.newContext({ viewport: { width: w, height: w === 375 ? 812 : 1024 }, deviceScaleFactor: 2, isMobile: w === 375 });
@@ -16,10 +16,10 @@ for (const w of [375, 768]) {
     await page.goto(`${BASE}${r}`, { waitUntil: "load" });
     await page.evaluate(() => document.fonts.ready);
     await page.waitForTimeout(2800); // let reveals settle
-    const overflow = await page.evaluate(() => document.documentElement.scrollWidth > window.innerWidth);
+    const overflow = await page.evaluate((vw) => document.documentElement.scrollWidth > vw, w);
     const small = await page.evaluate(() => [...document.querySelectorAll("a[href], button")].filter((el) => el.getClientRects().length && getComputedStyle(el).visibility !== "hidden" && !el.classList.contains("sr-only")).map((el) => el.getBoundingClientRect()).filter((b) => b.width > 0 && b.height > 0 && Math.max(b.width, b.height) < 44).length);
     console.log(`${w}px ${r.padEnd(24)} overflow=${overflow} small-targets=${small}`);
-    await page.screenshot({ path: `${OUT}/${w}-${r === "/" ? "home" : r.replace(/\//g, "_").replace(/^_/, "")}.png`, fullPage: true });
+    await page.screenshot({ path: `${OUT}/${w}-${r === "/" ? "home" : r.replace(/[/?&=]/g, "_").replace(/^_/, "")}.png`, fullPage: true });
   }
   await ctx.close();
 }

@@ -11,7 +11,7 @@ One Next.js site on Vercel: a storefront for digital downloads (Shopify as a hea
 - **Next.js 16 App Router + TypeScript + Tailwind v4**, with design tokens in one CSS file (`src/app/globals.css`). `cacheComponents` is off so caching is explicit.
 - **Shopify Storefront API only** (`src/lib/shopify`): reads collections and products with ISR (5 minutes), creates and edits a cart with Storefront cart mutations, and hands off to `cart.checkoutUrl`. The Admin API is never called from the app.
 - **The ABC logger has no backend** (`src/lib/abc`): one localStorage key holds the nickname, labels, and entries; PDF and CSV are generated in the browser from the same code that renders the sample export.
-- **"Email me my export"** is the one server route (`/api/abc/email-export`): entries arrive in the request, become a PDF, go out through Resend, and are discarded. The email list is a Resend Audience, because tagging a Shopify customer needs the Admin API.
+- **"Email me my export"** is the one server route (`/api/abc/email-export`): entries arrive in the request, become a PDF, go out through Resend, and are discarded. The email list is a Resend Segment (people join only by opting in), because tagging a Shopify customer needs the Admin API.
 - **No accounts, no database, no analytics, no service worker.**
 
 ## Design system
@@ -59,8 +59,8 @@ Copy `.env.example` to `.env.local`. All variables are documented there.
 | --- | --- |
 | `NEXT_PUBLIC_SITE_URL` | metadata, sitemap |
 | `SHOPIFY_STORE_DOMAIN`, `SHOPIFY_STOREFRONT_TOKEN`, `SHOPIFY_API_VERSION` | the shelf, product pages, cart |
-| `RESEND_API_KEY`, `RESEND_FROM`, `RESEND_AUDIENCE_ID` | email export and the email list |
-| `NEXT_PUBLIC_CONTACT_EMAIL`, `NEXT_PUBLIC_CONTACT_PHONE` | footer |
+| `RESEND_API_KEY`, `RESEND_FROM`, `RESEND_SEGMENT_ID` | email export and the email list |
+| `NEXT_PUBLIC_CONTACT_EMAIL`, `NEXT_PUBLIC_CONTACT_PHONE` | footer; the email is also Reply-To on everything we send |
 
 Without the Shopify variables the shelf shows its "being stocked" state with email capture. Without Resend, the export email button explains it isn't switched on; downloads still work.
 
@@ -79,9 +79,10 @@ Product page details come from the description. If you add metafields `custom.be
 
 ## Resend setup
 
-1. Create a free Resend account and an API key → `RESEND_API_KEY`.
-2. Optionally create an **Audience** → `RESEND_AUDIENCE_ID` (email list sign-ups and "keep me posted" go here).
-3. Until you **verify a sending domain** in Resend, `onboarding@resend.dev` can only deliver to your own Resend account email. Verify a domain (a subdomain of one you already own works), then set `RESEND_FROM` to an address on it.
+1. Create a free Resend account and an API key with **Full access** → `RESEND_API_KEY`. (A "Sending access" key can send exports but can't add contacts, so list sign-ups would fail.)
+2. Create a **Segment** (Audience → Segments) for the list and copy its ID → `RESEND_SEGMENT_ID`. Shelf sign-ups and the ticked "tell me when new downloads arrive" box add people here; an export on its own never does. The form someone used is saved on the contact as the `signup_source` property, which the site creates on first use.
+3. Until you **verify a sending domain** in Resend, `onboarding@resend.dev` can only deliver to your own Resend account email. Verify a domain (a subdomain of one you already own works), then set `RESEND_FROM` to an address on it. Nothing receives mail there, so every email sets Reply-To to `NEXT_PUBLIC_CONTACT_EMAIL`.
+4. Broadcasts to the segment must include Resend's unsubscribe link (`{{{RESEND_UNSUBSCRIBE_URL}}}`); the privacy page promises it.
 
 ## Run locally
 
