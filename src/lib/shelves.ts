@@ -12,9 +12,14 @@ export type ShelfDef = {
   id: ShelfId;
   number: 1 | 2 | 3 | 4;
   title: string;
+  /** The binder's one-line blurb: who/what it's for. */
+  blurb: string;
   /** One line under the title. */
   description: string;
+  /** Shopify tag that places a product here (also accepted: `shelf:<slug>`, `shelf-<slug>`, metafield custom.shelf = slug). */
   tag: string;
+  /** Public slug used by the `custom.shelf` metafield and `shelf:<slug>` tags. */
+  slug: string;
   tint: Tint;
   /** Handles that belong here until Shopify tags exist. */
   fallbackHandles: string[];
@@ -29,6 +34,8 @@ export const SHELVES: ShelfDef[] = [
     id: "organized",
     number: 1,
     title: "Get Organized",
+    blurb: "Track, plan, and keep everything in one place.",
+    slug: "get-organized",
     description: "Simple tools to help you keep track of what matters, so you can breathe a little easier.",
     tag: "shelf-organized",
     tint: "sky",
@@ -40,6 +47,8 @@ export const SHELVES: ShelfDef[] = [
     id: "plan",
     number: 2,
     title: "Make a Plan",
+    blurb: "Know what to expect and take the next step.",
+    slug: "make-a-plan",
     description: "Understand what's in front of you and keep track of the next step while you wait.",
     tag: "shelf-plan",
     tint: "mint",
@@ -51,6 +60,8 @@ export const SHELVES: ShelfDef[] = [
     id: "everyday",
     number: 3,
     title: "Everyday Life",
+    blurb: "Simple strategies for common challenges.",
+    slug: "everyday-life",
     description: "Mornings, bedtimes, transitions, and the moments in between.",
     tag: "shelf-everyday",
     tint: "butter",
@@ -65,6 +76,8 @@ export const SHELVES: ShelfDef[] = [
     id: "home",
     number: 4,
     title: "Support at Home",
+    blurb: "Tools for you, your child, and your whole family.",
+    slug: "support-at-home",
     description: "Notice what happens, write it down, and bring something useful to your next meeting.",
     tag: "shelf-home",
     tint: "blush",
@@ -83,12 +96,28 @@ export function shelfById(id: string): ShelfDef | null {
   return SHELVES.find((s) => s.id === id) ?? null;
 }
 
-/** Which shelf a product belongs on: tag first, handle second, null if neither. */
-export function shelfFor(product: Pick<ProductSummary, "handle" | "tags">): ShelfDef | null {
-  const tags = new Set((product.tags ?? []).map((t) => t.trim().toLowerCase()));
-  const byTag = SHELVES.find((s) => tags.has(s.tag));
+const norm = (v: string) => v.trim().toLowerCase().replace(/\s+/g, "-").replace(/_/g, "-");
+
+/**
+ * Which shelf a product belongs on. In order: `custom.shelf` metafield
+ * (slug), a tag (`shelf-organized`, `shelf:get-organized`, `shelf-get-organized`),
+ * then the handle fallback, else null.
+ */
+export function shelfFor(product: Pick<ProductSummary, "handle" | "tags"> & { shelf?: string | null }): ShelfDef | null {
+  if (product.shelf) {
+    const v = norm(product.shelf);
+    const byMeta = SHELVES.find((s) => v === s.slug || v === s.id || v === s.tag);
+    if (byMeta) return byMeta;
+  }
+  const tags = new Set((product.tags ?? []).map(norm));
+  const byTag = SHELVES.find((s) => tags.has(s.tag) || tags.has(`shelf:${s.slug}`) || tags.has(`shelf-${s.slug}`));
   if (byTag) return byTag;
   return SHELVES.find((s) => s.fallbackHandles.includes(product.handle)) ?? null;
+}
+
+/** A published product tagged `coming-soon` is shown but not yet openable. */
+export function isComingSoon(product: Pick<ProductSummary, "tags" | "availableForSale">): boolean {
+  return (product.tags ?? []).some((t) => norm(t) === "coming-soon") || !product.availableForSale;
 }
 
 export type ShelfView = ShelfDef & { products: ProductSummary[] };

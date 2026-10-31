@@ -17,6 +17,7 @@ export type RawProductSummary = {
   priceRange: { minVariantPrice: RawMoney };
   compareAtPriceRange: { minVariantPrice: RawMoney | null };
   benefit: { value: string } | null;
+  shelf?: { value: string } | null;
 };
 
 export type RawProductDetail = RawProductSummary & {
@@ -80,6 +81,7 @@ export function toSummary(raw: RawProductSummary): ProductSummary {
     compareAtPrice: compareAt(raw),
     tags: raw.tags ?? [],
     availableForSale: raw.availableForSale,
+    shelf: raw.shelf?.value?.trim() || null,
   };
 }
 

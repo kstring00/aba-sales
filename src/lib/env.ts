@@ -6,4 +6,6 @@ export const publicEnv = {
   siteUrl: (process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000").replace(/\/$/, ""),
   contactEmail: process.env.NEXT_PUBLIC_CONTACT_EMAIL ?? "",
   contactPhone: process.env.NEXT_PUBLIC_CONTACT_PHONE ?? "",
+  /** Name of the reviewing BCBA. Empty renders nothing: no placeholder line. */
+  bcbaReviewer: (process.env.NEXT_PUBLIC_BCBA_REVIEWER ?? "").trim(),
 };

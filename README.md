@@ -23,6 +23,22 @@ The direction, audit, and principles are in `docs/CREATIVE-DIRECTION.md`; the il
 - Motion: `.reveal` (one 600ms rise, visible by default, armed only with JS), 2px lifts, the bottom sheet's spring, the binder's page turn. `prefers-reduced-motion` removes all of it.
 - The homepage is the shelf: Hero → Explore the shelves (four tabs on a wooden board) → Why it matters (sample log sheet, no testimonial) → Closing. `/shelf` shows the same four shelves in full; `/products/[handle]` uses the shelf's tint and paper object.
 
+## Adding a product to a shelf (Shopify)
+
+Products appear on the homepage drawer and `/shelf` only when the Storefront API returns them (Active, published to the Headless channel). To place one on a shelf, do any one of these in Shopify admin:
+
+| Method | Value |
+| --- | --- |
+| Metafield `custom.shelf` (single line text) | `get-organized` · `make-a-plan` · `everyday-life` · `support-at-home` |
+| Tag | `shelf:get-organized` (or `shelf-get-organized`, or the short form `shelf-organized` / `shelf-plan` / `shelf-everyday` / `shelf-home`) |
+| Neither | the handle fallback in `src/lib/shelves.ts` (covers the four current products) |
+
+Metafield wins over tag, tag over handle. A product that matches nothing is listed under "Also on the shelf" on `/shelf` rather than hidden.
+
+**Coming soon.** Add the tag `coming-soon` to a published product and it renders as a card with a "Coming soon" pill and a "Learn more" button (no price, no checkout). Draft or unpublished products never reach the site at all. Items that don't exist in Shopify yet live in `src/content/shelf-drawer.ts` (`comingSoon` per shelf) so no drawer is ever empty; their "Learn more" lands on `/shelf#<shelf>` where the item is named and an email can be left. A filler is dropped automatically once a live product with the same title appears.
+
+**Price.** "Free" when the Shopify price is 0; otherwise the live price. Nothing is ever shown that isn't in Shopify.
+
 ## The four shelves
 
 `src/lib/shelves.ts` defines Get Organized (sky), Make a Plan (mint), Everyday Life (butter), Support at Home (blush). A product lands on a shelf by Shopify tag (`shelf-organized`, `shelf-plan`, `shelf-everyday`, `shelf-home`), falling back to its handle when no tag is set, so the mapping works before and after the tags exist. Products that match neither are listed under "Also on the shelf" rather than dropped. Everyday Life is empty and takes an email (Resend audience); Support at Home carries the free logger as a static card. `src/lib/resources.ts` holds the one plain sentence per product; it never creates inventory.

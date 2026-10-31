@@ -79,7 +79,10 @@ src/lib/shopify/         Storefront client, GraphQL, normalizers, catalog, cart 
 src/lib/shelves.ts       the four shelves: tag → shelf mapping with handle fallback
 src/lib/resources.ts     one sentence per product, who it may help, which paper object
 src/components/illustrations/Paper.tsx   every illustration (inline SVG, token colors)
-src/components/home/     Hero, ShelfExplorer (tabs), WhyItMatters, ClosingCta
+src/components/home/     ShelfHero (binders + drawer, client), DrawerPanel (server), WhyItMatters, ClosingCta
+src/lib/drawer.ts        drawer model: live products → built-in tool → coming-soon fillers (max 4)
+src/content/shelf-drawer.ts   lead lines, checklists, the ABC tool card, coming-soon items per shelf
+reference/shelf-demo.html     the approved interaction target for the hero
 src/components/abc/      Tracker (page body), TrackerForm, BcbaPreview (live table + exports), Explainers, EntryList, LogSheet (edit), Views
 src/lib/abc/             localStorage store, hook, view aggregations, types
 src/lib/export/          report → PDF (pdf-lib + brand fonts) and CSV

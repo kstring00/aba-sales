@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from "next";
-import { Caveat, Fraunces, Inter } from "next/font/google";
+import { Caveat, Figtree, Fraunces } from "next/font/google";
 import "./globals.css";
 import { publicEnv } from "@/lib/env";
 import { ToastProvider } from "@/components/ui/Toast";
@@ -16,9 +16,10 @@ const fraunces = Fraunces({
   adjustFontFallback: false,
 });
 
-const inter = Inter({
+const figtree = Figtree({
   subsets: ["latin"],
-  variable: "--font-inter",
+  variable: "--font-figtree",
+  weight: ["400", "500", "600", "700"],
   display: "swap",
   adjustFontFallback: false, // tuned fallback in globals.css
 });
@@ -55,7 +56,7 @@ export const metadata: Metadata = {
 };
 
 export const viewport: Viewport = {
-  themeColor: "#fbf7f0",
+  themeColor: [{ media: "(prefers-color-scheme: light)", color: "#F8F4EC" }, { media: "(prefers-color-scheme: dark)", color: "#141D1A" }],
   width: "device-width",
   initialScale: 1,
   viewportFit: "cover",
@@ -63,7 +64,7 @@ export const viewport: Viewport = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en" className={`${fraunces.variable} ${inter.variable} ${caveat.variable}`}>
+    <html lang="en" className={`${fraunces.variable} ${figtree.variable} ${caveat.variable}`}>
       <body className="flex min-h-dvh flex-col">
         <a
           href="#main"

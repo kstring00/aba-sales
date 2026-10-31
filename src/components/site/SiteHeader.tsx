@@ -5,8 +5,8 @@ import { IconSearch } from "@/components/illustrations/Paper";
 
 const NAV = [
   { href: "/about", label: "About", mobile: false },
-  { href: "/#shelves", label: "How it works", mobile: false },
-  { href: "/shelf", label: "Shelves", mobile: true },
+  { href: "/#shelf-organized", label: "How it works", mobile: false },
+  { href: "/shelf", label: "Shelves", mobile: false },
   { href: "/abc", label: "ABC tracker", mobile: true, short: "ABC" },
 ];
 

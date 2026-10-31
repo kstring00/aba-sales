@@ -15,10 +15,9 @@ for (const p of PAGES) {
   const res = await page.goto(`${BASE}${p}`, { waitUntil: "networkidle" });
   if (p.startsWith("/products/") && res.status() === 404) { console.log(`– ${p} skipped (no catalog)`); continue; }
   if (p === "/") {
-    // Exercise the shelf tabs and the header search too.
-    await page.getByRole("tab", { name: /make a plan/i }).click();
-    await page.getByRole("button", { name: "Next shelf" }).click();
-    await page.getByRole("button", { name: "Next shelf" }).click();
+    // Pull a binder forward (drawer open) and open the header search too.
+    await page.getByRole("button", { name: /make a plan/i }).click();
+    await page.waitForTimeout(900);
     await page.locator("summary[aria-label='Search the shelves']").click();
   }
   if (p === "/abc") {
