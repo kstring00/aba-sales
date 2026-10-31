@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { Reveal } from "@/components/site/Reveal";
 import { IconChecklist, IconHeart, IconLeaf, SampleLogSheet } from "@/components/illustrations/Paper";
 
@@ -24,7 +25,8 @@ export function WhyItMatters() {
           The Support Shelf is a small, growing library of printable tools for families whose kids are in ABA therapy. Each one does a single job well: organize, prepare, notice, and write down what happened.
         </p>
         <p className="mt-4 max-w-[52ch] text-[15.5px] text-ink-soft">
-          Made by a Registered Behavior Technician with three years in-clinic. These tools record and organize; they don&apos;t make clinical claims, and nothing here tells you what to do about a behavior.
+          Made by Kyle Stringham, a Registered Behavior Technician who works with kids in ABA therapy and sees what their parents carry. These tools record and organize; they don&apos;t make clinical claims, and nothing here tells you what to do about a behavior.{" "}
+          <Link href="/about#founder" className="text-ink underline underline-offset-4 hover:text-clay-text">Read a note from the founder</Link>
         </p>
         <ul className="mt-8 grid gap-4 sm:grid-cols-3">
           {MARKS.map(({ Icon, label }) => (
