@@ -23,7 +23,10 @@ export async function joinList(_prev: JoinState, formData: FormData): Promise<Jo
     website: formData.get("website") ?? "",
   });
   if (!parsed.success) return { error: "That email doesn't look right." };
-  if (!listConfigured()) return { error: "The list isn't open yet. Please check back soon." };
+  if (!listConfigured()) {
+    console.warn("[email-list] sign-up refused: RESEND_API_KEY or RESEND_SEGMENT_ID is missing. See /api/health/email.");
+    return { error: "The list isn't open yet. Please check back soon." };
+  }
   try {
     await addToList(parsed.data.email, parsed.data.source ?? "site");
     return { ok: true };
