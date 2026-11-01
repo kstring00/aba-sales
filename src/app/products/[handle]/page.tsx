@@ -5,6 +5,8 @@ import { SiteHeader } from "@/components/site/SiteHeader";
 import { SiteFooter, BOUNDARY_LINE } from "@/components/site/SiteFooter";
 import { ProductShelfCard } from "@/components/shop/ShelfCard";
 import { AddToCart } from "@/components/shop/AddToCart";
+import { FreeDownload } from "@/components/shop/FreeDownload";
+import { freeDownloadFor } from "@/lib/freeDownloads";
 import { BinderPreview } from "@/components/shop/BinderPreview";
 import { PaperObject } from "@/components/illustrations/Paper";
 import { getProduct, getProductHandles, getRelated } from "@/lib/shopify/catalog";
@@ -40,6 +42,8 @@ const FAQ = [
   { q: "Refunds?", a: "Downloads can't be returned, but if something is broken or not as described, write to us and we'll make it right." },
 ];
 
+const FREE_FILES_ANSWER = { q: "How do I get the files?", a: "Tap Download free PDF. It saves to your phone or computer right away. No checkout and no email needed. If it doesn't open, write to us using the footer." };
+
 /**
  * Every product page answers: what it is, what exactly you get, what it looks
  * like, who it's for, the price, and how to get help. The gallery shows the
@@ -57,6 +61,9 @@ export default async function ProductPage({ params }: { params: Promise<{ handle
   const price = formatMoney(product.price);
   const formatLine = product.format ?? extractFormat(product.description);
   const included = product.included.length ? product.included : extractIncluded(product.description);
+  // Free PDFs that live on the site skip the cart and checkout entirely.
+  const free = freeDownloadFor(product.handle, price);
+  const faq = free ? FAQ.map((f) => (f.q === "How do I get the files?" ? FREE_FILES_ANSWER : f)) : FAQ;
   const productLd = {
     "@context": "https://schema.org",
     "@type": "Product",
@@ -109,7 +116,11 @@ export default async function ProductPage({ params }: { params: Promise<{ handle
             </p>
 
             <div className="mt-6 hidden md:block">
-              <AddToCart variantId={product.variantId} available={product.availableForSale} price={price} />
+              {free ? (
+                <FreeDownload handle={product.handle} title={product.title} file={free.file} pages={free.pages} />
+              ) : (
+                <AddToCart variantId={product.variantId} available={product.availableForSale} price={price} />
+              )}
             </div>
 
             <section className="paper-card mt-6 p-5" aria-labelledby="format-h">
@@ -120,7 +131,7 @@ export default async function ProductPage({ params }: { params: Promise<{ handle
                   {included.map((item) => <li key={item} className="flex gap-2"><span aria-hidden className="text-sage-deep">·</span>{item}</li>)}
                 </ul>
               ) : null}
-              <p className="mt-3 text-[14px] text-ink-mute">Delivered by email in under a minute, from Shopify. Use it right away.</p>
+              <p className="mt-3 text-[14px] text-ink-mute">{free ? "Downloads straight to your device. Print it or keep it on your phone." : "Delivered by email in under a minute, from Shopify. Use it right away."}</p>
             </section>
 
             <p className="mt-6 text-[15px] text-ink">Made by a Registered Behavior Technician. {BOUNDARY_LINE}</p>
@@ -139,7 +150,7 @@ export default async function ProductPage({ params }: { params: Promise<{ handle
         <section className="mt-16 max-w-3xl" aria-labelledby="faq-h">
           <h2 id="faq-h">Before you buy</h2>
           <div className="paper-card mt-6 divide-y divide-line">
-            {FAQ.map((f) => (
+            {faq.map((f) => (
               <details key={f.q} className="group px-5 py-4">
                 <summary className="flex min-h-11 cursor-pointer list-none items-center justify-between gap-4 text-[16px] text-ink">
                   {f.q}
@@ -165,7 +176,13 @@ export default async function ProductPage({ params }: { params: Promise<{ handle
       <aside aria-label="Get this download" className="fixed inset-x-0 bottom-0 z-40 border-t border-line bg-cream/95 p-4 pb-[calc(env(safe-area-inset-bottom)+16px)] backdrop-blur md:hidden">
         <div className="mx-auto flex max-w-lg items-center gap-4">
           <span className="tnum text-[1.1rem]">{price}</span>
-          <div className="flex-1"><AddToCart variantId={product.variantId} available={product.availableForSale} price={price} compact /></div>
+          <div className="flex-1">
+            {free ? (
+              <FreeDownload handle={product.handle} title={product.title} file={free.file} pages={free.pages} compact />
+            ) : (
+              <AddToCart variantId={product.variantId} available={product.availableForSale} price={price} compact />
+            )}
+          </div>
         </div>
       </aside>
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(productLd) }} />

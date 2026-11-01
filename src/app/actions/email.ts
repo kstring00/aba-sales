@@ -3,7 +3,9 @@
 import { headers } from "next/headers";
 import { z } from "zod";
 import { addToList, listConfigured, sendEmail, unsubscribeContact } from "@/lib/email/resend";
-import { confirmationEmail } from "@/lib/email/templates";
+import { confirmationEmail, welcomeOfferEmail } from "@/lib/email/templates";
+import { OFFER_PERCENT } from "@/lib/welcomeOffer";
+import { publicEnv } from "@/lib/env";
 import { listUnsubscribeHeaders, unsubscribePageUrl, verifyUnsubscribe } from "@/lib/email/unsubscribe";
 
 export type JoinState = { ok?: true; error?: string } | null;
@@ -68,6 +70,55 @@ export async function joinList(_prev: JoinState, formData: FormData): Promise<Jo
     );
   }
   return { ok: true };
+}
+
+export type OfferState = { ok: true; code: string; emailed: boolean } | { ok?: undefined; error: string } | null;
+
+/** The Shopify discount code behind the welcome offer. Server-only, so it isn't in the page source. */
+function offerCode() {
+  return (process.env.WELCOME_OFFER_CODE ?? "").trim() || "WELCOME15";
+}
+
+/**
+ * The welcome pop-up. Same opt-in rules as joinList (the form is the opt-in,
+ * same rate limit), but instead of a confirmation it emails the discount
+ * code, and returns it so the pop-up can show it on screen right away.
+ */
+export async function claimOffer(_prev: OfferState, formData: FormData): Promise<OfferState> {
+  const parsed = schema.safeParse({
+    email: formData.get("email"),
+    source: "welcome-offer",
+    website: formData.get("website") ?? "",
+  });
+  if (!parsed.success) return { error: "That email doesn't look right." };
+  if (!listConfigured()) {
+    console.warn("[welcome-offer] refused: RESEND_API_KEY or RESEND_SEGMENT_ID is missing. See /api/health/email.");
+    return { error: "This isn't open yet. Please check back soon." };
+  }
+  const ip = (await headers()).get("x-forwarded-for")?.split(",")[0]?.trim() ?? "unknown";
+  if (ipLimited(ip)) return { error: "That's a lot of sign-ups in a row. Please wait a few minutes." };
+
+  const { email } = parsed.data;
+  try {
+    await addToList(email, "welcome-offer");
+  } catch {
+    return { error: "We couldn't save that just now. Please try again in a moment." };
+  }
+
+  const code = offerCode();
+  let emailed = false;
+  const last = confirmedAt.get(email);
+  if (!last || Date.now() - last > DAY) {
+    confirmedAt.set(email, Date.now());
+    const mail = welcomeOfferEmail({ code, percent: OFFER_PERCENT, shopUrl: `${publicEnv.siteUrl}/shelf`, unsubscribeUrl: unsubscribePageUrl(email) });
+    emailed = await sendEmail({ to: email, ...mail, headers: listUnsubscribeHeaders(email) })
+      .then(() => true)
+      .catch((e) => {
+        console.warn(`[welcome-offer] email failed: ${e instanceof Error ? e.message : String(e)}`);
+        return false;
+      });
+  }
+  return { ok: true, code, emailed };
 }
 
 /** "Unsubscribe" button on /unsubscribe. */
