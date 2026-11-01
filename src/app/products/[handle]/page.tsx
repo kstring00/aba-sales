@@ -135,7 +135,6 @@ export default async function ProductPage({ params }: { params: Promise<{ handle
             </section>
 
             <p className="mt-6 text-[15px] text-ink">Made by a Registered Behavior Technician. {BOUNDARY_LINE}</p>
-            <p className="mt-2 text-[14px] text-ink-mute">Clinical review: pending.</p>
             <p className="mt-3 text-[14px] text-ink-soft">No client data. You customize everything. If a file is broken or not as described, write to us and we&apos;ll fix it or refund you.</p>
           </div>
         </div>

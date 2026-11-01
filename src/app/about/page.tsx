@@ -77,7 +77,6 @@ export default function AboutPage() {
           Email <a href={`mailto:${publicEnv.contactEmail}`} className="text-ink underline underline-offset-4">{publicEnv.contactEmail}</a>.
           A person answers, usually within a couple of days. No phone line yet.
         </p>
-        <p className="text-[14px] text-ink-mute">Clinical review: pending. No BCBA has reviewed the tools yet; when one has, their name will appear here and on each tool.</p>
 
         <div className="pt-4">
           <LinkButton href="/shelf" variant="primary" size="lg">Browse the shelves</LinkButton>
