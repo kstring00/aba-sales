@@ -15,6 +15,7 @@ export function SiteFooter() {
   const links = [
     ...hub,
     { href: "/about", label: "About" },
+    { href: "/jobs", label: "Jobs" },
     { href: "/shelf", label: "Shelves" },
     { href: "/abc", label: "ABC tracker" },
     { href: email ? `mailto:${email}` : "/about", label: "Contact" },

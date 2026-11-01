@@ -3,6 +3,8 @@
 **(founder)** = needs you. **(review)** = needs a professional before launch.
 
 ## Global
+- Jobs page `/jobs`: listings are Shopify metaobjects (Content → Metaobjects → Job listing). Set an entry to Active to show it; it hides itself after its "Hide after" date. Re-check each listing monthly and update "Last checked".
+- Welcome pop-up (15% off for joining the list) uses Shopify code `WELCOME15` (one use per customer). Set `WELCOME_OFFER_CODE` in Vercel to change it. It never shows on Right now, Crisis, the breathing/grounding tools, the ABC logger, cart, thanks or unsubscribe.
 - (founder) Product sentences and "who it may help" in `src/lib/resources.ts` were written from the product names and the brief; confirm each against the actual files.
 - (founder) Upload the actual page images to each Shopify product, in page order; the product page gallery uses them. Add `custom.format` and `custom.included` metafields for exact contents.
 - (founder) Production shelves are empty while Shopify itself is correct (four products Active on Headless, tagged, collection published). Open `/api/health/shopify` on the deployment: it says whether the token/domain are set for Production and whether Shopify accepts the token. Fix the variable in Vercel and redeploy.
@@ -25,6 +27,7 @@
 - Everyday Life is empty and takes an email; Support at Home holds the free logger.
 
 ## Product `/products/[handle]`
+- (founder) Free downloads skip checkout when their PDF is in `public/downloads/` and listed in `src/lib/freeDownloads.ts`. Home ABC Printable and The Waitlist Playbook still use checkout until their PDFs are added there.
 - Add `custom.benefit`, `custom.format`, `custom.included` metafields and expose them to the Storefront API; the page falls back to parsing the description.
 - Upload real preview images (the actual pages) in Shopify; the paper object stands in until then.
 

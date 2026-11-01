@@ -4,6 +4,7 @@ import "./globals.css";
 import { publicEnv } from "@/lib/env";
 import { ToastProvider } from "@/components/ui/Toast";
 import { OfflineRegister } from "@/components/site/OfflineRegister";
+import { WelcomeOffer } from "@/components/site/WelcomeOffer";
 
 const fraunces = Fraunces({
   subsets: ["latin"],
@@ -97,7 +98,10 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         >
           Skip to content
         </a>
-        <ToastProvider>{children}</ToastProvider>
+        <ToastProvider>
+          {children}
+          <WelcomeOffer />
+        </ToastProvider>
         <OfflineRegister />
         <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
       </body>

@@ -26,7 +26,7 @@ export async function SiteHeader() {
   const sections = hubSections().filter((s) => s.visible);
   const rightNow = sections.find((s) => s.key === "right-now");
   const hubLinks = sections.filter((s) => s.key !== "right-now").map((s) => ({ href: s.href, label: LABEL[s.key] }));
-  const links = [...hubLinks, { href: "/shelf", label: ui.nav.shelves }, { href: "/abc", label: ui.nav.abc }];
+  const links = [...hubLinks, { href: "/jobs", label: "Jobs" }, { href: "/shelf", label: ui.nav.shelves }, { href: "/abc", label: ui.nav.abc }];
   const menu = [...(rightNow ? [{ href: rightNow.href, label: ui.nav.rightNow }] : []), ...links, { href: "/about", label: ui.nav.about }];
 
   return (
