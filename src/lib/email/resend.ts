@@ -107,13 +107,27 @@ export async function addToList(email: string, source: string): Promise<void> {
   if (!add.ok && !(await alreadyExists(add))) throw new Error(`Resend segment ${add.status}`);
 }
 
+/**
+ * Marks a contact unsubscribed. The contact stays (Resend keeps it so a
+ * re-import can't resubscribe them); no more list email reaches them.
+ * An address that was never a contact counts as done.
+ */
+export async function unsubscribeContact(email: string): Promise<void> {
+  const res = await fetch(`${API}/contacts/${encodeURIComponent(email)}`, {
+    method: "PATCH",
+    headers: headers(),
+    body: JSON.stringify({ unsubscribed: true }),
+  });
+  if (!res.ok && res.status !== 404) throw new Error(`Resend unsubscribe ${res.status}`);
+}
+
 export type Attachment = { filename: string; content: string /* base64 */ };
 
 /**
  * Sends one email. Replies go to a real person's mailbox: nothing receives
  * mail at the sending domain.
  */
-export async function sendEmail(opts: { to: string; subject: string; html: string; text: string; attachments?: Attachment[] }): Promise<void> {
+export async function sendEmail(opts: { to: string; subject: string; html: string; text: string; attachments?: Attachment[]; headers?: Record<string, string> }): Promise<void> {
   const from = process.env.RESEND_FROM ?? "The Support Shelf <onboarding@resend.dev>";
   const res = await fetch(`${API}/emails`, {
     method: "POST",
@@ -126,6 +140,7 @@ export async function sendEmail(opts: { to: string; subject: string; html: strin
       html: opts.html,
       text: opts.text,
       attachments: opts.attachments,
+      headers: opts.headers,
     }),
   });
   if (!res.ok) {

@@ -84,6 +84,7 @@ Product page details come from the description. If you add metafields `custom.be
 3. Until you **verify a sending domain** in Resend, `onboarding@resend.dev` can only deliver to your own Resend account email. Verify a domain (a subdomain of one you already own works), then set `RESEND_FROM` to an address on it. Nothing receives mail there, so every email sets Reply-To to `NEXT_PUBLIC_CONTACT_EMAIL`.
 4. Broadcasts to the segment must include Resend's unsubscribe link (`{{{RESEND_UNSUBSCRIBE_URL}}}`); the privacy page promises it.
 5. After setting or changing any of these in Vercel, **redeploy** (new values only reach new deployments), then open `/api/health/email` on the site. It lists exactly what's missing or wrong, without showing secrets.
+6. Shelf sign-ups get one "You're on the list" email with a signed unsubscribe link (`/unsubscribe`) and one-click List-Unsubscribe headers. Links are signed with `UNSUBSCRIBE_SECRET` if set, otherwise the Resend key; changing that value makes old links fall back to "email us".
 
 ## Run locally
 

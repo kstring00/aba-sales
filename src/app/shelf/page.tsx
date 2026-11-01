@@ -63,7 +63,7 @@ export default async function ShelfPage() {
                   <DrawerCards cards={s.cards} />
                   {s.cards.some((c) => c.status === "soon") ? (
                     <div className="paper-card mt-5 p-5" id={`${s.id}-soon`}>
-                      <p className="text-[15px] text-ink">Want to know when the next tool on this shelf is ready? One email, then nothing else.</p>
+                      <p className="text-[15px] text-ink">Want to know when the next tool on this shelf is ready? We&apos;ll send a quick confirmation now, then email you when it&apos;s ready.</p>
                       <div className="mt-3 max-w-md"><EmailCapture source={`shelf-${s.id}-soon`} cta="Tell me first" /></div>
                     </div>
                   ) : null}

@@ -5,6 +5,7 @@ import { renderReportPdf } from "@/lib/export/pdf";
 import { loadFontBytesFromDisk } from "@/lib/export/fonts.server";
 import { addToList, listConfigured, resendConfigured, sendEmail } from "@/lib/email/resend";
 import { isDateStr, isValidTimeZone } from "@/lib/time/zoned";
+import { listUnsubscribeHeaders, unsubscribePageUrl } from "@/lib/email/unsubscribe";
 
 export const dynamic = "force-dynamic";
 
@@ -83,9 +84,10 @@ export async function POST(request: NextRequest) {
     await sendEmail({
       to: email,
       subject: `Your ABC export for ${nickname}`,
-      text: `Attached: your observations for ${nickname}, ${from} to ${to} (${report.total} ${report.total === 1 ? "observation" : "observations"}).\n\nThis PDF describes what was recorded. It doesn't say why anything happened.\n\n${footerText(keepInTouch)}\n\nThe Support Shelf`,
-      html: `<p>Attached: your observations for <strong>${escapeHtml(nickname)}</strong>, ${from} to ${to} (${report.total} ${report.total === 1 ? "observation" : "observations"}).</p><p>This PDF describes what was recorded. It doesn't say why anything happened.</p><p style="color:#5c6660;font-size:13px">${escapeHtml(footerText(keepInTouch))}</p><p>— The Support Shelf</p>`,
+      text: `Attached: your observations for ${nickname}, ${from} to ${to} (${report.total} ${report.total === 1 ? "observation" : "observations"}).\n\nThis PDF describes what was recorded. It doesn't say why anything happened.\n\n${footerText(keepInTouch)}\n\nThe Support Shelf${keepInTouch ? `\n\nUnsubscribe: ${unsubscribePageUrl(email)}` : ""}`,
+      html: `<p>Attached: your observations for <strong>${escapeHtml(nickname)}</strong>, ${from} to ${to} (${report.total} ${report.total === 1 ? "observation" : "observations"}).</p><p>This PDF describes what was recorded. It doesn't say why anything happened.</p><p style="color:#5c6660;font-size:13px">${escapeHtml(footerText(keepInTouch))}</p><p>— The Support Shelf</p>${keepInTouch ? `<p style="color:#5c6660;font-size:13px"><a href="${escapeHtml(unsubscribePageUrl(email))}" style="color:#5c6660">Unsubscribe from the list</a></p>` : ""}`,
       attachments: [{ filename, content: Buffer.from(pdf).toString("base64") }],
+      ...(keepInTouch ? { headers: listUnsubscribeHeaders(email) } : {}),
     });
     if (keepInTouch && listConfigured()) {
       // The export already went out; a list hiccup shouldn't turn it into an error.
@@ -105,7 +107,7 @@ export async function POST(request: NextRequest) {
 /** One-off email: say plainly whether it signed anyone up. */
 function footerText(keepInTouch: boolean) {
   return keepInTouch
-    ? "You also asked to hear when new downloads reach the shelf. Every one of those emails has an unsubscribe link. Questions? Just reply."
+    ? "You also asked to hear when new downloads reach the shelf, so you're on the list: a few emails a year at most. Unsubscribe any time with the link below. Questions? Just reply."
     : "This was a one-time email. It didn't add you to any list. Questions? Just reply.";
 }
 

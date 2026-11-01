@@ -89,7 +89,7 @@ export function EmptyShelfCard({ shelf }: { shelf: ShelfDef }) {
       <div className="paper-card relative flex h-full flex-col gap-3 p-6">
       <p className={`kicker ${TINT_TEXT[shelf.tint]}`}>Being made</p>
       <h3 className="text-[1.2rem] leading-snug">{e.title}</h3>
-      <p className="text-[14.5px] text-ink-soft">{e.body} One email when it&apos;s ready. Nothing else.</p>
+      <p className="text-[14.5px] text-ink-soft">{e.body} We&apos;ll send a quick confirmation now, then email you when it&apos;s ready.</p>
       <div className="mt-auto pt-2">
         <EmailCapture source={`shelf-${shelf.id}`} cta="Tell me first" />
       </div>
