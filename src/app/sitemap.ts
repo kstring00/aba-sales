@@ -7,7 +7,7 @@ import { glossary } from "@/lib/content/data";
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const base = publicEnv.siteUrl;
   const now = new Date();
-  const pages: MetadataRoute.Sitemap = ["/", "/shelf", "/abc", "/about", "/privacy", "/crisis"].map((p) => ({
+  const pages: MetadataRoute.Sitemap = ["/", "/shelf", "/jobs", "/abc", "/about", "/privacy", "/crisis"].map((p) => ({
     url: `${base}${p}`,
     lastModified: now,
     changeFrequency: p === "/" || p === "/shelf" ? "weekly" : "monthly",

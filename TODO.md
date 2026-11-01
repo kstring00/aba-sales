@@ -3,6 +3,7 @@
 **(founder)** = needs you. **(review)** = needs a professional before launch.
 
 ## Global
+- Jobs page `/jobs`: listings are Shopify metaobjects (Content → Metaobjects → Job listing). Set an entry to Active to show it; it hides itself after its "Hide after" date. Re-check each listing monthly and update "Last checked".
 - Welcome pop-up (15% off for joining the list) uses Shopify code `WELCOME15` (one use per customer). Set `WELCOME_OFFER_CODE` in Vercel to change it. It never shows on Right now, Crisis, the breathing/grounding tools, the ABC logger, cart, thanks or unsubscribe.
 - (founder) Product sentences and "who it may help" in `src/lib/resources.ts` were written from the product names and the brief; confirm each against the actual files.
 - (founder) Upload the actual page images to each Shopify product, in page order; the product page gallery uses them. Add `custom.format` and `custom.included` metafields for exact contents.
