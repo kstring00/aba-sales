@@ -10,7 +10,7 @@ export const metadata: Metadata = {
 };
 
 /** Keep this date current whenever the text below changes. */
-const LAST_UPDATED = "October 31, 2026";
+const LAST_UPDATED = "November 1, 2026";
 
 export default function PrivacyPage() {
   const email = publicEnv.contactEmail;
@@ -18,7 +18,7 @@ export default function PrivacyPage() {
     <>
       <SiteHeader />
       <Prose title="Privacy" lede="In plain language. This describes what the site actually does today.">
-        <p className="!mt-0 text-[14px] text-ink-mute">Last updated {LAST_UPDATED}. Version 3.</p>
+        <p className="!mt-0 text-[14px] text-ink-mute">Last updated {LAST_UPDATED}. Version 4.</p>
 
         <h2>The ABC tracker stores nothing on our servers</h2>
         <p>
@@ -53,9 +53,10 @@ export default function PrivacyPage() {
         <p>
           You&apos;re on the list only if you asked to be: by signing up on a shelf, or by ticking the box when you email yourself
           an export. The list is kept with Resend, along with which of those forms you used. Nothing else about you is stored.
+          Signing up on a shelf sends one email right away to confirm it; after that, a few emails a year at most.
         </p>
         <p>
-          Every email sent to the list has an unsubscribe link, and unsubscribing stops them. To have your address deleted
+          Every email sent to the list, including that confirmation, has an unsubscribe link, and unsubscribing stops them. To have your address deleted
           entirely, email us (below). Replies to any of our emails reach a person.
         </p>
 

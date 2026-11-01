@@ -17,7 +17,7 @@ export function EmailCapture({ source, cta = "Keep me posted" }: { source: strin
   const [local, setLocal] = useState<string | null>(null);
   const id = useId();
   if (state?.ok) {
-    return <p role="status" aria-live="polite" className="text-[15px] text-ink">You&apos;re on the list. One email when there&apos;s something to show, nothing else.</p>;
+    return <p role="status" aria-live="polite" className="text-[15px] text-ink">You&apos;re on the list. Check your inbox for a short confirmation email.</p>;
   }
   const message = local ?? state?.error ?? null;
   return (
