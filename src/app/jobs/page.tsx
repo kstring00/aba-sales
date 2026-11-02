@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 import { SiteHeader } from "@/components/site/SiteHeader";
 import { SiteFooter } from "@/components/site/SiteFooter";
 import { JobBoard } from "@/components/jobs/JobBoard";
@@ -61,6 +62,7 @@ export default async function JobsPage() {
                 <li><strong className="text-ink">You can ask for changes to the interview.</strong> More time, questions in writing, or a quieter room. Ask the recruiter before the day.</li>
                 <li><strong className="text-ink">Apply on the employer&apos;s own site.</strong> We don&apos;t take applications or keep anything about you. If a listing ever asks you to pay to apply, don&apos;t.</li>
               </ul>
+              <Link href="/learn/sensory-friendly-work" className="mt-3 inline-flex min-h-11 items-center text-[15px] font-medium text-ink underline underline-offset-4">What makes a job sensory-friendly</Link>
             </section>
 
             <section className="rounded-xl bg-sage-tint p-5">

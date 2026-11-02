@@ -16,6 +16,8 @@ export function SiteFooter() {
     ...hub,
     { href: "/about", label: "About" },
     { href: "/jobs", label: "Jobs" },
+    { href: "/interests", label: "Interest Explorer" },
+    { href: "/events", label: "Houston outings" },
     { href: "/shelf", label: "Shelves" },
     { href: "/abc", label: "ABC tracker" },
     { href: email ? `mailto:${email}` : "/about", label: "Contact" },

@@ -32,6 +32,7 @@ export default function LearnPage() {
             <ul className="mt-4 grid gap-3 sm:grid-cols-2">
               <li><Link href="/learn/glossary" className="paper-card lift flex min-h-16 items-center p-5 font-medium text-heading">{ui.learn.glossaryLink} →</Link></li>
               <li><Link href="/learn/decode" className="paper-card lift flex min-h-16 items-center p-5 font-medium text-heading">{ui.learn.decodeLink} →</Link></li>
+              <li><Link href="/interests" className="paper-card lift flex min-h-16 items-center p-5 font-medium text-heading">Interest Explorer: hobbies to try →</Link></li>
             </ul>
           </section>
         ) : null}
