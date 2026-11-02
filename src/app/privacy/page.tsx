@@ -64,6 +64,7 @@ export default function PrivacyPage() {
         <ul>
           <li>No advertising trackers.</li>
           <li>No analytics on anything you log.</li>
+          <li>We count page visits with Vercel Web Analytics: no cookies, nothing that identifies you, and only the page address without anything after the &ldquo;?&rdquo;.</li>
           <li>No selling or sharing of your information.</li>
           <li>No accounts, no passwords, nothing about your child on our servers.</li>
         </ul>
